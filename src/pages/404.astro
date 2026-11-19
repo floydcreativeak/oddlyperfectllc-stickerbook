@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sticker from '../components/Sticker.astro';
+import CtaButton from '../components/CtaButton.astro';
+import { getSite, getStickers } from '../lib/content';
+const site = await getSite();
+const nf = site.notFound;
+const stickers = await getStickers(['squiggle', 'bubble-hi', 'star']);
+---
+<BaseLayout title={nf.title} description={site.description} noindex>
+  <section class="block block--hero lost" aria-labelledby="lost-title">
+    <div class="wrap lost__inner">
+      <p class="lost__code" aria-hidden="true">404</p>
+      <h1 id="lost-title" class="lost__title">{nf.heading}</h1>
+      <p class="lede lost__body">{nf.body}</p>
+      <CtaButton href="/" label={nf.cta} variant="ink" icon="home" />
+      <div class="lost__stickers" data-drag-area aria-hidden="true">
+        {stickers.map((s, i) => <div class="lost__st" data-drag tabindex="-1" style={`--i:${i}`}><Sticker sticker={s} size="6rem" draggable /></div>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lost { min-height: 80svh; }
+  .lost__inner { position: relative; display: grid; gap: var(--space-m); justify-items: start; }
+  .lost__code { font-family: var(--font-display); font-size: clamp(6rem, 3rem + 18vw, 16rem); line-height: 0.8; color: var(--on-block); text-shadow: 6px 6px 0 rgb(var(--shadow-color) / 0.25); rotate: -4deg; }
+  .lost__title { font-size: var(--step-5); max-width: 13ch; }
+  .lost__body { max-width: 40ch; }
+  .lost__stickers { position: relative; width: 100%; height: 12rem; margin-top: var(--space-l); }
+  .lost__st { position: absolute; left: calc(10% + var(--i) * 28%); top: calc(var(--i) * 1.5rem); }
+</style>

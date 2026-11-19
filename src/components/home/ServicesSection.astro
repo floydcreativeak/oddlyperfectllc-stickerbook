@@ -1,0 +1,46 @@
+---
+import { getHome, getServices, getStickers } from '../../lib/content';
+import SectionHead from '../SectionHead.astro';
+import ServiceCard from '../ServiceCard.astro';
+import Sticker from '../Sticker.astro';
+import CtaButton from '../CtaButton.astro';
+const { services: copy } = await getHome();
+const services = await getServices();
+const stickers = await getStickers(copy.stickers);
+---
+<section class="block block--services edge edge--scallop services" id="services" aria-labelledby="services-title">
+  <div class="wrap">
+    <div class="services__head">
+      <SectionHead id="services-title" eyebrow={copy.eyebrow} heading={copy.heading} intro={copy.intro} />
+      <div class="services__stickers">
+        {stickers.map((s, i) => <Sticker sticker={s} size={i ? '4.5rem' : '7rem'} class={`svc-st svc-st--${i}`} />)}
+      </div>
+    </div>
+    <div class="services__grid">
+      {services.map((s, i) => <ServiceCard service={s} detailsLabel={copy.detailsLabel} index={i} />)}
+    </div>
+    {copy.cta && (
+      <div class="section-cta">
+        <CtaButton href="/services/" label={copy.cta.label} hoverLabel={copy.cta.hoverLabel} variant="ink" />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .services__head { position: relative; display: grid; gap: var(--space-l); }
+  .services__stickers { position: relative; min-height: 6rem; }
+  .services__stickers :global(.svc-st--0) { position: absolute; right: 8%; top: 0; }
+  .services__stickers :global(.svc-st--1) { position: absolute; right: 0; top: 3.5rem; }
+  .services__grid {
+    display: grid;
+    gap: calc(var(--space-2xl) + 0.5rem) var(--space-l);
+    padding-top: var(--space-xl);
+  }
+  @media (min-width: 680px) { .services__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1040px) {
+    .services__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .services__head { grid-template-columns: 1fr auto; align-items: end; }
+    .services__stickers { width: 16rem; min-height: 10rem; }
+  }
+</style>

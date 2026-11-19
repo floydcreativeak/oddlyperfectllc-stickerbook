@@ -1,0 +1,18 @@
+---
+import { getHome } from '../../lib/content';
+import SectionHead from '../SectionHead.astro';
+import PricingFolders from '../PricingFolders.astro';
+import CtaButton from '../CtaButton.astro';
+const { pricing: copy } = await getHome();
+---
+<section class="block block--pricing edge edge--zigzag" id="pricing" aria-labelledby="pricing-title">
+  <div class="wrap">
+    <SectionHead id="pricing-title" eyebrow={copy.eyebrow} heading={copy.heading} intro={copy.intro} />
+    <PricingFolders />
+    {copy.cta && (
+      <div class="section-cta">
+        <CtaButton href="/pricing/" label={copy.cta.label} hoverLabel={copy.cta.hoverLabel} variant="ink" />
+      </div>
+    )}
+  </div>
+</section>

@@ -168,6 +168,30 @@ content:
           - { name: announcement, label: Announcement bar, type: string, required: true }
           - { name: newTab, label: New tab warning, type: string, required: true }
           - { name: stickerPile, label: Hero sticker pile, type: string, required: true }
+      - name: ui
+        label: Small interface text
+        description: Labels on buttons, reviews and the photo viewer.
+        type: object
+        fields:
+          - { name: ratingLabel, label: Star rating (screen readers), description: "Keep {rating} in it, e.g. {rating} out of 5 stars", type: string, required: true }
+          - name: reviewSources
+            label: Review source labels
+            type: object
+            fields:
+              - { name: email, label: Email, type: string, required: true }
+              - { name: message, label: Message, type: string, required: true }
+              - { name: yelp, label: Yelp, type: string, required: true }
+              - { name: facebook, label: Facebook, type: string, required: true }
+              - { name: google, label: Google, type: string, required: true }
+          - { name: lightboxClose, label: Photo viewer close, type: string, required: true }
+          - { name: lightboxNext, label: Photo viewer next, type: string, required: true }
+          - { name: lightboxPrev, label: Photo viewer previous, type: string, required: true }
+          - { name: lightboxOpen, label: Enlarge photo (screen readers), type: string, required: true }
+          - { name: tocLabel, label: Legal page contents heading, type: string, required: true }
+          - { name: updatedLabel, label: Last updated label, type: string, required: true }
+          - { name: callBandLabel, label: Call band small label, type: string, required: true }
+          - { name: moveHelp, label: Sticker moving help (screen readers), type: text, required: true }
+          - { name: reset, label: Put stickers back button, type: string, required: true }
       - { name: loadingText, label: Loading message, type: string, required: true }
       - name: intro
         label: Intro animation
@@ -221,7 +245,6 @@ content:
           - { name: callLabel, label: Call button text, type: string, required: true }
           - { name: emailLabel, label: Email link text, type: string, required: true }
           - { name: dragHint, label: Sticker drag hint, type: string, required: true }
-          - { name: keyboardHint, label: Keyboard hint (screen readers), type: string, required: true }
           - { name: stickers, label: Stickers in the pile (ids), description: Use ids from the Sticker sheet. 3 to 9., type: string, list: { min: 3, max: 9 } }
       - name: services
         label: 2. Services section
@@ -236,6 +259,7 @@ content:
             fields:
               - { name: label, label: Button text, type: string }
               - { name: hoverLabel, label: Hover text, type: string }
+          - { name: detailsLabel, label: Card details toggle text, type: string, required: true }
           - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
       - name: pricing
         label: 3. Pricing section
@@ -262,6 +286,8 @@ content:
           - { name: emailHeading, label: Email card heading, type: string, required: true }
           - { name: hoursHeading, label: Hours card heading, type: string, required: true }
           - { name: afterHours, label: After-hours line, type: text, required: true }
+          - { name: emailBody, label: Email card text, type: text, required: true }
+          - { name: brochureHeading, label: Brochure card heading, type: string, required: true }
           - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
       - name: about
         label: 5. About section
@@ -394,6 +420,23 @@ content:
           - { name: note, label: Note, type: string }
           - { name: placeholder, label: Still a placeholder?, type: boolean }
       - { name: footnote, label: Footnote, type: text }
+      - { name: includesLabel, label: Features heading inside each plan, type: string, required: true }
+      - { name: faqHeading, label: Pricing questions heading, type: string, required: true }
+      - name: faq
+        label: Pricing questions
+        type: object
+        list: true
+        fields:
+          - { name: question, label: Question, type: string, required: true }
+          - { name: answer, label: Answer, type: text, required: true }
+      - &cta
+        name: cta
+        label: Call band at the bottom
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: body, label: Text, type: text, required: true }
+          - { name: label, label: Button text, type: string, required: true }
 
   # ------------------------------------------------------------------
   - name: reviews
@@ -553,4 +596,12 @@ content:
           - { name: heading, label: Heading, type: string, required: true }
           - { name: body, label: Text, type: text, required: true }
           - { name: sticker, label: Sticker id (optional), type: string }
+      - { name: jumpLabel, label: "Services page: jump menu label", type: string }
+      - { name: teamHeading, label: "About page: team heading", type: string }
+      - { name: teamIntro, label: "About page: team intro", type: text }
+      - { name: galleryHeading, label: "About page: gallery heading", type: string }
+      - { name: galleryIntro, label: "About page: gallery intro", type: text }
+      - { name: filterLabel, label: "Reviews page: filter label", type: string }
+      - { name: allLabel, label: "Reviews page: show-all button", type: string }
+      - *cta
       - { name: body, label: Page text, type: rich-text }

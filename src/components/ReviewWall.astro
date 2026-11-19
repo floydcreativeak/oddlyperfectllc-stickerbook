@@ -1,0 +1,116 @@
+---
+/**
+ * Sticky-note wall. It is a real <ul>, so screen readers always get a plain
+ * list. Notes can be nudged with a mouse/pen (touch scrolls normally) or with
+ * the arrow keys, and a toggle switches to a tidy list layout.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { getSite } from '../lib/content';
+import StarRating from './StarRating.astro';
+import Icon, { type IconName } from './Icon.astro';
+interface Props { reviews: CollectionEntry<'reviews'>[]; dragHint: string; listToggle: string; wallToggle: string; id?: string }
+const { reviews, dragHint, listToggle, wallToggle, id = 'wall' } = Astro.props;
+const { ui } = await getSite();
+const tones = ['mustard', 'blush', 'mint', 'peri'];
+const rots = [-3, 2.5, -1.5, 3.5, -2.5, 1.5, -3.5, 2];
+const SOURCE_ICON: Record<string, IconName> = { email: 'mail', message: 'chat', yelp: 'yelp', facebook: 'facebook', google: 'google' };
+---
+<div class="wall-wrap" data-wall>
+  <div class="wall__controls">
+    <button type="button" class="wall__toggle" aria-pressed="false" aria-controls={id} data-wall-toggle data-label-list={listToggle} data-label-wall={wallToggle}>
+      <Icon name="list" /> <span data-wall-label>{listToggle}</span>
+    </button>
+    <p class="wall__hint hand" aria-hidden="true">{dragHint}</p>
+  </div>
+  <p class="visually-hidden" id={`${id}-help`}>{ui.moveHelp}</p>
+  <ul class="wall" id={id} role="list" data-drag-area data-drag-touch="false">
+    {reviews.map((r, i) => {
+      const d = r.data;
+      return (
+        <li class:list={['note', `tone-${tones[i % tones.length]}`]} style={`--note-rot:${rots[i % rots.length]}deg`} data-drag aria-describedby={`${id}-help`}>
+          <article class="note__paper" data-source={d.source}>
+            <span class="note__tape" aria-hidden="true"></span>
+            <StarRating rating={d.rating} />
+            <blockquote class="note__quote"><p>{d.quote}</p></blockquote>
+            <p class="note__who"><strong>{d.name}</strong>{d.role && <span>{d.role}</span>}</p>
+            <p class="note__src"><Icon name={SOURCE_ICON[d.source]} /> {ui.reviewSources[d.source]}</p>
+          </article>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+<script>
+  function bindWalls() {
+    document.querySelectorAll<HTMLElement>('[data-wall]').forEach((wrap) => {
+      if (wrap.dataset.wallBound) return;
+      wrap.dataset.wallBound = '1';
+      const btn = wrap.querySelector<HTMLButtonElement>('[data-wall-toggle]');
+      const wall = wrap.querySelector<HTMLElement>('.wall');
+      const label = wrap.querySelector<HTMLElement>('[data-wall-label]');
+      btn?.addEventListener('click', () => {
+        const list = btn.getAttribute('aria-pressed') !== 'true';
+        btn.setAttribute('aria-pressed', String(list));
+        wall?.classList.toggle('wall--list', list);
+        if (label) label.textContent = list ? btn.dataset.labelWall! : btn.dataset.labelList!;
+        wall?.querySelectorAll<HTMLElement>('[data-drag]').forEach((n) => { n.style.translate = ''; n.style.setProperty('--drag-tilt', '0deg'); });
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', bindWalls);
+</script>
+
+<style>
+  .wall__controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-s) var(--space-l); margin-bottom: var(--space-xl); }
+  .wall__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: var(--tap-min);
+    padding: 0 1.1rem;
+    font-weight: 800;
+    color: inherit;
+    border: 2px solid currentColor;
+    border-radius: var(--radius-pill);
+    transition: transform var(--dur-spring) var(--ease-spring);
+  }
+  .wall__toggle:hover { transform: rotate(-3deg); }
+  .wall__hint { font-size: var(--step-1); rotate: -2deg; }
+
+  .wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: var(--space-xl) var(--space-l); padding: var(--space-s) 0 var(--space-l); }
+  .note { rotate: calc(var(--note-rot) + var(--drag-tilt, 0deg)); max-width: none; }
+  .note__paper {
+    position: relative;
+    display: grid;
+    gap: var(--space-s);
+    height: 100%;
+    padding: var(--space-xl) var(--space-l) var(--space-l);
+    background: var(--tone);
+    color: var(--on-tone);
+    border-radius: 2px 2px 22px 2px;
+    box-shadow: 0 16px 22px -12px rgb(15 10 20 / 0.55), 0 2px 0 rgb(15 10 20 / 0.25);
+  }
+  .note__tape {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 6rem;
+    height: 1.7rem;
+    margin-left: -3rem;
+    background: rgb(246 238 220 / 0.7);
+    border: 1px solid rgb(46 34 56 / 0.2);
+    rotate: calc(var(--note-rot) * -1.5);
+  }
+  .note__quote p { font-size: var(--step-1); line-height: 1.38; font-weight: 600; }
+  .note__quote p::before { content: open-quote; }
+  .note__quote p::after { content: close-quote; }
+  .note__who { display: grid; }
+  .note__who span { font-size: var(--step--1); }
+  .note__src { display: inline-flex; align-items: center; gap: 0.4em; font-size: var(--step--1); font-weight: 700; margin-top: auto; padding-top: var(--space-2xs); border-top: 2px dashed currentColor; }
+
+  .wall--list { grid-template-columns: 1fr; gap: var(--space-m); }
+  .wall--list .note { rotate: 0deg; translate: none !important; }
+  .wall--list .note__paper { border-radius: var(--radius-s); padding-top: var(--space-l); }
+  .wall--list .note__tape { display: none; }
+</style>

@@ -1,0 +1,60 @@
+---
+/** Accessible accordion built on <details>/<summary>: keyboard and screen reader support for free. */
+import Icon from './Icon.astro';
+interface Props { items: { question: string; answer: string }[]; name?: string }
+const { items, name = 'faq' } = Astro.props;
+const tones = ['mint', 'blush', 'peri', 'mustard', 'tangerine'];
+---
+<div class="faq">
+  {items.map((it, i) => (
+    <details class:list={['faq__item', `tone-${tones[i % tones.length]}`]} name={name} style={`--rise-i:${i % 4}`} data-rise>
+      <summary class="faq__q">
+        <span>{it.question}</span>
+        <span class="faq__icon" aria-hidden="true"><Icon name="plus" /></span>
+      </summary>
+      <div class="faq__a"><p>{it.answer}</p></div>
+    </details>
+  ))}
+</div>
+
+<style>
+  .faq { display: grid; gap: var(--space-s); }
+  .faq__item {
+    background: var(--tone);
+    color: var(--on-tone);
+    border: var(--border-thin) solid var(--c-ink);
+    border-radius: var(--radius-m) var(--radius-s) var(--radius-m) var(--radius-s);
+    box-shadow: 4px 4px 0 var(--c-ink);
+    transition: translate var(--dur-spring) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out);
+  }
+  .faq__item[open] { translate: -2px -3px; box-shadow: 7px 7px 0 var(--c-ink); }
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    min-height: 3.5rem;
+    padding: var(--space-s) var(--space-m);
+    font-weight: 800;
+    font-size: var(--step-1);
+    line-height: 1.25;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq__q::-webkit-details-marker { display: none; }
+  .faq__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--c-paper);
+    color: var(--c-ink);
+    border: 2px solid var(--c-ink);
+    transition: rotate var(--dur-spring) var(--ease-spring);
+  }
+  .faq__item[open] .faq__icon { rotate: 135deg; }
+  .faq__a { padding: 0 var(--space-m) var(--space-m); font-weight: 500; }
+  .faq__q:focus-visible { border-radius: var(--radius-m); }
+</style>

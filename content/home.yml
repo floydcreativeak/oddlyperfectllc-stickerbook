@@ -13,7 +13,6 @@ hero:
   callLabel: Call us. We're ready.
   emailLabel: Or send an email
   dragHint: Go on, move the stickers. We won't tell.
-  keyboardHint: Select a sticker, then use the arrow keys to move it.
   stickers: [tailored, star, coffee, bubble-hi, bolt, no-wall, heart, megaphone, crown]
 
 services:
@@ -23,6 +22,7 @@ services:
   cta:
     label: See every service
     hoverLabel: Yes, every single one
+  detailsLabel: What's included
   stickers: [no-wall, sparkle]
 
 pricing:
@@ -42,6 +42,8 @@ contact:
   emailHeading: Email Us
   hoursHeading: Office Hours
   afterHours: After hours? Leave a voicemail. We return calls first thing, with a plan in hand.
+  emailBody: Prefer typing? Send the details and we'll reply within one business day.
+  brochureHeading: Want It On Paper?
   stickers: [arrow-call, coffee]
 
 about:

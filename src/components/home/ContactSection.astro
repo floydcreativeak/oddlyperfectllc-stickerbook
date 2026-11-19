@@ -1,0 +1,128 @@
+---
+import { existsSync } from 'node:fs';
+import { getHome, getSite, getStickers } from '../../lib/content';
+import { withBase } from '../../lib/url';
+import SectionHead from '../SectionHead.astro';
+import Sticker from '../Sticker.astro';
+import Icon from '../Icon.astro';
+const site = await getSite();
+const { contact: c } = await getHome();
+const stickers = await getStickers(c.stickers);
+// Brochure card only appears once the PDF actually exists in public/downloads.
+const brochure = site.brochure && existsSync(`public${site.brochure.file}`) ? site.brochure : undefined;
+---
+<section class="block block--contact edge edge--wave contact" id="contact" aria-labelledby="contact-title">
+  <div class="wrap">
+    <SectionHead id="contact-title" eyebrow={c.eyebrow} heading={c.heading} intro={c.intro} />
+    <div class="contact__grid">
+      <a class="dial" href={`tel:${site.phone.tel}`} data-track="call-contact" data-rise data-tilt>
+        <span class="dial__ring" aria-hidden="true"><Icon name="phone" /></span>
+        <span class="dial__label">{c.callHeading}</span>
+        <span class="dial__number">{site.phone.display}</span>
+        {stickers[0] && <Sticker sticker={stickers[0]} size="6.5rem" class="dial__arrow" />}
+      </a>
+
+      <div class="contact__side">
+        <div class="index-card" data-rise style="--rise-i:1">
+          <h3 class="index-card__title">{c.emailHeading}</h3>
+          <p>{c.emailBody}</p>
+          <a class="index-card__link" href={`mailto:${site.email.address}`}><Icon name="mail" /> <span>{site.email.address}</span></a>
+        </div>
+
+        <div class="timecard" data-rise style="--rise-i:2">
+          <h3 class="timecard__title"><Icon name="clock" /> {c.hoursHeading}</h3>
+          <dl class="timecard__rows">
+            {site.hours.rows.map((r) => <div><dt>{r.days}</dt><dd>{r.time}</dd></div>)}
+          </dl>
+          <p class="timecard__note">{c.afterHours}</p>
+          {stickers[1] && <Sticker sticker={stickers[1]} size="5rem" class="timecard__sticker" />}
+        </div>
+
+        {brochure && (
+          <a class="index-card index-card--dl" href={withBase(brochure.file)} download data-rise style="--rise-i:3">
+            <span class="index-card__title">{c.brochureHeading}</span>
+            <span>{brochure.label}</span>
+            <Icon name="download" />
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact__grid { display: grid; gap: var(--space-2xl) var(--space-xl); align-items: start; }
+  @media (min-width: 960px) { .contact__grid { grid-template-columns: 1.15fr 0.85fr; } }
+
+  .dial {
+    position: relative;
+    display: grid;
+    gap: var(--space-xs);
+    justify-items: start;
+    padding: var(--space-xl) var(--space-l);
+    background: var(--accent);
+    color: var(--on-accent);
+    text-decoration: none;
+    border: var(--border-chunky) solid var(--c-ink);
+    border-radius: 44px 26px 48px 22px;
+    outline: 7px solid var(--sticker-outline);
+    box-shadow: var(--shadow-sticker), 10px 12px 0 var(--c-ink);
+    rotate: -1.5deg;
+    container-type: inline-size;
+  }
+  .dial__ring {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: var(--c-cream);
+    color: var(--c-ink);
+    border: var(--border-chunky) solid var(--c-ink);
+  }
+  .dial__ring :global(svg) { width: 2.2rem; height: 2.2rem; }
+  @media (prefers-reduced-motion: no-preference) { .dial:hover .dial__ring { animation: dial-ring 0.6s var(--ease-out) 2; } }
+  @keyframes dial-ring { 0%, 100% { rotate: 0deg; } 25% { rotate: -18deg; } 50% { rotate: 14deg; } 75% { rotate: -8deg; } }
+  .dial__label { font-family: var(--font-hand); font-size: var(--step-3); line-height: 1; }
+  /* Sized to the card so the number always fits on one line */
+  .dial__number { font-family: var(--font-display); font-size: min(5rem, 10.6cqi); line-height: 0.95; letter-spacing: -0.01em; white-space: nowrap; }
+  .dial :global(.dial__arrow) { position: absolute; right: 3rem; top: -3.5rem; }
+  @media (min-width: 960px) { .dial :global(.dial__arrow) { right: -0.5rem; } }
+
+  .contact__side { display: grid; gap: var(--space-xl); }
+  .index-card {
+    position: relative;
+    display: grid;
+    gap: var(--space-xs);
+    padding: var(--space-l) var(--space-l) var(--space-l) calc(var(--space-l) + 0.75rem);
+    background: var(--surface);
+    color: var(--text);
+    border: var(--border-thin) solid var(--c-ink);
+    border-left: 6px double var(--c-tangerine-ink);
+    border-radius: var(--radius-s);
+    box-shadow: 5px 5px 0 var(--c-ink);
+    rotate: 1.2deg;
+    text-decoration: none;
+  }
+  .index-card__title { font-family: var(--font-hand); font-size: var(--step-2); line-height: 1; }
+  .index-card__link { display: inline-flex; align-items: center; gap: 0.5em; min-height: var(--tap-min); font-weight: 800; color: var(--accent-text); overflow-wrap: anywhere; }
+  .index-card--dl { grid-template-columns: 1fr auto; align-items: center; font-weight: 800; }
+  .index-card--dl :global(svg) { grid-row: 1 / span 2; grid-column: 2; width: 2rem; height: 2rem; }
+
+  .timecard {
+    position: relative;
+    padding: var(--space-l);
+    background: var(--c-mustard);
+    color: var(--c-ink);
+    border: var(--border-thin) solid var(--c-ink);
+    border-radius: 6px 6px 20px 6px;
+    box-shadow: 5px 5px 0 var(--c-ink);
+    rotate: -1.4deg;
+  }
+  .timecard__title { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-hand); font-size: var(--step-2); line-height: 1; margin-bottom: var(--space-s); }
+  .timecard__rows > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 var(--space-m); padding: 0.55rem 0; border-bottom: 2px dashed var(--c-ink); }
+  .timecard__rows dt { font-weight: 800; }
+  .timecard__rows dd { margin: 0; }
+  .timecard__note { margin-top: var(--space-s); font-size: var(--step--1); font-weight: 600; }
+  .timecard :global(.timecard__sticker) { position: absolute; right: -1rem; bottom: -2rem; }
+</style>

@@ -1,27 +1,22 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/home/Hero.astro';
-import SectionHead from '../components/SectionHead.astro';
+import ServicesSection from '../components/home/ServicesSection.astro';
+import PricingSection from '../components/home/PricingSection.astro';
+import ContactSection from '../components/home/ContactSection.astro';
+import AboutSection from '../components/home/AboutSection.astro';
+import ReviewsSection from '../components/home/ReviewsSection.astro';
+import FaqSection from '../components/home/FaqSection.astro';
 import { getHome } from '../lib/content';
-
 const home = await getHome();
 // Section order is fixed by the brief: Hero, Services, Pricing, Contact, About, Reviews, FAQ.
-const blocks = [
-  { key: 'services', cls: 'block--services', copy: home.services },
-  { key: 'pricing', cls: 'block--pricing', copy: home.pricing },
-  { key: 'contact', cls: 'block--contact', copy: home.contact },
-  { key: 'about', cls: 'block--about', copy: home.about },
-  { key: 'reviews', cls: 'block--reviews', copy: home.reviews },
-  { key: 'faq', cls: 'block--faq', copy: home.faq },
-] as const;
 ---
 <BaseLayout title={home.seo.title} description={home.seo.description}>
   <Hero />
-  {blocks.map((b) => (
-    <section class:list={['block', 'block--overlap', b.cls]} id={b.key} aria-labelledby={`${b.key}-title`}>
-      <div class="wrap">
-        <SectionHead id={`${b.key}-title`} eyebrow={b.copy.eyebrow} heading={b.copy.heading} intro={b.copy.intro} />
-      </div>
-    </section>
-  ))}
+  <ServicesSection />
+  <PricingSection />
+  <ContactSection />
+  <AboutSection />
+  <ReviewsSection />
+  <FaqSection />
 </BaseLayout>

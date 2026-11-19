@@ -79,4 +79,19 @@ addons:
     note: Ninety minutes. You'll walk out ready.
     placeholder: true
 
+includesLabel: What's in the folder
+faqHeading: Money Questions, Answered
+faq:
+  - question: Is there a setup fee?
+    answer: No. Your first month includes the kickoff call, the plan and account setup. We'd rather earn the second month than charge for the first.
+  - question: Can I switch plans later?
+    answer: Anytime. Move up for a launch, move down for a quiet season. Just give us notice before the next month starts.
+  - question: What if I only need one thing?
+    answer: Grab an add-on on its own. A single press release or media training session is a great way to see how we work.
+  - question: Do you require a deposit?
+    answer: The first month is paid up front. After that we bill monthly, on the same day, with no surprises.
+cta:
+  heading: Not Sure Which Folder Is Yours?
+  body: Call us. Ten minutes and we'll point you to the right plan, or tell you honestly if you don't need one yet.
+  label: Help me pick
 footnote: Month-to-month after the first three months. Ad spend and printing are billed separately, at cost, with receipts.

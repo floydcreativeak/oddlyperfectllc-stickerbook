@@ -16,4 +16,12 @@ sections:
   - heading: Who We Work With
     body: Business owners, candidates, nonprofits and entrepreneurs who want to be seen and heard, without spending every evening on it. If you have something worth talking about, we'll help you say it well.
     sticker: megaphone
+teamHeading: The Clipboard Crew
+teamIntro: Small team, big planners. You'll know every person working on your account by name.
+galleryHeading: Behind The Scenes
+galleryIntro: Where the plans get made, the content gets shot and the coffee gets cold.
+cta:
+  heading: We'd Love To Meet You.
+  body: Bring your goals, your questions and your messiest content folder. We'll bring the plan.
+  label: Say hello
 ---

@@ -20,7 +20,8 @@ interface Props {
 }
 const { sticker: s, size = '5rem', class: cls, style = '', draggable = false, index } = Astro.props;
 const fill = 'color' in s && s.color ? PASTEL_VAR[s.color] : 'var(--c-paper)';
-const a11y = s.decorative && !draggable ? { 'aria-hidden': 'true' as const } : { role: 'img' as const, 'aria-label': s.label };
+// Draggable stickers are labelled by their focusable wrapper, so the sticker itself is hidden.
+const a11y = s.decorative || draggable ? { 'aria-hidden': 'true' as const } : { role: 'img' as const, 'aria-label': s.label };
 const vars = `--rot:${s.rotate}deg;--sf:${fill};--sticker-size:${size};${style}`;
 ---
 <span

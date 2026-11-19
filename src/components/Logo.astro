@@ -1,32 +1,47 @@
 ---
 /**
  * Placeholder wordmark until the client's SVG logo arrives (flagged in
- * content/site.yml -> logo.placeholder). Swap the <svg> mark for the real
- * inline SVG; the text comes from content.
+ * content/site.yml -> logo.placeholder): a die-cut sticker with the name.
+ * First word in the handwritten face, the rest in the slab. Everything sits
+ * inside its own padded box, so nothing can be clipped by the header.
+ * To use the real logo: replace the <span class="logo__badge"> with the SVG.
  */
 import { getSite } from '../lib/content';
 interface Props { size?: 'nav' | 'xl' }
 const { size = 'nav' } = Astro.props;
 const site = await getSite();
+const [first, ...rest] = site.logo.text.split(' ');
 ---
-<span class:list={['logo', `logo--${size}`]} data-placeholder={site.logo.placeholder ? '' : undefined}>
-  <svg class="logo__mark" viewBox="-6 -6 112 112" aria-hidden="true" focusable="false">
-    <path class="logo__cut" d="M50 6c26 0 44 17 44 42 0 27-19 46-46 46C22 94 6 76 6 50 6 24 24 6 50 6Z" />
-    <path class="logo__blob" d="M50 6c26 0 44 17 44 42 0 27-19 46-46 46C22 94 6 76 6 50 6 24 24 6 50 6Z" />
-    <path class="logo__o" d="M50 27c13 0 22 9 22 22 0 14-10 24-23 24-12 0-21-10-21-23 0-14 9-23 22-23Z" />
-    <path class="logo__spark" d="M80 4c1 6 3 8 9 9-6 1-8 3-9 9-1-6-3-8-9-9 6-1 8-3 9-9Z" />
-  </svg>
-  <span class="logo__text">{site.logo.text}</span>
+<span class:list={['logo', `logo--${size}`]}>
+  <span class="logo__badge">
+    <span class="logo__first">{first}</span>{rest.length > 0 && <>{' '}<span class="logo__rest">{rest.join(' ')}</span></>}
+  </span>
 </span>
 
 <style>
-  .logo { display: inline-flex; align-items: center; gap: 0.5em; color: var(--text); line-height: 1; }
-  .logo__mark { width: 2.3em; height: 2.3em; overflow: visible; rotate: -8deg; transition: rotate var(--dur-spring) var(--ease-spring); }
-  .logo__cut { fill: var(--sticker-outline); stroke: var(--sticker-outline); stroke-width: 12; stroke-linejoin: round; }
-  .logo__blob { fill: var(--accent); stroke: var(--c-ink); stroke-width: 5; }
-  .logo__o { fill: var(--c-cream); stroke: var(--c-ink); stroke-width: 5; }
-  .logo__spark { fill: var(--c-mustard); stroke: var(--c-ink); stroke-width: 3.5; stroke-linejoin: round; }
-  .logo__text { font-family: var(--font-display); font-size: 1.12em; letter-spacing: -0.01em; white-space: nowrap; }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 8px; /* room for the die-cut edge + tilt, so nothing clips */
+    line-height: 1;
+  }
+  .logo__badge {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.28em;
+    padding: 0.32em 0.62em 0.38em;
+    background: var(--accent);
+    color: var(--c-ink);
+    border: 2px solid var(--c-ink);
+    border-radius: 14px 9px 14px 9px;
+    outline: 3px solid var(--sticker-outline);
+    box-shadow: 0 3px 6px rgb(var(--shadow-color) / 0.25);
+    rotate: -3deg;
+    white-space: nowrap;
+    transition: rotate var(--dur-spring) var(--ease-spring), scale var(--dur-spring) var(--ease-spring);
+  }
+  .logo__first { font-family: var(--font-hand); font-size: 1.12em; }
+  .logo__rest { font-family: var(--font-display); font-size: 1em; letter-spacing: -0.01em; }
   .logo--xl { font-size: clamp(1.6rem, 1rem + 3vw, 3rem); }
-  @media (hover: hover) { a:hover > .logo .logo__mark { rotate: 8deg; } }
+  @media (hover: hover) { :global(a:hover) > .logo .logo__badge { rotate: 2deg; scale: 1.04; } }
 </style>

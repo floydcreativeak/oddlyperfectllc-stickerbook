@@ -1,0 +1,47 @@
+---
+import { getHome, getTeam, getStickers } from '../../lib/content';
+import Polaroid from '../Polaroid.astro';
+import Sticker from '../Sticker.astro';
+import CtaButton from '../CtaButton.astro';
+import ProcessStory from '../ProcessStory.astro';
+const { about, process } = await getHome();
+const team = (await getTeam()).slice(0, 2);
+const stickers = await getStickers(about.stickers);
+---
+<section class="block block--about edge edge--tilt about" id="about" aria-labelledby="about-title">
+  <div class="wrap">
+    <div class="about__grid">
+      <div class="about__photos">
+        {team.map((m, i) => (
+          <Polaroid photo={m.data.photo} caption={`${m.data.name}, ${m.data.title}`} rot={i ? 4 : -3} class={`about__pol about__pol--${i}`} />
+        ))}
+        {stickers[0] && <Sticker sticker={stickers[0]} size="6rem" class="about__st" />}
+      </div>
+      <div class="about__copy">
+        {about.eyebrow && <p class="eyebrow">{about.eyebrow}</p>}
+        <h2 id="about-title" class="about__title">{about.heading}</h2>
+        {about.intro && <p class="lede about__intro">{about.intro}</p>}
+        {about.body.map((p) => <p>{p}</p>)}
+        {about.cta && <div class="section-cta"><CtaButton href="/about/" label={about.cta.label} hoverLabel={about.cta.hoverLabel} variant="ink" /></div>}
+        {stickers[1] && <Sticker sticker={stickers[1]} size="4.5rem" class="about__st2" />}
+      </div>
+    </div>
+
+    <div class="about__story">
+      <ProcessStory id="process-title" eyebrow={process.eyebrow} heading={process.heading} intro={process.intro} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__grid { display: grid; gap: var(--space-2xl); align-items: center; }
+  @media (min-width: 900px) { .about__grid { grid-template-columns: 0.9fr 1.1fr; } }
+  .about__photos { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-s); padding: var(--space-l) 0; }
+  .about__photos :global(.about__pol--1) { margin-top: var(--space-2xl); }
+  .about__photos :global(.about__st) { position: absolute; left: 38%; bottom: -1rem; z-index: 3; }
+  .about__copy { position: relative; display: grid; gap: var(--space-s); }
+  .about__title { font-size: var(--step-4); max-width: 13ch; }
+  .about__intro { margin-bottom: var(--space-2xs); }
+  .about__copy :global(.about__st2) { position: absolute; right: 0; top: -1rem; }
+  .about__story { margin-top: var(--space-section); }
+</style>

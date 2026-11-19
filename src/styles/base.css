@@ -123,13 +123,16 @@ strong, b { font-weight: 800; }
   color: var(--on-block);
   padding-block: var(--space-section);
   isolation: isolate;
+  /* Stickers may overhang a section vertically, never sideways (no horizontal scroll on phones). */
+  overflow-x: clip;
 }
+html { overflow-x: clip; }
 .block--hero { --block-color: var(--block-hero); }
 .block--services { --block-color: var(--block-services); }
 .block--pricing { --block-color: var(--block-pricing); }
 .block--contact { --block-color: var(--block-contact); }
 .block--about { --block-color: var(--block-about); }
-.block--reviews { --block-color: var(--block-reviews); color: var(--text); }
+.block--reviews { --block-color: var(--block-reviews); color: var(--on-reviews); }
 .block--faq { --block-color: var(--block-faq); }
 .block--plain { --block-color: var(--bg); color: var(--text); }
 
@@ -244,7 +247,7 @@ strong, b { font-weight: 800; }
 .sticker--emoji {
   width: var(--sticker-size, 4.5rem);
   aspect-ratio: 1;
-  padding: 14%;
+  padding: calc(var(--sticker-size, 4.5rem) * 0.14); /* not %, which would follow the parent's width */
   background: var(--c-cream);
   border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
 }
@@ -303,4 +306,109 @@ strong, b { font-weight: 800; }
   }
   .btn:hover, .btn:active { transform: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
+}
+
+/* ---------- Draggable items (src/scripts/drag.ts) ---------- */
+[data-drag] {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  rotate: var(--drag-tilt, 0deg);
+  will-change: translate;
+}
+[data-drag-area][data-drag-touch="false"] [data-drag] { touch-action: auto; }
+[data-drag].is-dragging { cursor: grabbing; }
+/* "Peel": lifted, bigger shadow while held */
+[data-drag] > * { transition: transform var(--dur-base) var(--ease-spring), filter var(--dur-base) var(--ease-out); }
+[data-drag].is-dragging > * { transform: scale(1.08) translateY(-4px); filter: drop-shadow(0 18px 18px rgb(var(--shadow-color) / 0.35)); }
+[data-drag].is-nudged, [data-drag].is-returning { transition: translate var(--dur-spring) var(--ease-spring), rotate var(--dur-spring) var(--ease-spring); }
+[data-drag]:focus-visible { outline: 3px solid var(--focus); outline-offset: 6px; box-shadow: none; border-radius: var(--radius-m); }
+
+/* ---------- Tones: a pastel surface + the text colour that passes on it ----------
+   Light: pastel with ink text. Dark: deepened pastel with cream text.
+   Use .tone-mint etc. on cards, notes, folders. */
+.tone-mint { --tone: var(--c-mint); --on-tone: var(--c-ink); }
+.tone-blush { --tone: var(--c-blush); --on-tone: var(--c-ink); }
+.tone-mustard { --tone: var(--c-mustard); --on-tone: var(--c-ink); }
+.tone-peri { --tone: var(--c-peri); --on-tone: var(--c-ink); }
+.tone-tangerine { --tone: var(--c-tangerine); --on-tone: var(--c-ink); }
+.tone-cream { --tone: var(--c-paper); --on-tone: var(--c-ink); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tone-mint { --tone: var(--dark-mint); --on-tone: var(--dark-text); }
+  :root:not([data-theme="light"]) .tone-blush { --tone: var(--dark-blush); --on-tone: var(--dark-text); }
+  :root:not([data-theme="light"]) .tone-mustard { --tone: var(--dark-mustard); --on-tone: var(--dark-text); }
+  :root:not([data-theme="light"]) .tone-peri { --tone: var(--dark-peri); --on-tone: var(--dark-text); }
+  :root:not([data-theme="light"]) .tone-tangerine { --tone: var(--dark-tangerine); --on-tone: var(--dark-text); }
+  :root:not([data-theme="light"]) .tone-cream { --tone: var(--dark-surface); --on-tone: var(--dark-text); }
+}
+:root[data-theme="dark"] .tone-mint { --tone: var(--dark-mint); --on-tone: var(--dark-text); }
+:root[data-theme="dark"] .tone-blush { --tone: var(--dark-blush); --on-tone: var(--dark-text); }
+:root[data-theme="dark"] .tone-mustard { --tone: var(--dark-mustard); --on-tone: var(--dark-text); }
+:root[data-theme="dark"] .tone-peri { --tone: var(--dark-peri); --on-tone: var(--dark-text); }
+:root[data-theme="dark"] .tone-tangerine { --tone: var(--dark-tangerine); --on-tone: var(--dark-text); }
+:root[data-theme="dark"] .tone-cream { --tone: var(--dark-surface); --on-tone: var(--dark-text); }
+
+/* ---------- Section edges (each block picks one; solid shapes, never gradients) ---------- */
+.edge { --edge-h: 26px; }
+.edge::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(var(--edge-h) * -1 + 1px);
+  height: var(--edge-h);
+  background: var(--block-color);
+  pointer-events: none;
+  z-index: 1;
+}
+.edge--scallop::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='26'%3E%3Cpath d='M0 26A22 22 0 0 1 44 26Z'/%3E%3C/svg%3E") repeat-x left bottom / 44px 26px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='26'%3E%3Cpath d='M0 26A22 22 0 0 1 44 26Z'/%3E%3C/svg%3E") repeat-x left bottom / 44px 26px;
+}
+.edge--zigzag { --edge-h: 18px; }
+.edge--zigzag::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='18'%3E%3Cpath d='M0 18 12 0l12 18Z'/%3E%3C/svg%3E") repeat-x left bottom / 24px 18px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='18'%3E%3Cpath d='M0 18 12 0l12 18Z'/%3E%3C/svg%3E") repeat-x left bottom / 24px 18px;
+}
+.edge--wave { --edge-h: 40px; }
+.edge--wave::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='40' preserveAspectRatio='none'%3E%3Cpath d='M0 40V22C40 4 80 4 120 20s80 16 120-2v22Z'/%3E%3C/svg%3E") repeat-x left bottom / 240px 40px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='40' preserveAspectRatio='none'%3E%3Cpath d='M0 40V22C40 4 80 4 120 20s80 16 120-2v22Z'/%3E%3C/svg%3E") repeat-x left bottom / 240px 40px;
+}
+.edge--tilt { --edge-h: clamp(28px, 5vw, 72px); }
+.edge--tilt::before { clip-path: polygon(0 100%, 100% 0, 100% 100%); }
+
+/* ---------- Follow-the-cursor tilt (fine pointers; src/scripts/tilt.ts) ---------- */
+[data-tilt] {
+  transform: perspective(900px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg)) translateY(var(--ly, 0px));
+  transition: transform var(--dur-spring) var(--ease-spring), box-shadow var(--dur-base) var(--ease-out);
+  transform-style: preserve-3d;
+}
+[data-tilt].is-tilting { transition: transform 90ms linear, box-shadow var(--dur-base) var(--ease-out); --ly: var(--lift); }
+@media (hover: hover) {
+  [data-tilt]:hover { --ly: var(--lift); box-shadow: var(--shadow-lift); }
+}
+
+/* ---------- Scroll reveal (only when JS is running and motion is OK) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-rise] { opacity: 0; translate: 0 28px; transition: opacity var(--dur-slow) var(--ease-out), translate var(--dur-spring) var(--ease-spring); transition-delay: calc(var(--rise-i, 0) * 80ms); }
+  .js [data-rise].is-in { opacity: 1; translate: 0 0; }
+  .js .sticker[data-slap] { opacity: 0; scale: 1.6; }
+  .js .sticker[data-slap].is-in { opacity: 1; scale: 1; transition: opacity 120ms linear, scale var(--dur-spring) var(--ease-squish); transition-delay: calc(var(--rise-i, 0) * 90ms + 150ms); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js [data-rise] { transition: opacity var(--dur-base) linear; }
+}
+
+/* ---------- Shared bits ---------- */
+.checklist { list-style: none; padding: 0; display: grid; gap: 0.55rem; }
+.checklist li { display: grid; grid-template-columns: 1.4em 1fr; gap: 0.5rem; align-items: start; }
+.checklist svg { width: 1.3em; height: 1.3em; margin-top: 0.15em; }
+.section-cta { margin-top: var(--space-xl); display: flex; flex-wrap: wrap; gap: var(--space-m); align-items: center; }
+.btn[data-hover-label] .btn__swap { display: grid; }
+.btn[data-hover-label] .btn__swap > * { grid-area: 1 / 1; transition: opacity var(--dur-fast) var(--ease-out), translate var(--dur-base) var(--ease-spring); }
+.btn[data-hover-label] .btn__swap > :last-child { opacity: 0; translate: 0 60%; }
+@media (hover: hover) {
+  .btn[data-hover-label]:hover .btn__swap > :first-child { opacity: 0; translate: 0 -60%; }
+  .btn[data-hover-label]:hover .btn__swap > :last-child { opacity: 1; translate: 0 0; }
 }

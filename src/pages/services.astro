@@ -1,10 +1,114 @@
 ---
+import { render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
-import { getPage } from '../lib/content';
+import ProcessStory from '../components/ProcessStory.astro';
+import CallBand from '../components/CallBand.astro';
+import CheckIcon from '../components/CheckIcon.astro';
+import { getPage, getServices, getHome } from '../lib/content';
+import { ART } from '../lib/sticker-art';
 const page = await getPage('services');
 const d = page.data;
+const services = await getServices();
+const { process } = await getHome();
+const rendered = await Promise.all(services.map(async (s) => ({ s, Content: (await render(s)).Content })));
+const ICON_FILL: Record<string, string> = { mint: 'var(--c-peri)', blush: 'var(--c-mustard)', mustard: 'var(--c-blush)', peri: 'var(--c-mint)', tangerine: 'var(--c-mustard)', cream: 'var(--c-tangerine)' };
 ---
 <BaseLayout title={d.title} description={d.description}>
-  <PageHeader eyebrow={d.eyebrow} heading={d.heading} intro={d.intro} color={d.color} stickers={d.stickers} />
+  <PageHeader eyebrow={d.eyebrow} heading={d.heading} intro={d.intro} color={d.color} stickers={d.stickers}>
+    {d.jumpLabel && (
+      <nav class="jump" aria-label={d.jumpLabel}>
+        <p class="jump__label hand">{d.jumpLabel}</p>
+        <ul role="list">
+          {services.map((s) => <li><a href={`#${s.id}`} class={`tone-${s.data.color}`}>{s.data.title}</a></li>)}
+        </ul>
+      </nav>
+    )}
+  </PageHeader>
+
+  {rendered.map(({ s, Content }, i) => (
+    <section class:list={['block', 'edge', i % 2 ? 'edge--wave' : 'edge--scallop', 'spread', { 'spread--flip': i % 2 }]} id={s.id} style={`--block-color:${i % 2 ? 'var(--surface)' : 'var(--bg)'}`} aria-labelledby={`${s.id}-title`}>
+      <div class="wrap spread__grid">
+        <div class:list={['spread__badge', `tone-${s.data.color}`]} aria-hidden="true">
+          <span class="spread__num">{String(i + 1).padStart(2, '0')}</span>
+          <svg class="spread__icon" viewBox="0 0 100 100" style={`--sf:${ICON_FILL[s.data.color]}`}><use href={`#st-${ART[s.data.icon] ? s.data.icon : 'star'}`} /></svg>
+        </div>
+        <div class="spread__copy">
+          <h2 id={`${s.id}-title`} class="spread__title">{s.data.title}</h2>
+          <p class="lede">{s.data.summary}</p>
+          <div class="prose spread__body"><Content /></div>
+        </div>
+        <div class:list={['spread__card', `tone-${s.data.color}`]} data-rise>
+          <ul class="checklist" role="list">
+            {s.data.highlights.map((h) => <li><CheckIcon /><span>{h}</span></li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="block block--about edge edge--tilt" aria-labelledby="svc-process-title">
+    <div class="wrap"><ProcessStory id="svc-process-title" eyebrow={process.eyebrow} heading={process.heading} intro={process.intro} /></div>
+  </section>
+
+  {d.cta && <CallBand {...d.cta} color="tangerine" />}
 </BaseLayout>
+
+<style>
+  .jump { margin-top: var(--space-l); display: grid; gap: var(--space-xs); }
+  .jump__label { font-size: var(--step-1); }
+  .jump ul { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .jump a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    padding: 0 1rem;
+    background: var(--tone);
+    color: var(--on-tone);
+    font-weight: 800;
+    text-decoration: none;
+    border: 2px solid var(--c-ink);
+    border-radius: var(--radius-pill);
+    box-shadow: 3px 3px 0 var(--c-ink);
+    transition: transform var(--dur-spring) var(--ease-spring);
+  }
+  .jump a:hover { transform: translate(-1px, -2px) rotate(-2deg); }
+
+  .spread { color: var(--text); padding-block: calc(var(--space-section) * 0.8); }
+  .spread__grid { display: grid; gap: var(--space-xl); align-items: start; }
+  .spread__badge {
+    position: relative;
+    width: min(16rem, 70%);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    background: var(--tone);
+    color: var(--on-tone);
+    border: var(--border-chunky) solid var(--c-ink);
+    border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
+    box-shadow: var(--shadow-pop);
+    rotate: -4deg;
+  }
+  .spread__icon { width: 62%; height: 62%; overflow: visible; filter: drop-shadow(0 6px 6px rgb(var(--shadow-color) / 0.25)); }
+  .spread__num { position: absolute; top: -0.4rem; left: -0.4rem; font-family: var(--font-display); font-size: var(--step-4); line-height: 1; color: var(--text); }
+  .spread__title { font-size: var(--step-4); max-width: 14ch; margin-bottom: var(--space-s); }
+  .spread__body { margin-top: var(--space-m); }
+  .spread__card {
+    padding: var(--space-l);
+    background: var(--tone);
+    color: var(--on-tone);
+    border: var(--border-thin) solid var(--c-ink);
+    border-radius: 2px 2px 22px 2px;
+    box-shadow: 0 14px 20px -12px rgb(var(--shadow-color) / 0.45);
+    rotate: 1.5deg;
+  }
+  @media (min-width: 960px) {
+    .spread__grid { grid-template-columns: 15rem minmax(0, 1.35fr) minmax(16rem, 1fr); gap: var(--space-2xl); }
+    .spread__badge { width: 100%; }
+    .spread--flip .spread__badge { order: 3; rotate: 5deg; }
+    .spread--flip .spread__card { order: 2; rotate: -1.5deg; }
+    .spread--flip .spread__grid { grid-template-columns: minmax(16rem, 1fr) minmax(0, 1.35fr) 15rem; }
+    .spread--flip .spread__copy { order: 2; }
+    .spread--flip .spread__card { order: 1; }
+  }
+</style>

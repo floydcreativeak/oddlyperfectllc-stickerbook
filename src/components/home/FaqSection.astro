@@ -1,0 +1,37 @@
+---
+import { getHome, getFaq, getSite, getStickers } from '../../lib/content';
+import SectionHead from '../SectionHead.astro';
+import FaqList from '../FaqList.astro';
+import Sticker from '../Sticker.astro';
+const { faq: copy } = await getHome();
+const { items } = await getFaq();
+const site = await getSite();
+const stickers = await getStickers(copy.stickers);
+---
+<section class="block block--plain edge edge--wave faq-section" id="faq" aria-labelledby="faq-title">
+  <div class="wrap faq-section__grid">
+    <div class="faq-section__aside">
+      <div class="faq-section__sticky">
+        <SectionHead id="faq-title" eyebrow={copy.eyebrow} heading={copy.heading} intro={copy.intro} />
+        <a class="btn btn--accent faq-section__call" href={`tel:${site.phone.tel}`} data-track="call-faq">
+          {site.nav.callLabel} <span class="faq-section__num">{site.phone.display}</span>
+        </a>
+        {stickers[0] && <Sticker sticker={stickers[0]} size="6rem" class="faq-section__st" />}
+      </div>
+    </div>
+    <FaqList items={items.filter((i) => i.home)} name="home-faq" />
+  </div>
+</section>
+
+<style>
+  .faq-section__grid { display: grid; gap: var(--space-xl); align-items: start; }
+  .faq-section__sticky { position: relative; }
+  .faq-section__call { margin-top: var(--space-s); flex-wrap: wrap; }
+  .faq-section__num { font-family: var(--font-display); font-weight: 400; }
+  .faq-section__sticky :global(.faq-section__st) { position: absolute; right: 0; top: -3.5rem; --sticker-size: 4.5rem !important; }
+  @media (min-width: 960px) { .faq-section__sticky :global(.faq-section__st) { top: -1rem; --sticker-size: 6rem !important; } }
+  @media (min-width: 960px) {
+    .faq-section__grid { grid-template-columns: 0.85fr 1.15fr; gap: var(--space-2xl); }
+    .faq-section__sticky { position: sticky; top: calc(var(--nav-height) + 2rem); }
+  }
+</style>

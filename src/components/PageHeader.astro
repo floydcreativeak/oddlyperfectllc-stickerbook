@@ -26,11 +26,11 @@ const resolved = await getStickers(stickers);
   .page-header__title { max-width: 13ch; }
   .page-header__intro { max-width: 40ch; }
   .page-header__stickers :global(.ph-sticker) { position: absolute; }
-  .page-header__stickers :global(.ph-sticker--0) { right: 6%; bottom: 14%; }
-  .page-header__stickers :global(.ph-sticker--1) { right: 22%; top: 22%; }
-  .page-header__stickers :global(.ph-sticker--2) { right: 2%; top: 30%; }
+  .page-header__stickers :global(.ph-sticker--0) { right: 7%; top: 34%; }
+  .page-header__stickers :global(.ph-sticker--1) { right: 22%; top: 18%; }
+  .page-header__stickers :global(.ph-sticker--2) { right: 3%; top: 62%; }
   @media (max-width: 899.98px) {
     .page-header__stickers :global(.ph-sticker--1), .page-header__stickers :global(.ph-sticker--2) { display: none; }
-    .page-header__stickers :global(.ph-sticker--0) { right: 4%; bottom: 6%; --sticker-size: 4.5rem !important; }
+    .page-header__stickers :global(.ph-sticker--0) { right: 4%; top: calc(var(--nav-height-mobile) + 0.75rem); --sticker-size: 4rem !important; }
   }
 </style>

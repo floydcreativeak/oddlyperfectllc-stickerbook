@@ -1,10 +1,82 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
-import { getPage } from '../lib/content';
+import Sticker from '../components/Sticker.astro';
+import TeamCard from '../components/TeamCard.astro';
+import Gallery from '../components/Gallery.astro';
+import CallBand from '../components/CallBand.astro';
+import { getPage, getTeam, getStickers } from '../lib/content';
 const page = await getPage('about');
 const d = page.data;
+const team = await getTeam();
+const sectionStickers = await getStickers(d.sections.map((s) => s.sticker).filter(Boolean) as string[]);
+const stickerFor = (id?: string) => sectionStickers.find((s) => s.id === id);
+const tones = ['peri', 'mustard', 'mint', 'tangerine'];
 ---
 <BaseLayout title={d.title} description={d.description}>
   <PageHeader eyebrow={d.eyebrow} heading={d.heading} intro={d.intro} color={d.color} stickers={d.stickers} />
+
+  <section class="block block--plain edge edge--scallop" aria-label={d.heading}>
+    <div class="wrap pages">
+      {d.sections.map((s, i) => {
+        const st = stickerFor(s.sticker);
+        return (
+          <article class:list={['page-note', `tone-${tones[i % tones.length]}`]} style={`--n-rot:${[-1.5, 1.2, -0.8][i % 3]}deg;--rise-i:${i}`} data-rise>
+            <span class="page-note__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h2 class="page-note__title">{s.heading}</h2>
+            <p>{s.body}</p>
+            {st && <Sticker sticker={st} size="5.5rem" class="page-note__st" />}
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  {team.length > 0 && (
+    <section class="block block--about edge edge--tilt" aria-labelledby="team-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="team-title">{d.teamHeading}</h2>
+          {d.teamIntro && <p>{d.teamIntro}</p>}
+        </div>
+        <div class="team-grid">{team.map((m, i) => <TeamCard member={m} index={i} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="block block--plain edge edge--wave" aria-labelledby="gallery-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="gallery-title">{d.galleryHeading}</h2>
+        {d.galleryIntro && <p>{d.galleryIntro}</p>}
+      </div>
+      <Gallery />
+    </div>
+  </section>
+
+  {d.cta && <CallBand {...d.cta} color="peri" />}
 </BaseLayout>
+
+<style>
+  .pages { display: grid; gap: var(--space-2xl) var(--space-l); padding-top: var(--space-m); }
+  @media (min-width: 900px) { .pages { grid-template-columns: repeat(3, minmax(0, 1fr)); } .page-note:nth-child(2) { margin-top: var(--space-2xl); } }
+  .page-note {
+    position: relative;
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
+    padding: var(--space-xl) var(--space-l) var(--space-l);
+    background: var(--tone);
+    color: var(--on-tone);
+    border: var(--border-chunky) solid var(--c-ink);
+    border-radius: var(--radius-wonky);
+    box-shadow: var(--shadow-pop);
+    rotate: var(--n-rot);
+  }
+  .page-note__num { font-family: var(--font-display); font-size: var(--step-5); line-height: 0.8; }
+  .page-note__title { font-size: var(--step-3); }
+  .page-note :global(.page-note__st) { position: absolute; right: -0.6rem; top: -2rem; }
+  .team-grid { display: grid; gap: var(--space-2xl) var(--space-xl); }
+  @media (min-width: 760px) { .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .team-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>

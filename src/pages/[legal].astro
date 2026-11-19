@@ -1,0 +1,71 @@
+---
+/** Privacy, Terms and Accessibility: a paper sheet with a sticky "On this page" index. */
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { getPage, getSite } from '../lib/content';
+
+export function getStaticPaths() {
+  return ['privacy', 'terms', 'accessibility'].map((legal) => ({ params: { legal } }));
+}
+const { legal } = Astro.params;
+const page = await getPage(legal!);
+const d = page.data;
+const { Content, headings } = await render(page);
+const toc = headings.filter((h) => h.depth === 2);
+const { ui } = await getSite();
+const updated = d.updated?.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+<BaseLayout title={d.title} description={d.description}>
+  <PageHeader eyebrow={d.eyebrow} heading={d.heading} intro={d.intro} color={d.color} stickers={d.stickers} />
+  <section class="block block--plain edge edge--zigzag" aria-label={d.heading}>
+    <div class="wrap legal">
+      {toc.length > 2 && (
+        <nav class="legal__toc" aria-labelledby="toc-title">
+          <p id="toc-title" class="legal__toc-title hand">{ui.tocLabel}</p>
+          <ol role="list">
+            {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+          </ol>
+        </nav>
+      )}
+      <article class="legal__sheet prose">
+        {updated && <p class="legal__updated">{ui.updatedLabel}: <time datetime={d.updated!.toISOString().slice(0, 10)}>{updated}</time></p>}
+        <Content />
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal { display: grid; gap: var(--space-xl); align-items: start; }
+  @media (min-width: 960px) {
+    .legal { grid-template-columns: 15rem minmax(0, 1fr); gap: var(--space-2xl); }
+    .legal__toc { position: sticky; top: calc(var(--nav-height) + 2rem); }
+  }
+  .legal__toc {
+    padding: var(--space-m);
+    background: var(--c-mustard);
+    color: var(--c-ink);
+    border-radius: 2px 2px 18px 2px;
+    box-shadow: 0 12px 18px -12px rgb(var(--shadow-color) / 0.5);
+    rotate: -1.5deg;
+  }
+  .legal__toc-title { font-size: var(--step-2); margin-bottom: var(--space-xs); }
+  .legal__toc ol { display: grid; gap: 0.1rem; counter-reset: toc; }
+  .legal__toc li { counter-increment: toc; }
+  .legal__toc a { display: flex; gap: 0.5em; align-items: baseline; min-height: 2.75rem; padding-block: 0.4rem; font-weight: 700; color: var(--c-ink); }
+  .legal__toc a::before { content: counter(toc, decimal-leading-zero); font-family: var(--font-display); font-weight: 400; font-size: 0.85em; }
+  .legal__sheet {
+    padding: clamp(1.5rem, 1rem + 3vw, 3.5rem);
+    background: var(--surface);
+    color: var(--text);
+    border: var(--border-thin) solid var(--c-ink);
+    border-left: 8px double var(--accent-text);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow-pop);
+    max-width: 48rem;
+  }
+  .legal__updated { font-family: var(--font-hand); font-size: var(--step-1); }
+  .legal__sheet :global(h2) { scroll-margin-top: calc(var(--nav-height) + 1.5rem); }
+  .legal__sheet :global(h2:first-of-type) { margin-top: var(--space-m); }
+</style>

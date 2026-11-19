@@ -1,0 +1,123 @@
+---
+/** Pricing tiers as labelled folders; the featured tier peeks up with a sticker. Add-ons are price tags. */
+import { getPricing, getSite, getStickers } from '../lib/content';
+import Sticker from './Sticker.astro';
+import CheckIcon from './CheckIcon.astro';
+interface Props { showAddons?: boolean; headingLevel?: 'h2' | 'h3' }
+const { showAddons = true, headingLevel = 'h3' } = Astro.props;
+const H = headingLevel;
+const pricing = await getPricing();
+const site = await getSite();
+const stickerIds = pricing.tiers.map((t) => t.sticker).filter(Boolean) as string[];
+const stickerList = await getStickers(stickerIds);
+const stickerFor = (id?: string) => stickerList.find((s) => s.id === id);
+---
+<div class="folders">
+  {pricing.tiers.map((t, i) => {
+    const st = stickerFor(t.sticker);
+    return (
+      <article class:list={['folder', `tone-${t.color}`, { 'folder--featured': t.featured }]} style={`--rise-i:${i}`} data-rise>
+        <p class="folder__tab" aria-hidden="true">{t.tab}</p>
+        <div class="folder__body">
+          {st && <Sticker sticker={st} size="6rem" class="folder__sticker" />}
+          <H class="folder__name">{t.name}</H>
+          <p class="folder__price"><span class="folder__amount">{t.price}</span> <span class="folder__cadence">{t.cadence}</span></p>
+          <p class="folder__pitch">{t.pitch}</p>
+          <p class="folder__inc">{pricing.includesLabel}</p>
+          <ul class="checklist" role="list">
+            {t.features.map((f) => <li><CheckIcon /><span>{f}</span></li>)}
+          </ul>
+          <a class:list={['btn', t.featured ? 'btn--accent' : 'btn--ink', 'folder__cta']} href={`tel:${site.phone.tel}`} data-track="call-pricing">{t.cta}</a>
+        </div>
+      </article>
+    );
+  })}
+</div>
+
+{showAddons && pricing.addons.length > 0 && (
+  <div class="addons">
+    <H class="addons__title">{pricing.addonsHeading}</H>
+    <ul class="addons__list" role="list">
+      {pricing.addons.map((a, i) => (
+        <li class="tag" style={`--tag-rot:${[-3, 2, -1.5, 3][i % 4]}deg;--rise-i:${i}`} data-rise>
+          <span class="tag__shape">
+            <span class="tag__face">
+              <span class="tag__hole" aria-hidden="true"></span>
+              <span class="tag__name">{a.name}</span>
+              <span class="tag__price">{a.price}</span>
+              {a.note && <span class="tag__note">{a.note}</span>}
+            </span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+{pricing.footnote && <p class="pricing-footnote">{pricing.footnote}</p>}
+
+<style>
+  .folders { display: grid; gap: var(--space-2xl) var(--space-l); padding-top: var(--space-l); align-items: start; }
+  @media (min-width: 960px) { .folders { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .folder { position: relative; }
+  .folder__tab {
+    position: absolute;
+    top: -2.1rem;
+    left: 0;
+    max-width: none;
+    padding: 0.4rem 1.2rem 0.6rem;
+    background: var(--tone);
+    color: var(--on-tone);
+    font-family: var(--font-hand);
+    font-size: var(--step-1);
+    line-height: 1;
+    border: var(--border-chunky) solid var(--c-ink);
+    border-bottom: 0;
+    border-radius: 16px 22px 0 0;
+  }
+  .folder__body {
+    position: relative;
+    display: grid;
+    gap: var(--space-s);
+    padding: var(--space-l);
+    background: var(--tone);
+    color: var(--on-tone);
+    border: var(--border-chunky) solid var(--c-ink);
+    border-radius: var(--radius-folder);
+    box-shadow: var(--shadow-pop);
+  }
+  .folder__name { font-size: var(--step-2); }
+  .folder__price { display: flex; align-items: baseline; gap: 0.4rem; flex-wrap: wrap; }
+  .folder__amount { font-family: var(--font-display); font-size: var(--step-4); line-height: 1; }
+  .folder__cadence { font-weight: 700; }
+  .folder__pitch { font-weight: 500; }
+  .folder__inc { font-family: var(--font-hand); font-size: var(--step-1); line-height: 1; padding-top: var(--space-2xs); border-top: 2px dashed currentColor; }
+  .folder__cta { justify-self: start; margin-top: var(--space-xs); }
+  .folder :global(.folder__sticker) { position: absolute; top: -3rem; right: -0.8rem; z-index: 3; }
+  .folder--featured { z-index: 2; }
+  @media (min-width: 960px) {
+    .folder--featured { translate: 0 -1.6rem; }
+    .folder--featured .folder__body { box-shadow: 9px 9px 0 var(--c-ink); }
+  }
+
+  .addons { margin-top: var(--space-2xl); }
+  .addons__title { font-size: var(--step-3); margin-bottom: var(--space-l); }
+  .addons__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-l); }
+  .tag { rotate: var(--tag-rot); filter: drop-shadow(3px 4px 0 var(--c-ink)); max-width: none; }
+  .tag__shape { display: block; height: 100%; padding: 2.5px; background: var(--c-ink); clip-path: polygon(1.6rem 0, 100% 0, 100% 100%, 1.6rem 100%, 0 50%); border-radius: 0 14px 14px 0; }
+  .tag__face {
+    position: relative;
+    display: grid;
+    gap: 0.2rem;
+    height: 100%;
+    padding: var(--space-m) var(--space-m) var(--space-m) 3.2rem;
+    background: var(--surface);
+    color: var(--text);
+    clip-path: polygon(calc(1.6rem - 1px) 0, 100% 0, 100% 100%, calc(1.6rem - 1px) 100%, 1px 50%);
+    border-radius: 0 12px 12px 0;
+  }
+  .tag__hole { position: absolute; left: 1.3rem; top: 50%; width: 0.8rem; height: 0.8rem; margin-top: -0.4rem; border-radius: 50%; border: 2px solid var(--c-ink); background: var(--block-color, var(--bg)); }
+  .tag__name { font-weight: 800; }
+  .tag__price { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.05; }
+  .tag__note { font-size: var(--step--1); }
+  .pricing-footnote { margin-top: var(--space-xl); font-weight: 600; max-width: 60ch; }
+</style>

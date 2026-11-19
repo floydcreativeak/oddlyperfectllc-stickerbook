@@ -1,0 +1,13 @@
+---
+/** Button-styled link. If hoverLabel is given, the label flips to it on hover. */
+import { withBase } from '../lib/url';
+import Icon, { type IconName } from './Icon.astro';
+interface Props { href: string; label: string; hoverLabel?: string; variant?: 'accent' | 'ink' | 'plain'; icon?: IconName; class?: string; track?: string }
+const { href, label, hoverLabel, variant = 'plain', icon = 'arrow-right', class: cls, track } = Astro.props;
+---
+<a class:list={['btn', variant !== 'plain' && `btn--${variant}`, cls]} href={withBase(href)} data-hover-label={hoverLabel ? '' : undefined} data-track={track}>
+  {hoverLabel ? (
+    <span class="btn__swap"><span>{label}</span><span aria-hidden="true">{hoverLabel}</span></span>
+  ) : <span>{label}</span>}
+  <Icon name={icon} />
+</a>

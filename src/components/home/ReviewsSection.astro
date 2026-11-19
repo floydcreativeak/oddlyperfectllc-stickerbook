@@ -1,0 +1,26 @@
+---
+import { getHome, getReviews, getStickers } from '../../lib/content';
+import SectionHead from '../SectionHead.astro';
+import ReviewWall from '../ReviewWall.astro';
+import Sticker from '../Sticker.astro';
+import CtaButton from '../CtaButton.astro';
+const { reviews: copy } = await getHome();
+const reviews = (await getReviews()).filter((r) => r.data.featured).slice(0, 6);
+const stickers = await getStickers(copy.stickers);
+---
+<section class="block block--reviews edge edge--scallop reviews" id="reviews" aria-labelledby="reviews-title">
+  <div class="wrap">
+    <div class="reviews__head">
+      <SectionHead id="reviews-title" eyebrow={copy.eyebrow} heading={copy.heading} intro={copy.intro} />
+      {stickers[0] && <Sticker sticker={stickers[0]} size="7rem" class="reviews__st" />}
+    </div>
+    <ReviewWall reviews={reviews} dragHint={copy.dragHint} listToggle={copy.listToggle} wallToggle={copy.wallToggle} id="home-wall" />
+    {copy.cta && <div class="section-cta"><CtaButton href="/reviews/" label={copy.cta.label} hoverLabel={copy.cta.hoverLabel} variant="accent" /></div>}
+  </div>
+</section>
+
+<style>
+  .reviews__head { position: relative; }
+  .reviews__head :global(.reviews__st) { position: absolute; right: 2%; top: 0; }
+  @media (max-width: 699.98px) { .reviews__head :global(.reviews__st) { --sticker-size: 4.5rem !important; top: -1rem; } }
+</style>

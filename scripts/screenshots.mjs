@@ -35,6 +35,12 @@ try {
         await page.waitForTimeout(300);
         const slug = p === '/' ? 'home' : p.replace(/\//g, '');
         await page.screenshot({ path: `${out}/${slug}-${s.name}-${scheme}-fold.png` });
+        // Scroll through once so lazy images load and scroll-reveals fire.
+        await page.evaluate(async () => {
+          for (let y = 0; y < document.body.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); }
+          window.scrollTo(0, 0);
+        });
+        await page.waitForTimeout(500);
         // Fixed chrome would paint mid-page in a stitched full-page shot; pin it to the ends instead.
         await page.addStyleTag({ content: 'body{position:relative}.site-header{position:absolute!important}.tabbar-wrap{position:absolute!important}' });
         await page.screenshot({ path: `${out}/${slug}-${s.name}-${scheme}-full.png`, fullPage: true });

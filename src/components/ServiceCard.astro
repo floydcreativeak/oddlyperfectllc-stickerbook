@@ -1,0 +1,72 @@
+---
+/** A big rounded service card: pastel tone, hand-drawn icon sticker on the corner. */
+import type { CollectionEntry } from 'astro:content';
+import { ART } from '../lib/sticker-art';
+import CheckIcon from './CheckIcon.astro';
+interface Props { service: CollectionEntry<'services'>; detailsLabel: string; index: number; headingLevel?: 'h2' | 'h3' }
+const { service, detailsLabel, index, headingLevel = 'h3' } = Astro.props;
+const d = service.data;
+const H = headingLevel;
+const iconColor = { mint: 'var(--c-peri)', blush: 'var(--c-mustard)', mustard: 'var(--c-blush)', peri: 'var(--c-mint)', tangerine: 'var(--c-mustard)', cream: 'var(--c-tangerine)' }[d.color];
+const art = ART[d.icon] ? d.icon : 'star';
+const tilt = [-1.5, 1.2, -0.8, 1.6, -1.2, 0.9][index % 6];
+---
+<article class:list={['svc', `tone-${d.color}`]} style={`--card-rot:${tilt}deg;--rise-i:${index % 3}`} data-rise>
+  <div class="svc__inner" data-tilt>
+    <span class="svc__icon sticker" aria-hidden="true" style={`--sf:${iconColor};--rot:${index % 2 ? 8 : -10}deg`}>
+      <svg viewBox="0 0 100 100" focusable="false"><use href={`#st-${art}`} /></svg>
+    </span>
+    <H class="svc__title">{d.title}</H>
+    <p class="svc__summary">{d.summary}</p>
+    <details class="svc__more">
+      <summary><span>{detailsLabel}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14" /></svg></summary>
+      <ul class="checklist" role="list">
+        {d.highlights.map((h) => <li><CheckIcon /><span>{h}</span></li>)}
+      </ul>
+    </details>
+  </div>
+</article>
+
+<style>
+  .svc { rotate: var(--card-rot); }
+  .svc__inner {
+    position: relative;
+    height: 100%;
+    display: grid;
+    align-content: start;
+    gap: var(--space-s);
+    padding: calc(var(--space-xl) + 0.5rem) var(--space-l) var(--space-l);
+    background: var(--tone);
+    color: var(--on-tone);
+    border: var(--border-chunky) solid var(--c-ink);
+    border-radius: var(--radius-wonky);
+    box-shadow: var(--shadow-pop);
+  }
+  .svc__icon {
+    position: absolute;
+    top: -2.2rem;
+    left: 1.2rem;
+    width: 5.2rem;
+    height: 5.2rem;
+    rotate: var(--rot);
+    filter: drop-shadow(0 5px 6px rgb(var(--shadow-color) / 0.25));
+  }
+  .svc__icon svg { width: 100%; height: 100%; overflow: visible; }
+  .svc__title { font-size: var(--step-2); }
+  .svc__summary { font-weight: 500; }
+  .svc__more { border-top: 2px dashed currentColor; padding-top: var(--space-xs); margin-top: auto; }
+  .svc__more summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    min-height: var(--tap-min);
+    font-weight: 800;
+    cursor: pointer;
+    list-style: none;
+  }
+  .svc__more summary::-webkit-details-marker { display: none; }
+  .svc__more summary svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; transition: rotate var(--dur-spring) var(--ease-spring); }
+  .svc__more[open] summary svg { rotate: 135deg; }
+  .svc__more ul { padding: var(--space-2xs) 0 var(--space-2xs); }
+</style>

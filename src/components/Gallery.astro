@@ -1,0 +1,120 @@
+---
+/**
+ * Masonry gallery + accessible lightbox (native <dialog>: focus is contained,
+ * Esc closes). Arrow keys move between photos, focus returns to the photo you
+ * opened. Thumbnails are AVIF/WebP at several widths; the lightbox uses a
+ * larger WebP generated at build time.
+ */
+import { Picture, getImage } from 'astro:assets';
+import { getGallery, getSite } from '../lib/content';
+import Icon from './Icon.astro';
+const items = await getGallery();
+const { ui } = await getSite();
+const big = await Promise.all(items.map((g) => getImage({ src: g.data.photo.src, width: 1600, format: 'webp' })));
+---
+<div class="gallery" data-gallery>
+  <ul class="gallery__grid" role="list">
+    {items.map((g, i) => (
+      <li class="gallery__item" style={`--g-rot:${[-1.5, 1, -0.5, 1.5, -1, 0.5][i % 6]}deg;--rise-i:${i % 3}`} data-rise>
+        <button type="button" class="gallery__btn" data-index={i} data-full={big[i].src} data-alt={g.data.photo.alt} data-caption={g.data.caption}>
+          <Picture src={g.data.photo.src} alt={g.data.photo.alt} formats={['avif', 'webp']} widths={[320, 480, 720]} sizes="(min-width: 960px) 22rem, (min-width: 600px) 45vw, 90vw" loading="lazy" decoding="async" />
+          <span class="gallery__zoom" aria-hidden="true"><Icon name="expand" /></span>
+          <span class="visually-hidden">{ui.lightboxOpen}</span>
+        </button>
+        <p class="gallery__cap">{g.data.caption}</p>
+      </li>
+    ))}
+  </ul>
+
+  <dialog class="lightbox" aria-labelledby="lightbox-cap">
+    <figure class="lightbox__fig">
+      <img class="lightbox__img" alt="" />
+      <figcaption id="lightbox-cap" class="lightbox__cap hand"></figcaption>
+    </figure>
+    <div class="lightbox__controls">
+      <button type="button" class="lightbox__btn" data-prev><Icon name="arrow-left" /><span class="visually-hidden">{ui.lightboxPrev}</span></button>
+      <span class="lightbox__count" aria-hidden="true"></span>
+      <button type="button" class="lightbox__btn" data-next><Icon name="arrow-right" /><span class="visually-hidden">{ui.lightboxNext}</span></button>
+      <button type="button" class="lightbox__btn lightbox__close" data-close><Icon name="close" /><span class="visually-hidden">{ui.lightboxClose}</span></button>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  function bindGallery() {
+    document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+      const dlg = root.querySelector('dialog')!;
+      const img = dlg.querySelector<HTMLImageElement>('.lightbox__img')!;
+      const cap = dlg.querySelector<HTMLElement>('.lightbox__cap')!;
+      const count = dlg.querySelector<HTMLElement>('.lightbox__count')!;
+      const btns = [...root.querySelectorAll<HTMLButtonElement>('.gallery__btn')];
+      let i = 0;
+      let opener: HTMLButtonElement | null = null;
+      const show = (n: number) => {
+        i = (n + btns.length) % btns.length;
+        const b = btns[i];
+        img.src = b.dataset.full!;
+        img.alt = b.dataset.alt!;
+        cap.textContent = b.dataset.caption!;
+        count.textContent = `${i + 1} / ${btns.length}`;
+      };
+      btns.forEach((b, n) => b.addEventListener('click', () => { opener = b; show(n); dlg.showModal(); }));
+      dlg.querySelector('[data-prev]')!.addEventListener('click', () => show(i - 1));
+      dlg.querySelector('[data-next]')!.addEventListener('click', () => show(i + 1));
+      dlg.querySelector('[data-close]')!.addEventListener('click', () => dlg.close());
+      dlg.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); show(i + 1); }
+      });
+      dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+      dlg.addEventListener('close', () => opener?.focus());
+    });
+  }
+  document.addEventListener('astro:page-load', bindGallery);
+</script>
+
+<style>
+  .gallery__grid { columns: 1; column-gap: var(--space-l); }
+  @media (min-width: 600px) { .gallery__grid { columns: 2; } }
+  @media (min-width: 960px) { .gallery__grid { columns: 3; } }
+  .gallery__item { break-inside: avoid; margin-bottom: var(--space-xl); rotate: var(--g-rot); max-width: none; }
+  .gallery__btn {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: var(--c-paper);
+    border: var(--border-thin) solid var(--c-ink);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow-card);
+    cursor: zoom-in;
+    transition: transform var(--dur-spring) var(--ease-spring), box-shadow var(--dur-base) var(--ease-out);
+  }
+  .gallery__btn:hover { transform: translateY(-5px) rotate(calc(var(--g-rot) * -1)); box-shadow: var(--shadow-lift); }
+  .gallery__btn :global(img) { width: 100%; height: auto; border-radius: calc(var(--radius-m) - 6px); }
+  .gallery__zoom { position: absolute; right: 18px; bottom: 18px; display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--c-paper); color: var(--c-ink); border: 2px solid var(--c-ink); }
+  .gallery__cap { font-family: var(--font-hand); font-size: var(--step-1); line-height: 1.15; padding: 0.6rem 0.4rem 0; }
+
+  .lightbox {
+    width: min(64rem, 94vw);
+    max-height: 92vh;
+    padding: var(--space-m);
+    background: var(--c-paper);
+    color: var(--c-ink);
+    border: var(--border-chunky) solid var(--c-ink);
+    border-radius: var(--radius-l);
+    box-shadow: 10px 10px 0 var(--c-ink);
+  }
+  .lightbox::backdrop { background: rgb(31 23 38 / 0.82); }
+  .lightbox[open] { animation: lb-in var(--dur-spring) var(--ease-spring); }
+  @keyframes lb-in { from { opacity: 0; scale: 0.9; rotate: -2deg; } }
+  .lightbox__fig { margin: 0; display: grid; gap: var(--space-s); }
+  .lightbox__img { width: 100%; max-height: 72vh; object-fit: contain; border-radius: var(--radius-s); background: var(--c-cream); }
+  .lightbox__cap { font-size: var(--step-2); line-height: 1.1; }
+  .lightbox__controls { display: flex; align-items: center; gap: var(--space-xs); margin-top: var(--space-s); }
+  .lightbox__count { font-weight: 800; margin-inline: var(--space-xs); }
+  .lightbox__btn { display: grid; place-items: center; width: var(--tap-min); height: var(--tap-min); border-radius: 50%; border: 2px solid var(--c-ink); background: var(--c-mustard); color: var(--c-ink); }
+  .lightbox__close { margin-left: auto; background: var(--c-blush); }
+</style>

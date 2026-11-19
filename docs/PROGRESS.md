@@ -11,10 +11,10 @@ what's left. The editor-facing guide is `README.md`; open client asks are in
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 1 | Scaffold: Astro + React, content schemas, tokens, fonts, CI, Pages CMS | Done |
-| 2 | Shell: layout, glass nav, tab bar + Call FAB, theme toggle, footer, transitions | Done, awaiting look approval |
-| 3 | Home page, 7 sections | Not started |
-| 4 | Inner pages | Not started |
-| 5 | Motion and delight | Not started |
+| 2 | Shell: layout, glass nav, tab bar + Call FAB, theme toggle, footer, transitions | Done |
+| 3 | Home page, 7 sections | Done (revised after client feedback) |
+| 4 | Inner pages | Done |
+| 5 | Motion and delight | Partly: drag/fling physics, tilt, scroll reveal, sticky story done; GSAP text-on-path, word reveals, cursor, intro, Three.js still to do |
 | 6 | Hardening: axe, Lighthouse, keyboard, reduced motion, perf, README | Not started |
 
 ## Stack
@@ -96,13 +96,44 @@ what's left. The editor-facing guide is `README.md`; open client asks are in
 - Local subfolder test: `BASE_PATH=/oddlyperfectllc-stickerbook PUBLIC_PREVIEW=true npm run build`,
   then serve with `scripts/serve-dist.mjs` (honours `BASE_PATH`).
 
+## Client feedback round 1 (after first preview deploy)
+
+Feedback: lacking content, repetitive, overlapping sections not landing, inner
+pages identical, stickers don't move, logo looks cut off.
+
+Response:
+- Every home section now has its own layout **and** its own edge (scallop,
+  ticket zig-zag, wave, diagonal). The uniform rounded overlap is gone.
+- Reviews sit on a dark ink "cork board" so the notes pop (token `--block-reviews`).
+- Inner pages each have a distinct structure (see Phase 4 list in README later).
+- `src/scripts/drag.ts`: grab, drag, fling with momentum, wall bounce, tilt with
+  speed, arrow-key alternative, "Tidy up" reset. Review notes nudge with mouse/pen
+  only so touch still scrolls. Reduced motion keeps drag, drops momentum.
+- Placeholder logo is now a die-cut sticker wordmark sized inside its own box.
+  The old mark's spark clipped at small sizes; the toggle overflowed at 320px.
+- Bug found on the way: `.sticker--emoji` used `padding: 14%`, which resolves
+  against the **parent** width, so big containers produced a huge blank disc.
+  Now `calc(var(--sticker-size) * 0.14)`.
+- Sections clip horizontal overhang (`overflow-x: clip`) so stickers can't
+  create sideways scroll on phones.
+
+## Checks
+
+- `npm run test:a11y` (axe, 9 pages x light/dark x 375/1280): 0 serious/critical.
+- JS shipped per page: ~7.6 KB gzip (shell + router). React runtime is not
+  loaded anywhere yet.
+
 ## To do / open threads
 
 - [x] Phase 2 screenshots for approval (375 and 1440, light and dark).
 - [x] Noto Emoji SVGs into `public/stickers/emoji`, Apache-2.0 notice.
 - [x] Hand-drawn sticker sprite (26 drawings, `src/lib/sticker-art.ts`).
 - [ ] OG share image (`/og.png`) referenced in head; generate in Phase 4.
-- [ ] 404 page (copy already in `site.yml`).
+- [x] 404 page.
+- [ ] Phase 5 remainder: GSAP text-on-path + word reveals, custom cursor, intro, Three.js hero pile (lazy, capable devices).
+- [ ] GA4 consent banner (Privacy page already describes it).
+- [ ] Brochure PDF (contact card appears automatically once the file exists).
+- [ ] Bump GitHub Actions to Node 24 versions.
 - [ ] Legal page copy (privacy covers GA4 + consent).
 - [ ] Brochure PDF: generate a branded one-pager if the client has none.
 - [ ] Confirm the private-repo Pages plan before first deploy.

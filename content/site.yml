@@ -132,6 +132,24 @@ a11y:
   newTab: (opens in a new tab)
   stickerPile: A pile of stickers you can move around
 
+ui:
+  ratingLabel: "{rating} out of 5 stars"
+  reviewSources:
+    email: Sent by email
+    message: Sent as a message
+    yelp: Posted on Yelp
+    facebook: Posted on Facebook
+    google: Posted on Google
+  lightboxClose: Close
+  lightboxNext: Next photo
+  lightboxPrev: Previous photo
+  lightboxOpen: Enlarge photo
+  tocLabel: On this page
+  updatedLabel: Last updated
+  callBandLabel: Call us
+  moveHelp: Drag to move. With a keyboard, focus a sticker and use the arrow keys. Hold Shift to move further.
+  reset: Tidy up
+
 loadingText: Sharpening pencils...
 
 intro:

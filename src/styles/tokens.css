@@ -51,7 +51,8 @@
   --block-pricing: var(--c-mustard);
   --block-contact: var(--c-peri);
   --block-about: var(--c-blush);
-  --block-reviews: var(--c-cream);
+  --block-reviews: var(--c-ink);         /* the dark "cork board" behind the notes */
+  --on-reviews: var(--c-cream);          /* cream on ink: 12.97:1 */
   --block-faq: var(--c-mint);
   --block-footer: var(--c-ink);
   --on-block: var(--c-ink);
@@ -213,7 +214,8 @@
     --block-pricing: var(--dark-mustard);
     --block-contact: var(--dark-peri);
     --block-about: var(--dark-blush);
-    --block-reviews: var(--dark-bg);
+    --block-reviews: var(--dark-surface);
+    --on-reviews: var(--dark-text);
     --block-faq: var(--dark-mint);
     --block-footer: #1f1726;             /* deeper plum, never #000 */
     --on-block: var(--dark-text);
@@ -248,7 +250,8 @@
   --block-pricing: var(--dark-mustard);
   --block-contact: var(--dark-peri);
   --block-about: var(--dark-blush);
-  --block-reviews: var(--dark-bg);
+  --block-reviews: var(--dark-surface);
+  --on-reviews: var(--dark-text);
   --block-faq: var(--dark-mint);
   --block-footer: #1f1726;
   --on-block: var(--dark-text);

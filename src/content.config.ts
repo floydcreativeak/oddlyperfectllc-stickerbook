@@ -167,6 +167,19 @@ const site = defineCollection({
       newTab: text(),
       stickerPile: text(),
     }),
+    ui: z.object({
+      ratingLabel: text().refine((s) => s.includes('{rating}'), 'Must contain {rating}'),
+      reviewSources: z.object({ email: text(), message: text(), yelp: text(), facebook: text(), google: text() }),
+      lightboxClose: text(),
+      lightboxNext: text(),
+      lightboxPrev: text(),
+      lightboxOpen: text(),
+      tocLabel: text(),
+      updatedLabel: text(),
+      callBandLabel: text(),
+      moveHelp: text(),
+      reset: text(),
+    }),
     loadingText: text(),
     intro: z.object({ enabled: z.boolean().default(true), skipLabel: text(), caption: text() }),
     brochure: z
@@ -251,16 +264,17 @@ const home = defineCollection({
       callLabel: text(),
       emailLabel: text(),
       dragHint: text(),
-      keyboardHint: text(),
       stickers: z.array(stickerRef).min(3).max(9),
     }),
-    services: sectionCopy,
+    services: sectionCopy.extend({ detailsLabel: text() }),
     pricing: sectionCopy,
     contact: sectionCopy.extend({
       callHeading: text(),
       emailHeading: text(),
       hoursHeading: text(),
       afterHours: text(),
+      emailBody: text(),
+      brochureHeading: text(),
     }),
     about: sectionCopy.extend({ body: z.array(text()).min(1).max(4) }),
     process: sectionCopy,
@@ -323,6 +337,10 @@ const pricing = defineCollection({
         .array(z.object({ name: text(), price: text(), note: optText(), placeholder: z.boolean().default(false) }))
         .default([]),
       footnote: optText(),
+      includesLabel: text(),
+      faqHeading: text(),
+      faq: z.array(z.object({ question: text(), answer: text() })).default([]),
+      cta: z.object({ heading: text(), body: text(), label: text() }),
     })
     .refine((p) => p.tiers.filter((t) => t.featured).length <= 1, {
       message: 'Only one pricing tier can be featured.',
@@ -413,6 +431,15 @@ const pages = defineCollection({
     sections: z
       .array(z.object({ heading: text(), body: text(), sticker: stickerRef.optional() }))
       .default([]),
+    // Optional labels used by specific page layouts
+    jumpLabel: optText(),
+    teamHeading: optText(),
+    teamIntro: optText(),
+    galleryHeading: optText(),
+    galleryIntro: optText(),
+    filterLabel: optText(),
+    allLabel: optText(),
+    cta: z.object({ heading: text(), body: text(), label: text() }).optional(),
   }),
 });
 

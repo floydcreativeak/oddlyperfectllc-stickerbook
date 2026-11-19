@@ -7,6 +7,9 @@
  * Everything re-binds on `astro:page-load` because the ClientRouter swaps pages.
  */
 
+import { initDrag } from './drag';
+import { initTilt, initReveal } from './tilt';
+
 const STORAGE_KEY = 'op-theme';
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -112,4 +115,7 @@ document.addEventListener('astro:page-load', () => {
   document.querySelector('[data-site-header]')?.removeAttribute('data-hidden');
   bindTheme();
   bindEgg();
+  initDrag();
+  initTilt();
+  initReveal();
 });

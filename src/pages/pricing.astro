@@ -1,9 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import PricingFolders from '../components/PricingFolders.astro';
+import FaqList from '../components/FaqList.astro';
+import CallBand from '../components/CallBand.astro';
 import { getPricing } from '../lib/content';
 const p = await getPricing();
 ---
 <BaseLayout title={p.seo.title} description={p.seo.description}>
   <PageHeader eyebrow={p.eyebrow} heading={p.heading} intro={p.intro} color="mustard" stickers={p.stickers} />
+  <section class="block block--plain edge edge--zigzag" aria-label={p.heading}>
+    <div class="wrap pricing-page"><PricingFolders headingLevel="h2" /></div>
+  </section>
+  {p.faq.length > 0 && (
+    <section class="block block--contact edge edge--wave" aria-labelledby="money-faq">
+      <div class="wrap money">
+        <h2 id="money-faq" class="money__title">{p.faqHeading}</h2>
+        <FaqList items={p.faq} name="pricing-faq" />
+      </div>
+    </section>
+  )}
+  <CallBand {...p.cta} color="blush" />
 </BaseLayout>
+
+<style>
+  .pricing-page { padding-top: var(--space-l); }
+  .money { display: grid; gap: var(--space-xl); }
+  .money__title { font-size: var(--step-4); max-width: 12ch; }
+  @media (min-width: 960px) { .money { grid-template-columns: 0.8fr 1.2fr; align-items: start; } }
+</style>

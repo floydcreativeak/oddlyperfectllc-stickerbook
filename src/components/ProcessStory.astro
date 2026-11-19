@@ -1,0 +1,77 @@
+---
+/**
+ * Sticky storytelling: the heading stays put while step cards stack on top of
+ * each other like pages as you scroll. Pure CSS (position: sticky), so it works
+ * without JavaScript and with reduced motion.
+ */
+import { getProcess, getStickers } from '../lib/content';
+import Sticker from './Sticker.astro';
+interface Props { eyebrow?: string; heading: string; intro?: string; id: string }
+const { eyebrow, heading, intro, id } = Astro.props;
+const { steps } = await getProcess();
+const stickers = await getStickers(steps.map((s) => s.sticker).filter(Boolean) as string[]);
+const find = (sid?: string) => stickers.find((s) => s.id === sid);
+---
+<div class="story">
+  <div class="story__intro">
+    <div class="story__intro-inner">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h2 id={id} class="story__title">{heading}</h2>
+      {intro && <p class="story__lede">{intro}</p>}
+      <ol class="story__dots" aria-hidden="true">
+        {steps.map((_, i) => <li>{i + 1}</li>)}
+      </ol>
+    </div>
+  </div>
+  <ol class="story__steps" role="list">
+    {steps.map((s, i) => {
+      const st = find(s.sticker);
+      return (
+        <li class:list={['story__card', `tone-${s.color}`]} style={`--i:${i}`}>
+          <span class="story__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="story__step">{s.title}</h3>
+          <p>{s.body}</p>
+          {st && <Sticker sticker={st} size="5.5rem" class="story__sticker" />}
+        </li>
+      );
+    })}
+  </ol>
+</div>
+
+<style>
+  .story { display: grid; gap: var(--space-xl); }
+  .story__title { font-size: var(--step-4); max-width: 12ch; }
+  .story__lede { font-size: var(--step-1); font-weight: 500; margin-top: var(--space-s); max-width: 34ch; }
+  .story__dots { display: none; }
+  .story__steps { display: grid; gap: var(--space-l); padding-bottom: var(--space-l); }
+  .story__card {
+    position: sticky;
+    top: calc(var(--nav-height) + 1rem + var(--i) * 1.4rem);
+    min-height: 15rem;
+    display: grid;
+    align-content: start;
+    gap: var(--space-s);
+    padding: var(--space-l);
+    padding-right: 5.5rem;
+    background: var(--tone);
+    color: var(--on-tone);
+    border: var(--border-chunky) solid var(--c-ink);
+    border-radius: var(--radius-l) var(--radius-m) var(--radius-l) var(--radius-s);
+    box-shadow: 0 -8px 22px -12px rgb(var(--shadow-color) / 0.45), 6px 6px 0 var(--c-ink);
+    rotate: calc((var(--i) - 1.5) * 0.8deg);
+  }
+  .story__num { font-family: var(--font-display); font-size: var(--step-5); line-height: 0.8; opacity: 0.9; }
+  .story__step { font-size: var(--step-3); }
+  .story__card :global(.story__sticker) { position: absolute; top: -1.6rem; right: 1rem; }
+  @media (min-width: 960px) {
+    .story { grid-template-columns: 0.9fr 1.1fr; gap: var(--space-2xl); }
+    .story__intro-inner { position: sticky; top: calc(var(--nav-height) + 2rem); }
+    .story__dots { display: flex; gap: 0.6rem; margin-top: var(--space-l); list-style: none; padding: 0; }
+    .story__dots li { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: var(--border-thin) solid currentColor; font-weight: 800; }
+    .story__steps { gap: 40vh; padding-bottom: 20vh; }
+    .story__card { min-height: 20rem; }
+  }
+  @media (max-width: 959.98px) {
+    .story__card { top: calc(var(--nav-height-mobile) + 0.75rem + var(--i) * 1rem); }
+  }
+</style>
