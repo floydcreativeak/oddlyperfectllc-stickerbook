@@ -1,0 +1,36 @@
+---
+/** Colour-block header for inner pages; copy comes from content/pages/*.md. */
+import { getStickers } from '../lib/content';
+import { BLOCK_VAR, type Pastel } from '../lib/colors';
+import Sticker from './Sticker.astro';
+
+interface Props { eyebrow?: string; heading: string; intro?: string; color?: Pastel; stickers?: string[] }
+const { eyebrow, heading, intro, color = 'cream', stickers = [] } = Astro.props;
+const resolved = await getStickers(stickers);
+---
+<section class="block page-header" style={`--block-color:${BLOCK_VAR[color]}`} aria-labelledby="page-title">
+  <div class="wrap page-header__inner">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 id="page-title" class="page-header__title" data-reveal="words">{heading}</h1>
+    {intro && <p class="page-header__intro lede">{intro}</p>}
+    <slot />
+  </div>
+  <div class="page-header__stickers" aria-hidden="true">
+    {resolved.map((s, i) => <Sticker sticker={s} size={i === 0 ? 'clamp(5rem, 11vw, 8rem)' : 'clamp(4rem, 8vw, 6rem)'} class={`ph-sticker ph-sticker--${i}`} />)}
+  </div>
+</section>
+
+<style>
+  .page-header { padding-bottom: calc(var(--space-section) * 0.8); overflow: clip; }
+  .page-header__inner { display: grid; gap: var(--space-m); position: relative; z-index: 2; }
+  .page-header__title { max-width: 13ch; }
+  .page-header__intro { max-width: 40ch; }
+  .page-header__stickers :global(.ph-sticker) { position: absolute; }
+  .page-header__stickers :global(.ph-sticker--0) { right: 6%; bottom: 14%; }
+  .page-header__stickers :global(.ph-sticker--1) { right: 22%; top: 22%; }
+  .page-header__stickers :global(.ph-sticker--2) { right: 2%; top: 30%; }
+  @media (max-width: 899.98px) {
+    .page-header__stickers :global(.ph-sticker--1), .page-header__stickers :global(.ph-sticker--2) { display: none; }
+    .page-header__stickers :global(.ph-sticker--0) { right: 4%; bottom: 6%; --sticker-size: 4.5rem !important; }
+  }
+</style>

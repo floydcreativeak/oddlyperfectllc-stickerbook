@@ -1,0 +1,20 @@
+---
+/** Eyebrow + big slab heading + intro, used by every section. */
+interface Props { eyebrow?: string; heading: string; intro?: string; id: string; level?: 1 | 2; align?: 'start' | 'center' }
+const { eyebrow, heading, intro, id, level = 2, align = 'start' } = Astro.props;
+const H = level === 1 ? 'h1' : 'h2';
+---
+<header class:list={['section-head', `section-head--${align}`]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <H id={id} class="section-head__title" data-reveal="words">{heading}</H>
+  {intro && <p class="section-head__intro">{intro}</p>}
+  <slot />
+</header>
+
+<style>
+  .section-head__title { max-width: 16ch; }
+  .section-head--center { justify-items: center; text-align: center; }
+  .section-head--center .section-head__title { margin-inline: auto; }
+  .section-head__intro { max-width: 46ch; }
+  .eyebrow { rotate: -2deg; transform-origin: left; }
+</style>

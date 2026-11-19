@@ -11,7 +11,7 @@ what's left. The editor-facing guide is `README.md`; open client asks are in
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 1 | Scaffold: Astro + React, content schemas, tokens, fonts, CI, Pages CMS | Done |
-| 2 | Shell: layout, glass nav, tab bar + Call FAB, theme toggle, footer, transitions | In progress |
+| 2 | Shell: layout, glass nav, tab bar + Call FAB, theme toggle, footer, transitions | Done, awaiting look approval |
 | 3 | Home page, 7 sections | Not started |
 | 4 | Inner pages | Not started |
 | 5 | Motion and delight | Not started |
@@ -64,11 +64,32 @@ what's left. The editor-facing guide is `README.md`; open client asks are in
 | Cream on footer plum #1F1726 | 14.54 |
 | Tangerine on plum (accent text, dark) | 6.14 |
 
+## Phase 2 notes
+
+- Shell behaviour is one small vanilla module (`src/scripts/shell.ts`), re-bound
+  on `astro:page-load`. No React on the critical path yet.
+- No-flash theme: inline head script reads `localStorage['op-theme']` and also
+  re-applies to the incoming document on `astro:before-swap`.
+- Page transitions: Astro's root animation is disabled; a persisted
+  `.page-wipe` block in the destination link's colour (`data-wipe`) sweeps up,
+  the page swaps underneath, and it sweeps off. Skipped under reduced motion.
+  Hidden with `visibility` when idle.
+- Mobile Call FAB docks bottom-right above the tab bar so it never covers a tab.
+  Its phone-ring wiggle runs 3 times then stops (WCAG 2.2.2).
+- Every aria-label and visible string comes from content (`site.a11y.*`).
+- Emoji sticker art: Noto via `@iconify-json/noto` (`scripts/extract-emoji.mjs`),
+  Apache-2.0 notice in `public/stickers/emoji/LICENSE-noto-emoji.txt`.
+- Astro 7 `astro preview` is a background daemon, so scripts use
+  `scripts/serve-dist.mjs` instead.
+- Screenshots: `npm run build && node scripts/screenshots.mjs <dir> / /services/`.
+
 ## To do / open threads
 
-- [ ] Phase 2 screenshots for approval (375 and 1440, light and dark).
-- [ ] Noto Emoji SVGs (coffee, hundred, clipboard) into `public/stickers/emoji`, Apache-2.0 notice.
-- [ ] Hand-drawn sticker sprite.
+- [x] Phase 2 screenshots for approval (375 and 1440, light and dark).
+- [x] Noto Emoji SVGs into `public/stickers/emoji`, Apache-2.0 notice.
+- [x] Hand-drawn sticker sprite (26 drawings, `src/lib/sticker-art.ts`).
+- [ ] OG share image (`/og.png`) referenced in head; generate in Phase 4.
+- [ ] 404 page (copy already in `site.yml`).
 - [ ] Legal page copy (privacy covers GA4 + consent).
 - [ ] Brochure PDF: generate a branded one-pager if the client has none.
 - [ ] Confirm the private-repo Pages plan before first deploy.

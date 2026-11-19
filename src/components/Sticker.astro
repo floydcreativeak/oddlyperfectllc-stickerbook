@@ -1,0 +1,79 @@
+---
+/**
+ * A die-cut sticker. All stickers come from content/stickers.yml.
+ *  - drawn: hand-drawn SVG from the sprite, with optional handwritten caption
+ *  - label: a short handwritten word on a cream tag
+ *  - emoji: bundled Noto artwork on a cream die-cut disc (never a font glyph)
+ * Decorative stickers are hidden from assistive tech; meaningful ones get role="img".
+ */
+import type { Sticker as StickerData } from '../lib/content';
+import { PASTEL_VAR } from '../lib/colors';
+
+interface Props {
+  sticker: StickerData;
+  size?: string;           // CSS length, e.g. "5rem"
+  class?: string;
+  style?: string;
+  draggable?: boolean;     // hero pile: marks it as a drag target
+  index?: number;
+}
+const { sticker: s, size = '5rem', class: cls, style = '', draggable = false, index } = Astro.props;
+const fill = 'color' in s && s.color ? PASTEL_VAR[s.color] : 'var(--c-paper)';
+const a11y = s.decorative && !draggable ? { 'aria-hidden': 'true' as const } : { role: 'img', 'aria-label': s.label };
+const vars = `--rot:${s.rotate}deg;--sf:${fill};--sticker-size:${size};${style}`;
+---
+<span
+  class:list={['sticker', `sticker--${s.kind}`, cls, { 'sticker--drag': draggable }]}
+  style={vars}
+  data-sticker={s.id}
+  data-index={index}
+  {...a11y}
+>
+  {s.kind === 'drawn' && (
+    <>
+      <svg class="sticker__art" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href={`#st-${s.art}`} /></svg>
+      {s.caption && <span class="sticker__caption" aria-hidden="true">{s.caption}</span>}
+    </>
+  )}
+  {s.kind === 'label' && <span class="sticker__text" aria-hidden="true">{s.caption}</span>}
+  {s.kind === 'emoji' && (
+    <>
+      <img class="sticker__emoji" src={`/stickers/emoji/${s.emoji}`} alt="" width="128" height="128" loading="lazy" decoding="async" draggable="false" />
+      {s.caption && <span class="sticker__caption sticker__caption--tag" aria-hidden="true">{s.caption}</span>}
+    </>
+  )}
+</span>
+
+<style is:global>
+  .sticker--drawn { width: var(--sticker-size); aspect-ratio: 1; position: relative; }
+  .sticker--drawn .sticker__art { width: 100%; height: 100%; overflow: visible; }
+  .sticker__caption {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding-bottom: 12%;
+    font-family: var(--font-hand);
+    font-size: calc(var(--sticker-size) * 0.24);
+    line-height: 1;
+    color: var(--c-ink);
+    text-align: center;
+    pointer-events: none;
+  }
+  .sticker[data-sticker^="arrow"] .sticker__caption { inset: auto -30% -18% auto; padding: 0.15em 0.5em; background: var(--c-paper); border: 2px solid var(--c-ink); border-radius: var(--radius-s); outline: 4px solid var(--sticker-outline); font-size: var(--step-hand); white-space: nowrap; rotate: 6deg; }
+  .sticker--label { background: var(--sf); }
+  .sticker--emoji { position: relative; }
+  .sticker__emoji { width: 100%; height: 100%; }
+  .sticker__caption--tag {
+    inset: auto -20% -12% -20%;
+    padding: 0.2em 0.4em;
+    background: var(--c-paper);
+    border: 2px solid var(--c-ink);
+    border-radius: var(--radius-xs);
+    outline: 4px solid var(--sticker-outline);
+    font-size: calc(var(--sticker-size) * 0.2);
+    white-space: nowrap;
+    rotate: -4deg;
+    display: block;
+  }
+</style>

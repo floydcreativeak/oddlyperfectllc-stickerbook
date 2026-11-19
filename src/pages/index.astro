@@ -1,25 +1,27 @@
 ---
-// Phase 1 smoke page: proves every collection loads and validates.
-// Replaced by the real home page in Phase 3.
-import '../styles/fonts.css';
-import '../styles/tokens.css';
-import '../styles/base.css';
-import { getSite, getHome, getStickers, getServices, getReviews, getTeam, getGallery, getPricing } from '../lib/content';
-const site = await getSite();
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { getHome } from '../lib/content';
+
 const home = await getHome();
-const stickers = await getStickers(home.hero.stickers);
-const [services, reviews, team, gallery, pricing] = await Promise.all([getServices(), getReviews(), getTeam(), getGallery(), getPricing()]);
+// Section order is fixed by the brief: Hero, Services, Pricing, Contact, About, Reviews, FAQ.
+const blocks = [
+  { key: 'services', cls: 'block--services', copy: home.services },
+  { key: 'pricing', cls: 'block--pricing', copy: home.pricing },
+  { key: 'contact', cls: 'block--contact', copy: home.contact },
+  { key: 'about', cls: 'block--about', copy: home.about },
+  { key: 'reviews', cls: 'block--reviews', copy: home.reviews },
+  { key: 'faq', cls: 'block--faq', copy: home.faq },
+] as const;
 ---
-<html lang="en">
-  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>{home.seo.title}</title></head>
-  <body>
-    <main class="block block--hero">
-      <div class="wrap stack">
-        <h1>{home.hero.headline}</h1>
-        <p class="lede">{home.hero.sub}</p>
-        <a class="btn btn--call" href={`tel:${site.phone.tel}`}><span class="btn__label">{home.hero.callLabel}</span><span class="btn__number">{site.phone.display}</span></a>
-        <p>{services.length} services, {reviews.length} reviews, {team.length} team, {gallery.length} photos, {pricing.tiers.length} tiers, {stickers.length} hero stickers.</p>
+<BaseLayout title={home.seo.title} description={home.seo.description}>
+  <Hero />
+  {blocks.map((b) => (
+    <section class:list={['block', 'block--overlap', b.cls]} id={b.key} aria-labelledby={`${b.key}-title`}>
+      <div class="wrap">
+        <SectionHead id={`${b.key}-title`} eyebrow={b.copy.eyebrow} heading={b.copy.heading} intro={b.copy.intro} />
       </div>
-    </main>
-  </body>
-</html>
+    </section>
+  ))}
+</BaseLayout>

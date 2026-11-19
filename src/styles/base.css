@@ -233,7 +233,7 @@ strong, b { font-weight: 800; }
   background: var(--c-paper);
   color: var(--c-ink);
   font-family: var(--font-hand);
-  font-size: var(--step-hand);
+  font-size: max(var(--step-hand), calc(var(--sticker-size, 5rem) * 0.22));
   line-height: 1;
   border: var(--border-thin) solid var(--c-ink);
   border-radius: var(--radius-s);

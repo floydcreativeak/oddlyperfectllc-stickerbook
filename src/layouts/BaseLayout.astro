@@ -1,0 +1,108 @@
+---
+/**
+ * Every page uses this layout: head/meta, no-flash theme, skip link, glass
+ * header, footer, mobile tab bar, sticker sprite and the page-wipe overlay.
+ */
+import { ClientRouter } from 'astro:transitions';
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import { getSite } from '../lib/content';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import TabBar from '../components/TabBar.astro';
+import StickerSprite from '../components/StickerSprite.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Keep this page out of search results (e.g. 404). */
+  noindex?: boolean;
+}
+const { title, description, noindex = false } = Astro.props;
+const site = await getSite();
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL('/og.png', site.url).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#f6eedc" />
+    <meta name="color-scheme" content="light dark" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Only the fonts above the fold are preloaded; Caveat Brush swaps in later. -->
+    <link rel="preload" href="/fonts/alfa-slab-one-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/figtree-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Theme before first paint (no flash). Re-applied to each new page on navigation. -->
+    <script is:inline>
+      (() => {
+        const apply = (doc) => {
+          let t = null;
+          try { t = localStorage.getItem('op-theme'); } catch (e) {}
+          if (t === 'light' || t === 'dark') doc.documentElement.dataset.theme = t;
+        };
+        apply(document);
+        document.addEventListener('astro:before-swap', (e) => apply(e.newDocument));
+      })();
+    </script>
+
+    <ClientRouter />
+    <slot name="head" />
+  </head>
+  <body>
+    <div id="top"></div>
+    <a class="skip-link" href="#main">{site.nav.skipLink}</a>
+    <StickerSprite />
+    <SiteHeader />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+    <TabBar />
+    <div class="page-wipe" data-page-wipe aria-hidden="true" transition:persist="page-wipe"></div>
+
+    <script>
+      import '../scripts/shell';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  main { display: block; }
+  main:focus { outline: none; }
+  /* First block sits under the glass header */
+  main > .block:first-child { padding-top: calc(var(--space-section) * 0.55 + var(--nav-height)); }
+
+  /* Built-in view transition animations are replaced by our colour wipe */
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+  .page-wipe {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-intro);
+    background: var(--wipe, var(--c-tangerine));
+    transform: translateY(101%);
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .page-wipe[data-active] { visibility: visible; }
+</style>

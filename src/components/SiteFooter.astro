@@ -1,0 +1,189 @@
+---
+/**
+ * "The back of the notebook": huge sign-off, phone, hours, a sticker sheet
+ * of social links, legal links and a tiny easter egg.
+ */
+import { getSite, getStickers } from '../lib/content';
+import Icon from './Icon.astro';
+import Sticker from './Sticker.astro';
+
+const site = await getSite();
+const f = site.footer;
+const [heart, star] = await getStickers(['heart', 'star']);
+const year = new Date().getFullYear();
+const tileColors = ['var(--c-mint)', 'var(--c-blush)', 'var(--c-mustard)', 'var(--c-peri)', 'var(--c-tangerine)'];
+const tileTilt = [-4, 3, -2, 5, -3, 2, -5, 4];
+---
+<footer class="site-footer" id="footer">
+  <div class="site-footer__holes" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="signoff">
+      <h2 class="signoff__title display-xl">{f.signoff}</h2>
+      <Sticker sticker={heart} size="clamp(3.5rem, 8vw, 6rem)" class="signoff__sticker" />
+      <p class="signoff__sub lede">{f.signoffSub}</p>
+      <div class="signoff__actions">
+        <a class="btn btn--call btn--lg" href={`tel:${site.phone.tel}`} data-track="call-footer">
+          <span class="btn__label">{f.callLabel}</span>
+          <span class="btn__number">{site.phone.display}</span>
+        </a>
+        <a class="footer-email" href={`mailto:${site.email.address}`}>
+          <Icon name="mail" /> <span>{site.email.address}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-grid">
+      <section class="footer-card footer-card--hours" aria-labelledby="ft-hours">
+        <h3 id="ft-hours" class="footer-card__title">{f.hoursHeading}</h3>
+        <dl class="hours">
+          {site.hours.rows.map((r) => (
+            <div class="hours__row"><dt>{r.days}</dt><dd>{r.time}</dd></div>
+          ))}
+        </dl>
+        {site.hours.note && <p class="hours__note">{site.hours.note}</p>}
+      </section>
+
+      {site.socials.length > 0 && (
+        <section class="footer-card" aria-labelledby="ft-social">
+          <h3 id="ft-social" class="footer-card__title">{f.socialHeading}</h3>
+          <ul class="social-sheet" role="list">
+            {site.socials.map((s, i) => (
+              <li style={`--tile:${tileColors[i % tileColors.length]};--tilt:${tileTilt[i % tileTilt.length]}deg`}>
+                <a href={s.url} rel="noopener me" target="_blank">
+                  <Icon name={s.platform} size="1.9rem" />
+                  <span class="social-sheet__name">{s.label}</span>
+                  {s.handle && <span class="social-sheet__handle">{s.handle}</span>}
+                  <span class="visually-hidden">{site.a11y.newTab}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section class="footer-card" aria-labelledby="ft-legal">
+        <h3 id="ft-legal" class="footer-card__title">{f.legalHeading}</h3>
+        <ul class="legal-links" role="list">
+          {site.legalLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+        {site.serviceArea && <p class="service-area">{site.serviceArea}</p>}
+      </section>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="smallprint">&copy; {year} {site.legalName}. {f.smallprint}</p>
+      <div class="egg">
+        <button type="button" class="egg__btn" aria-expanded="false" aria-controls="egg-reveal" data-egg>
+          <Sticker sticker={star} size="2rem" />
+          <span>{f.easterEgg.trigger}</span>
+        </button>
+        <p id="egg-reveal" class="egg__reveal hand" hidden>{f.easterEgg.reveal}</p>
+      </div>
+      <a class="to-top" href="#top"><Icon name="arrow-up" /> {f.backToTop}</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    background: var(--block-footer);
+    color: var(--on-footer);
+    padding: calc(var(--space-section) * 0.9) 0 calc(var(--space-2xl) + var(--tabbar-height));
+    margin-top: calc(var(--radius-xl) * -1);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    overflow: hidden;
+  }
+  @media (min-width: 900px) { .site-footer { padding-bottom: var(--space-2xl); } }
+  /* Notebook binding holes along the top edge */
+  .site-footer__holes {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    height: 14px;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='14'%3E%3Ccircle cx='24' cy='7' r='6'/%3E%3C/svg%3E") repeat-x center / 48px 14px;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='14'%3E%3Ccircle cx='24' cy='7' r='6'/%3E%3C/svg%3E") repeat-x center / 48px 14px;
+    background: var(--bg);
+    opacity: 0.9;
+  }
+
+  .signoff { position: relative; display: grid; gap: var(--space-m); padding-top: var(--space-l); }
+  .signoff__title { max-width: 14ch; color: var(--on-footer); }
+  .signoff__sub { max-width: 40ch; color: var(--on-footer); }
+  :global(.signoff__sticker) { position: absolute; top: 36%; right: 3%; }
+  @media (max-width: 759.98px) { :global(.signoff__sticker) { top: 0; right: 0; } }
+  .signoff__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-l); margin-top: var(--space-s); }
+  .footer-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: var(--tap-min);
+    color: var(--on-footer);
+    font-weight: 700;
+    word-break: break-all;
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: var(--space-m);
+    margin-top: var(--space-2xl);
+  }
+  @media (min-width: 760px) { .footer-grid { grid-template-columns: 1.1fr 1.3fr 0.9fr; align-items: start; } }
+  .footer-card {
+    padding: var(--space-m);
+    border: 2px dashed color-mix(in srgb, var(--on-footer) 35%, transparent);
+    border-radius: var(--radius-wonky);
+  }
+  .footer-card__title { font-family: var(--font-hand); font-size: var(--step-2); line-height: 1; margin-bottom: var(--space-s); color: var(--c-mustard); }
+
+  .hours { display: grid; gap: var(--space-2xs); }
+  .hours__row { display: grid; gap: 0 var(--space-s); grid-template-columns: minmax(0, 1fr); }
+  .hours dt { font-weight: 800; }
+  .hours dd { margin: 0; }
+  .hours__note { margin-top: var(--space-s); font-size: var(--step--1); opacity: 0.92; }
+
+  .social-sheet { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: var(--space-s); }
+  .social-sheet a {
+    display: grid;
+    gap: 0.15rem;
+    justify-items: start;
+    min-height: 6rem;
+    padding: var(--space-s);
+    background: var(--tile);
+    color: var(--c-ink);
+    text-decoration: none;
+    border: var(--border-thin) solid var(--c-ink);
+    border-radius: var(--radius-m) var(--radius-s) var(--radius-m) var(--radius-s);
+    outline: 4px solid var(--sticker-outline);
+    rotate: var(--tilt);
+    box-shadow: var(--shadow-sticker);
+    transition: transform var(--dur-spring) var(--ease-spring), rotate var(--dur-spring) var(--ease-spring);
+  }
+  .social-sheet a:hover { transform: translateY(-5px) scale(1.04); rotate: calc(var(--tilt) * -1); }
+  .social-sheet__name { font-weight: 800; }
+  .social-sheet__handle { font-size: var(--step--1); }
+
+  .legal-links { display: grid; gap: var(--space-3xs); }
+  .legal-links a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--on-footer); font-weight: 700; }
+  .service-area { margin-top: var(--space-s); font-size: var(--step--1); }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-m);
+    border-top: 2px solid color-mix(in srgb, var(--on-footer) 25%, transparent);
+    font-size: var(--step--1);
+  }
+  .smallprint { max-width: none; }
+  .egg { display: grid; gap: var(--space-2xs); }
+  .egg__btn { display: inline-flex; align-items: center; gap: 0.5em; min-height: var(--tap-min); color: var(--on-footer); font-weight: 700; text-decoration: underline dotted; text-underline-offset: 0.2em; }
+  .egg__btn :global(.sticker) { transition: rotate var(--dur-spring) var(--ease-spring); }
+  .egg__btn[aria-expanded="true"] :global(.sticker) { rotate: 200deg; }
+  .egg__reveal { font-size: var(--step-1); color: var(--c-mustard); }
+  .to-top { display: inline-flex; align-items: center; gap: 0.4em; min-height: var(--tap-min); color: var(--on-footer); font-weight: 700; }
+</style>

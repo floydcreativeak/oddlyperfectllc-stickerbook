@@ -1,0 +1,139 @@
+---
+/**
+ * Hero: giant slab headline on the tangerine block, the sticker-style Call
+ * button with the phone number, and a pile of stickers.
+ *
+ * The pile renders as plain positioned DOM stickers (this is also the
+ * lightweight fallback). Phase 5 enhances it: pointer drag + keyboard move
+ * everywhere, and a lazy Three.js pile on capable devices only.
+ */
+import { getSite, getHome, getStickers } from '../../lib/content';
+import Sticker from '../Sticker.astro';
+
+const site = await getSite();
+const { hero } = await getHome();
+const stickers = await getStickers(hero.stickers);
+
+// Split the headline so the accent words get the hand-drawn underline.
+const at = hero.headline.lastIndexOf(hero.headlineAccent);
+const before = at >= 0 ? hero.headline.slice(0, at) : hero.headline;
+const accent = at >= 0 ? hero.headlineAccent : '';
+const after = at >= 0 ? hero.headline.slice(at + accent.length) : '';
+// Each accent word gets its own underline so the phrase can wrap on small screens.
+const accentWords = accent ? accent.split(/\s+/) : [];
+
+// Hand-placed resting spots for up to 9 stickers (percent of the pile box).
+const SPOTS = [
+  { x: 2, y: 4, s: 'clamp(5.5rem, 13vw, 8.5rem)' },
+  { x: 68, y: 0, s: 'clamp(4.5rem, 11vw, 7.5rem)' },
+  { x: 32, y: 24, s: 'clamp(5.5rem, 13vw, 8.5rem)' },
+  { x: 72, y: 36, s: 'clamp(4.5rem, 10vw, 7rem)' },
+  { x: 6, y: 42, s: 'clamp(4.5rem, 10vw, 6.5rem)' },
+  { x: 4, y: 72, s: 'clamp(5.5rem, 13vw, 8.5rem)' },
+  { x: 70, y: 66, s: 'clamp(4rem, 9vw, 6.5rem)' },
+  { x: 40, y: 88, s: 'clamp(4rem, 9vw, 6rem)' },
+  { x: 76, y: 96, s: 'clamp(4rem, 9vw, 6rem)' },
+];
+---
+<section class="block block--hero hero" aria-labelledby="hero-title" data-color="tangerine">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow hero__eyebrow">{hero.eyebrow}</p>
+      <h1 id="hero-title" class="hero__title" data-reveal="words">
+        {before}{accentWords.map((w, i) => (
+          <>{i > 0 && ' '}<span class="hero__accent">{w}<svg class="hero__swoosh" viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d={i % 2 ? 'M6 18C80 10 170 8 294 16M40 26c60-5 130-7 200-3' : 'M4 20C70 8 160 6 296 14M30 26c60-6 140-8 220-4'} /></svg></span></>
+        ))}{after}
+      </h1>
+      <p class="hero__sub">{hero.sub}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--call hero__call" href={`tel:${site.phone.tel}`} data-track="call-hero">
+          <span class="btn__label">{hero.callLabel}</span>
+          <span class="btn__number">{site.phone.display}</span>
+        </a>
+        <a class="hero__email" href={`mailto:${site.email.address}`}>{hero.emailLabel}</a>
+      </div>
+    </div>
+
+    <div class="hero__pile" data-sticker-pile aria-label={site.a11y.stickerPile} aria-describedby="pile-help" role="group">
+      <p class="hero__hint hand" aria-hidden="true">{hero.dragHint}</p>
+      <p class="visually-hidden" id="pile-help">{hero.keyboardHint}</p>
+      {stickers.map((s, i) => {
+        const spot = SPOTS[i % SPOTS.length];
+        return (
+          <div class="hero__slot" style={`--x:${spot.x}%;--y:${spot.y}%;--i:${i}`} data-pile-item>
+            <Sticker sticker={s} size={spot.s} draggable index={i} />
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { overflow: clip; }
+  .hero__grid { display: grid; gap: var(--space-xl); align-items: center; }
+  .hero__copy { display: grid; gap: var(--space-m); justify-items: start; position: relative; z-index: 2; }
+  .hero__eyebrow { font-size: var(--step-2); }
+  .hero__title {
+    font-size: clamp(2.55rem, 0.6rem + 9.2vw, 5.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+    max-width: 100%;
+    text-wrap: balance;
+  }
+  .hero__accent { position: relative; display: inline-block; white-space: nowrap; }
+  .hero__swoosh {
+    position: absolute;
+    left: -2%;
+    right: -2%;
+    bottom: -0.16em;
+    width: 104%;
+    height: 0.3em;
+    overflow: visible;
+    z-index: -1;
+  }
+  .hero__swoosh path { fill: none; stroke: var(--c-cream); stroke-width: 9; stroke-linecap: round; }
+  :global(:root[data-theme="dark"]) .hero__swoosh path { stroke: var(--c-mustard); }
+  @media (prefers-color-scheme: dark) { :global(:root:not([data-theme="light"])) .hero__swoosh path { stroke: var(--c-mustard); } }
+  .hero__sub { font-size: var(--step-1); line-height: 1.4; font-weight: 600; max-width: 34ch; }
+  .hero__ctas { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-m) var(--space-l); margin-top: var(--space-2xs); }
+  .hero__call .btn__number { font-size: clamp(1.6rem, 1.1rem + 2.2vw, 2.6rem); }
+  .hero__email { display: inline-flex; align-items: center; min-height: var(--tap-min); font-weight: 800; color: var(--on-block); }
+
+  .hero__pile {
+    position: relative;
+    height: clamp(20rem, 70vw, 34rem);
+    margin-inline: calc(var(--gutter) * -0.5);
+  }
+  .hero__slot {
+    position: absolute;
+    left: var(--x);
+    top: calc(var(--y) * 0.8);
+    translate: 0 0;
+  }
+  .hero__slot :global(.sticker) { touch-action: none; }
+  .hero__hint {
+    position: absolute;
+    left: 2%;
+    bottom: 0;
+    max-width: 18ch;
+    text-align: left;
+    font-size: var(--step-1);
+    rotate: -3deg;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__slot :global(.sticker) { animation: slap var(--dur-spring) var(--ease-squish) both; animation-delay: calc(var(--i) * 70ms + 250ms); }
+  }
+  @keyframes slap {
+    from { opacity: 0; transform: translateY(-40px) scale(1.5); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (min-width: 900px) {
+    .hero { padding-bottom: var(--space-2xl); }
+    main > .hero.block:first-child { padding-top: calc(var(--nav-height) + var(--space-xl)); }
+    .hero__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: var(--space-xl); min-height: min(44rem, calc(100svh - var(--nav-height) - 2 * var(--space-xl))); }
+    .hero__pile { height: min(34rem, 66vh); margin: 0; }
+  }
+</style>

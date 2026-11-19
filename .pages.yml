@@ -158,6 +158,16 @@ content:
           - { name: heading, label: Heading, type: string, required: true }
           - { name: body, label: Message, type: text, required: true }
           - { name: cta, label: Button text, type: string, required: true }
+      - name: a11y
+        label: Screen reader labels
+        description: Words read aloud by screen readers for navigation areas. Rarely needs changing.
+        type: object
+        fields:
+          - { name: mainNav, label: Main menu, type: string, required: true }
+          - { name: tabNav, label: Mobile tab bar, type: string, required: true }
+          - { name: announcement, label: Announcement bar, type: string, required: true }
+          - { name: newTab, label: New tab warning, type: string, required: true }
+          - { name: stickerPile, label: Hero sticker pile, type: string, required: true }
       - { name: loadingText, label: Loading message, type: string, required: true }
       - name: intro
         label: Intro animation
@@ -352,8 +362,10 @@ content:
         fields:
           - { name: title, label: Browser tab title, type: string, required: true }
           - { name: description, label: Description, type: text, required: true, options: { maxlength: 170 } }
+      - { name: eyebrow, label: Small line above the heading, type: string, required: true }
       - { name: heading, label: Heading, type: string, required: true }
       - { name: intro, label: Intro, type: text, required: true }
+      - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
       - { name: currency, label: Currency, type: string, readonly: true }
       - name: tiers
         label: Plans

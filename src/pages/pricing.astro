@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { getPricing } from '../lib/content';
+const p = await getPricing();
+---
+<BaseLayout title={p.seo.title} description={p.seo.description}>
+  <PageHeader eyebrow={p.eyebrow} heading={p.heading} intro={p.intro} color="mustard" stickers={p.stickers} />
+</BaseLayout>

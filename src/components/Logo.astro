@@ -1,0 +1,32 @@
+---
+/**
+ * Placeholder wordmark until the client's SVG logo arrives (flagged in
+ * content/site.yml -> logo.placeholder). Swap the <svg> mark for the real
+ * inline SVG; the text comes from content.
+ */
+import { getSite } from '../lib/content';
+interface Props { size?: 'nav' | 'xl' }
+const { size = 'nav' } = Astro.props;
+const site = await getSite();
+---
+<span class:list={['logo', `logo--${size}`]} data-placeholder={site.logo.placeholder ? '' : undefined}>
+  <svg class="logo__mark" viewBox="-6 -6 112 112" aria-hidden="true" focusable="false">
+    <path class="logo__cut" d="M50 6c26 0 44 17 44 42 0 27-19 46-46 46C22 94 6 76 6 50 6 24 24 6 50 6Z" />
+    <path class="logo__blob" d="M50 6c26 0 44 17 44 42 0 27-19 46-46 46C22 94 6 76 6 50 6 24 24 6 50 6Z" />
+    <path class="logo__o" d="M50 27c13 0 22 9 22 22 0 14-10 24-23 24-12 0-21-10-21-23 0-14 9-23 22-23Z" />
+    <path class="logo__spark" d="M80 4c1 6 3 8 9 9-6 1-8 3-9 9-1-6-3-8-9-9 6-1 8-3 9-9Z" />
+  </svg>
+  <span class="logo__text">{site.logo.text}</span>
+</span>
+
+<style>
+  .logo { display: inline-flex; align-items: center; gap: 0.5em; color: var(--text); line-height: 1; }
+  .logo__mark { width: 2.3em; height: 2.3em; overflow: visible; rotate: -8deg; transition: rotate var(--dur-spring) var(--ease-spring); }
+  .logo__cut { fill: var(--sticker-outline); stroke: var(--sticker-outline); stroke-width: 12; stroke-linejoin: round; }
+  .logo__blob { fill: var(--accent); stroke: var(--c-ink); stroke-width: 5; }
+  .logo__o { fill: var(--c-cream); stroke: var(--c-ink); stroke-width: 5; }
+  .logo__spark { fill: var(--c-mustard); stroke: var(--c-ink); stroke-width: 3.5; stroke-linejoin: round; }
+  .logo__text { font-family: var(--font-display); font-size: 1.12em; letter-spacing: -0.01em; white-space: nowrap; }
+  .logo--xl { font-size: clamp(1.6rem, 1rem + 3vw, 3rem); }
+  @media (hover: hover) { a:hover > .logo .logo__mark { rotate: 8deg; } }
+</style>

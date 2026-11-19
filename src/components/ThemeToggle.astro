@@ -1,0 +1,40 @@
+---
+/**
+ * Light/dark toggle. The initial theme is set by an inline script in <head>
+ * (BaseLayout) before first paint, so there is no flash. Behaviour lives in
+ * src/scripts/shell.ts. Labels come from content/site.yml.
+ */
+import Icon from './Icon.astro';
+interface Props { toLight: string; toDark: string }
+const { toLight, toDark } = Astro.props;
+---
+<button class="theme-toggle" type="button" data-theme-toggle data-label-light={toLight} data-label-dark={toDark} aria-label={toDark}>
+  <span class="theme-toggle__icon theme-toggle__sun"><Icon name="sun" /></span>
+  <span class="theme-toggle__icon theme-toggle__moon"><Icon name="moon" /></span>
+</button>
+
+<style>
+  .theme-toggle {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    flex: none;
+    color: var(--text);
+    border-radius: 50%;
+    transition: transform var(--dur-spring) var(--ease-spring);
+  }
+  .theme-toggle:hover { transform: rotate(-18deg) scale(1.1); }
+  .theme-toggle:active { transform: scale(0.88); }
+  .theme-toggle__icon { grid-area: 1 / 1; display: grid; transition: opacity var(--dur-fast) var(--ease-out), rotate var(--dur-spring) var(--ease-spring), scale var(--dur-spring) var(--ease-spring); }
+  .theme-toggle :global(svg) { width: 24px; height: 24px; }
+  /* Light: show the moon (action = go dark). Dark: show the sun. */
+  .theme-toggle__sun { opacity: 0; rotate: -90deg; scale: 0.5; }
+  :global(:root[data-theme="dark"]) .theme-toggle__sun { opacity: 1; rotate: 0deg; scale: 1; }
+  :global(:root[data-theme="dark"]) .theme-toggle__moon { opacity: 0; rotate: 90deg; scale: 0.5; }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .theme-toggle__sun { opacity: 1; rotate: 0deg; scale: 1; }
+    :global(:root:not([data-theme="light"])) .theme-toggle__moon { opacity: 0; rotate: 90deg; scale: 0.5; }
+  }
+</style>

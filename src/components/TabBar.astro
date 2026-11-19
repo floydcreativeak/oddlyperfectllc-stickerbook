@@ -1,0 +1,130 @@
+---
+/**
+ * Mobile bottom tab bar (< 900px) with a floating Call button docked above it.
+ * Blurred glass, safe-area aware, every target >= 44px.
+ */
+import { getSite } from '../lib/content';
+import { PASTEL_VAR } from '../lib/colors';
+import { isCurrent } from '../lib/nav';
+import Icon from './Icon.astro';
+
+const site = await getSite();
+const path = Astro.url.pathname;
+const tabs = site.nav.links.filter((l) => l.tab);
+---
+<div class="tabbar-wrap">
+  <a class="call-fab" href={`tel:${site.phone.tel}`} data-track="call-fab">
+    <span class="call-fab__icon"><Icon name="phone" /></span>
+    <span class="call-fab__label">{site.nav.callShort}</span>
+    <span class="visually-hidden"> {site.phone.display}</span>
+  </a>
+  <nav class="tabbar" aria-label={site.a11y.tabNav}>
+    <ul role="list">
+      {tabs.map((t) => (
+        <li>
+          <a href={t.href} aria-current={isCurrent(path, t.href) ? 'page' : undefined} data-wipe={PASTEL_VAR[t.color]} style={`--tab-color:${PASTEL_VAR[t.color]}`}>
+            <span class="tabbar__icon"><Icon name={t.icon} /></span>
+            <span class="tabbar__label">{t.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</div>
+
+<style>
+  .tabbar-wrap {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: var(--z-tabbar);
+    pointer-events: none;
+  }
+  .tabbar {
+    pointer-events: auto;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+    border-top: 1px solid var(--glass-border);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+  }
+  .tabbar ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); height: var(--tabbar-height); }
+  .tabbar a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 100%;
+    min-height: var(--tap-min);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tabbar__icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 30px;
+    border-radius: var(--radius-pill);
+    transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-spring) var(--ease-spring);
+  }
+  .tabbar__icon :global(svg) { width: 22px; height: 22px; }
+  .tabbar a:active .tabbar__icon { transform: scale(0.88); }
+  /* Active tab: pastel pill behind the icon + a dot, plus aria-current */
+  .tabbar a[aria-current="page"] .tabbar__icon { background: var(--tab-color); color: var(--c-ink); border: 2px solid var(--c-ink); }
+  .tabbar a[aria-current="page"] .tabbar__label { font-weight: 900; }
+  .tabbar a[aria-current="page"] .tabbar__label::after { content: ""; display: block; width: 5px; height: 5px; margin: 1px auto 0; border-radius: 50%; background: currentColor; }
+
+  .call-fab {
+    pointer-events: auto;
+    position: absolute;
+    right: max(var(--gutter), env(safe-area-inset-right));
+    bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom, 0px) + 14px);
+    z-index: var(--z-call-fab);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 56px;
+    padding: 0 1.25rem 0 0.6rem;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    text-decoration: none;
+    border: var(--border-chunky) solid var(--c-ink);
+    border-radius: var(--radius-pill);
+    outline: var(--sticker-outline-width) solid var(--sticker-outline);
+    box-shadow: var(--shadow-sticker);
+    rotate: -3deg;
+    transition: transform var(--dur-spring) var(--ease-spring);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .call-fab:active { transform: scale(0.92); }
+  .call-fab:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; box-shadow: 0 0 0 9px var(--focus-halo); }
+  .call-fab__icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--c-cream);
+    color: var(--c-ink);
+    border: 2px solid var(--c-ink);
+  }
+  .call-fab__icon :global(svg) { width: 20px; height: 20px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .call-fab__icon { animation: ring 4.5s var(--ease-out) 2s 3; /* capped: WCAG 2.2.2 */ }
+  }
+  @keyframes ring {
+    0%, 86%, 100% { rotate: 0deg; }
+    88% { rotate: -16deg; }
+    91% { rotate: 14deg; }
+    94% { rotate: -10deg; }
+    97% { rotate: 6deg; }
+  }
+  @media (min-width: 900px) { .tabbar-wrap { display: none; } }
+</style>

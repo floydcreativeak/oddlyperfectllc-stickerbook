@@ -105,7 +105,7 @@ footer:
   hoursHeading: Office Hours
   socialHeading: Follow Along
   legalHeading: The Fine Print
-  smallprint: Oddly Perfect LLC. Proudly over-prepared.
+  smallprint: Proudly over-prepared since day one.
   easterEgg:
     trigger: Psst. Click for a secret.
     reveal: We alphabetize our sticky notes. By color. Then by mood.
@@ -124,6 +124,13 @@ notFound:
   heading: Well, This Is Oddly Imperfect.
   body: The page you wanted has wandered off. We've already scheduled a stern talk with it. In the meantime, the good stuff is one tap away.
   cta: Take me home
+
+a11y:
+  mainNav: Main
+  tabNav: Quick links
+  announcement: Announcement
+  newTab: (opens in a new tab)
+  stickerPile: A pile of stickers you can move around
 
 loadingText: Sharpening pencils...
 

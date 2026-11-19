@@ -160,6 +160,13 @@ const site = defineCollection({
       body: text(),
       cta: text(),
     }),
+    a11y: z.object({
+      mainNav: text(),
+      tabNav: text(),
+      announcement: text(),
+      newTab: text(),
+      stickerPile: text(),
+    }),
     loadingText: text(),
     intro: z.object({ enabled: z.boolean().default(true), skipLabel: text(), caption: text() }),
     brochure: z
@@ -288,8 +295,10 @@ const pricing = defineCollection({
   schema: z
     .object({
       seo: z.object({ title: text(), description: text(50).max(170) }),
+      eyebrow: text(),
       heading: text(),
       intro: text(),
+      stickers: z.array(stickerRef).max(3).default([]),
       currency: z.string().default('USD'),
       tiers: z
         .array(

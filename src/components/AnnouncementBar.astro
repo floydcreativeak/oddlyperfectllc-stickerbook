@@ -1,0 +1,19 @@
+---
+/** Optional strip above the nav, switched on in content/site.yml -> announcement. */
+import { getSite } from '../lib/content';
+const { announcement: a, a11y } = await getSite();
+---
+{a.enabled && (
+  <div class="announce" role="region" aria-label={a11y.announcement}>
+    <p>
+      {a.text}
+      {a.link && <> <a href={a.link.href}>{a.link.label}</a></>}
+    </p>
+  </div>
+)}
+
+<style>
+  .announce { background: var(--c-ink); color: var(--c-cream); text-align: center; padding: 0.45rem var(--gutter); font-size: var(--step--1); font-weight: 600; }
+  .announce p { max-width: none; }
+  .announce a { color: var(--c-mustard); font-weight: 800; margin-left: 0.35em; }
+</style>
