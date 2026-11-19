@@ -78,14 +78,14 @@ const site = defineCollection({
     legalName: text(),
     tagline: text(),
     description: text(50).max(170, 'Search engines cut descriptions off around 160 characters.'),
-    url: z.string().url(),
+    url: z.url(),
     phone: z.object({
       display: text(),
       tel: z.string().regex(/^\+?[0-9]{7,15}$/, 'Digits only, with the country code, e.g. +15551234567'),
       placeholder: z.boolean().default(false),
     }),
     email: z.object({
-      address: z.string().email(),
+      address: z.email(),
       placeholder: z.boolean().default(false),
     }),
     hours: z.object({
@@ -100,7 +100,7 @@ const site = defineCollection({
           platform: SOCIAL,
           label: text(),
           handle: optText(),
-          url: z.string().url(),
+          url: z.url(),
           placeholder: z.boolean().default(false),
         }),
       )
@@ -342,7 +342,7 @@ const reviews = defineCollection({
     source: z.enum(['email', 'message', 'yelp', 'facebook', 'google']),
     rating: z.number().int().min(1).max(5),
     date: z.coerce.date().optional(),
-    link: z.string().url().optional(),
+    link: z.url().optional(),
     featured: z.boolean().default(false).describe('Show on the home page'),
     order: z.number().int().default(10),
     placeholder: z.boolean().default(false),
