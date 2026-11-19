@@ -1,0 +1,6 @@
+photo:
+  src: ../media/placeholder-phone.jpg
+  alt: "A phone held at an angle, ready to film short-form content."
+  placeholder: true
+caption: "Content day. Every shot planned before we press record."
+order: 2

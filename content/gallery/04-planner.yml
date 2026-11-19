@@ -1,0 +1,6 @@
+photo:
+  src: ../media/placeholder-planner.jpg
+  alt: "Two open planners and sticky notes laid out on a desk."
+  placeholder: true
+caption: "The calendar, before it runs your whole month."
+order: 4

@@ -1,0 +1,6 @@
+photo:
+  src: ../media/placeholder-event.jpg
+  alt: "A stage with a banner and a microphone set for an event."
+  placeholder: true
+caption: "Event day. The run of show is laminated."
+order: 5

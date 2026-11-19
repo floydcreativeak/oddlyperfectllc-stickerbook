@@ -1,0 +1,6 @@
+photo:
+  src: ../media/placeholder-desk.jpg
+  alt: "A tidy desk with a laptop, a coffee and color-coded sticky notes."
+  placeholder: true
+caption: "Monday planning. The sticky notes have a system."
+order: 1

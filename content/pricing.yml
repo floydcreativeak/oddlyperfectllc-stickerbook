@@ -1,0 +1,80 @@
+# Pricing. Edit in Pages CMS under "Pricing".
+# Every price below is a placeholder until the client confirms real numbers.
+# Exactly one tier can be "featured" (it peeks out with a sticker).
+
+seo:
+  title: Pricing | Oddly Perfect PR & Social Media Management
+  description: Clear monthly plans for social media management, PR and marketing, plus add-ons. No mystery math. Call Oddly Perfect to find your fit.
+
+heading: Clear Prices. No Mystery Math.
+intro: Every plan is a starting point. We tailor the details on a quick call, then put it all in writing. No surprises, no fine print in size four font.
+currency: USD
+
+tiers:
+  - name: The Starter
+    tab: Starter
+    price: $650
+    cadence: per month
+    pitch: For businesses ready to show up online consistently, without it eating their week.
+    features:
+      - Two social platforms, managed
+      - Twelve posts a month, written and designed
+      - Monthly content calendar for your approval
+      - A short monthly results report
+    color: mint
+    cta: Start here
+    placeholder: true
+
+  - name: The Main Event
+    tab: Main Event
+    price: $1,350
+    cadence: per month
+    pitch: Social, PR and strategy working together. The plan most clients grow into, fast.
+    features:
+      - Three social platforms, managed
+      - Twenty posts a month, plus stories
+      - One press release or media pitch a month
+      - Comments and messages answered
+      - Monthly strategy call
+    featured: true
+    sticker: most-popular
+    color: mustard
+    cta: Book the favorite
+    placeholder: true
+
+  - name: The Full Spotlight
+    tab: Spotlight
+    price: $2,400
+    cadence: per month
+    pitch: For campaigns, launches and leaders who need a team in their corner every single day.
+    features:
+      - Everything in The Main Event
+      - Up to five platforms, managed
+      - Ongoing media outreach and interview prep
+      - Reputation monitoring and replies
+      - Campaign and event planning
+      - Priority same-day responses
+    color: blush
+    cta: Go all in
+    placeholder: true
+
+addonsHeading: Little Extras, Big Difference
+addons:
+  - name: Brand photo direction
+    price: From $300
+    note: Shot list, styling notes and on-the-day direction.
+    placeholder: true
+  - name: Press release, one-off
+    price: $400
+    note: Written, polished and pitched.
+    placeholder: true
+  - name: Event promotion package
+    price: From $750
+    note: Before, during and after.
+    placeholder: true
+  - name: Media training session
+    price: $350
+    note: Ninety minutes. You'll walk out ready.
+    placeholder: true
+
+footnote: Month-to-month after the first three months. Ad spend and printing are billed separately, at cost, with receipts.

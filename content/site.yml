@@ -1,0 +1,143 @@
+# Site-wide settings. Edit these in Pages CMS under "Site settings".
+# Anything marked placeholder: true is a stand-in until the real detail arrives.
+# The live site will refuse to publish while any placeholder remains.
+
+name: Oddly Perfect LLC
+shortName: Oddly Perfect
+legalName: Oddly Perfect LLC
+tagline: Public relations, marketing and social media management, tailored until it fits.
+description: Oddly Perfect is a PR and marketing firm that runs your social media, press and reputation like a very organized friend with a plan. Call us.
+url: https://oddlyperfectllc.com
+
+phone:
+  display: (555) 555-0142
+  tel: "+15555550142"
+  placeholder: true
+
+email:
+  address: hello@oddlyperfectllc.com
+  placeholder: true
+
+hours:
+  rows:
+    - days: Monday to Thursday
+      time: 9 am to 5 pm
+    - days: Friday
+      time: 9 am to 3 pm
+    - days: Saturday and Sunday
+      time: Closed. Resting our clipboard.
+  note: Leave a message after hours and we'll call back the next business day. Usually before you've finished your coffee.
+  placeholder: true
+
+serviceArea: Serving business owners, campaigns and entrepreneurs, near and far.
+
+socials:
+  - platform: facebook
+    label: Facebook
+    handle: Oddly Perfect LLC
+    url: https://www.facebook.com/oddlyperfectllc
+    placeholder: true
+  - platform: instagram
+    label: Instagram
+    handle: "@oddlyperfectllc"
+    url: https://www.instagram.com/oddlyperfectllc
+    placeholder: true
+  - platform: linkedin
+    label: LinkedIn
+    handle: Oddly Perfect LLC
+    url: https://www.linkedin.com/company/oddlyperfectllc
+    placeholder: true
+
+announcement:
+  enabled: false
+  text: Now booking spring campaigns. The calendar is filling up, and so is our planner.
+  link:
+    label: Grab a spot
+    href: tel:+15555550142
+
+analytics:
+  ga4Id: ""
+  consent:
+    message: We'd like to count visits with Google Analytics so we know what's working. No ads, no selling your data. Your call.
+    accept: Sure, count me
+    decline: No thanks
+    moreLabel: Read the privacy policy
+
+nav:
+  links:
+    - label: Home
+      href: /
+      tab: true
+      icon: home
+      color: tangerine
+    - label: Services
+      href: /services/
+      tab: true
+      icon: services
+      color: mint
+    - label: Pricing
+      href: /pricing/
+      tab: true
+      icon: pricing
+      color: mustard
+    - label: Reviews
+      href: /reviews/
+      tab: true
+      icon: reviews
+      color: blush
+    - label: About
+      href: /about/
+      tab: true
+      icon: about
+      color: peri
+  callLabel: Call Us
+  callShort: Call
+  emailLabel: Email us instead
+  themeToLight: Switch to light mode
+  themeToDark: Switch to dark mode
+  skipLink: Skip to the good part
+  homeLabel: Oddly Perfect home
+
+footer:
+  signoff: Let's Make You Impossible To Ignore.
+  signoffSub: One phone call. We'll bring the plan, the calendar and the color-coded tabs.
+  callLabel: Ring the bell
+  hoursHeading: Office Hours
+  socialHeading: Follow Along
+  legalHeading: The Fine Print
+  smallprint: Oddly Perfect LLC. Proudly over-prepared.
+  easterEgg:
+    trigger: Psst. Click for a secret.
+    reveal: We alphabetize our sticky notes. By color. Then by mood.
+  backToTop: Back to the top, chop chop
+
+legalLinks:
+  - label: Privacy Policy
+    href: /privacy/
+  - label: Terms
+    href: /terms/
+  - label: Accessibility
+    href: /accessibility/
+
+notFound:
+  title: Page Not Found
+  heading: Well, This Is Oddly Imperfect.
+  body: The page you wanted has wandered off. We've already scheduled a stern talk with it. In the meantime, the good stuff is one tap away.
+  cta: Take me home
+
+loadingText: Sharpening pencils...
+
+intro:
+  enabled: true
+  skipLabel: Skip intro
+  caption: Peeling back the good stuff
+
+brochure:
+  label: Grab the one-page brochure
+  blurb: Everything we do on one tidy page. Printer-friendly, fridge-worthy.
+  file: /downloads/oddly-perfect-services.pdf
+  placeholder: true
+
+logo:
+  text: Oddly Perfect
+  placeholder: true

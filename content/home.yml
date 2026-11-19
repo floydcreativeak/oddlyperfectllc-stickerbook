@@ -1,0 +1,81 @@
+# Home page copy, top to bottom, in the order the sections appear.
+# Sticker lists use ids from content/stickers.yml (max 3 per section).
+
+seo:
+  title: Oddly Perfect | PR, Marketing & Social Media Management
+  description: PR, marketing and social media management for business owners, candidates and entrepreneurs. Tailored plans, zero fluff. Call Oddly Perfect.
+
+hero:
+  eyebrow: Public relations, minus the snooze
+  headline: Oddly Specific. Perfectly Yours.
+  headlineAccent: Perfectly Yours.
+  sub: PR, marketing and social media management for people who'd rather be running the show. We plan it, post it and pitch it. You take the bow.
+  callLabel: Call us. We're ready.
+  emailLabel: Or send an email
+  dragHint: Go on, move the stickers. We won't tell.
+  keyboardHint: Select a sticker, then use the arrow keys to move it.
+  stickers: [tailored, star, coffee, bubble-hi, bolt, no-wall, heart, megaphone, crown]
+
+services:
+  eyebrow: What we do
+  heading: Everything Your Brand Keeps Putting Off.
+  intro: Pick one. Pick five. Each one is fitted to you, like a suit, but for your reputation.
+  cta:
+    label: See every service
+    hoverLabel: Yes, every single one
+  stickers: [no-wall, sparkle]
+
+pricing:
+  eyebrow: The money part
+  heading: Clear Prices. No Mystery Math.
+  intro: Three ways to work together, plus extras when you want a little more sparkle. Every plan starts with a real conversation.
+  cta:
+    label: Compare the plans
+    hoverLabel: Spreadsheet lovers, rejoice
+  stickers: [check]
+
+contact:
+  eyebrow: The easy part
+  heading: Pick Up The Phone. We'll Handle The Rest.
+  intro: No forms, no chatbots, no "someone will be in touch." A real person answers and you leave the call with a next step.
+  callHeading: Call Us
+  emailHeading: Email Us
+  hoursHeading: Office Hours
+  afterHours: After hours? Leave a voicemail. We return calls first thing, with a plan in hand.
+  stickers: [arrow-call, coffee]
+
+about:
+  eyebrow: Who's behind the clipboard
+  heading: Tailored Is Our Whole Thing.
+  intro: Oddly Perfect exists because cookie-cutter PR doesn't fit anyone. Including us.
+  body:
+    - We're the organized friend with the color-coded calendar and the strong opinions about your bio. Every client gets a plan built around their goals, their voice and their actual schedule.
+    - Business owners, candidates and entrepreneurs come to us when they're tired of posting into the void. We bring the strategy, the calendar and the follow-through. You get your evenings back.
+  cta:
+    label: Meet the team
+    hoverLabel: They're lovely, promise
+  stickers: [type-a, heart]
+
+process:
+  eyebrow: How we work
+  heading: Four Steps. Zero Guesswork.
+  intro: We've done the planning so you don't have to. Here's exactly what happens after you call.
+  stickers: [ahead]
+
+reviews:
+  eyebrow: Kind words, pinned up
+  heading: Our Fridge Of Fan Mail.
+  intro: Real notes from real clients, stuck to the wall where we can admire them.
+  dragHint: Nudge the notes around. They like the attention.
+  listToggle: Show as a plain list
+  wallToggle: Show as a sticky-note wall
+  cta:
+    label: Read every review
+    hoverLabel: Bring snacks
+  stickers: [star]
+
+faq:
+  eyebrow: Good questions
+  heading: You Asked. We Over-Prepared.
+  intro: The short answers. For the long ones, call. We love a long answer.
+  stickers: [bubble-hi]

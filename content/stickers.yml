@@ -1,0 +1,155 @@
+# The sticker sheet. Sections reference stickers by id.
+# kind: drawn  = hand-drawn SVG art (most stickers should be these)
+# kind: label  = a short handwritten word sticker
+# kind: emoji  = bundled Noto Emoji artwork on a die-cut sticker. Use sparingly:
+#                max 1-2 per screen, and never put emoji in normal text.
+# decorative: true hides the sticker from screen readers (it adds no information).
+
+stickers:
+  - kind: label
+    id: tailored
+    label: Tailored
+    caption: Tailored!
+    color: cream
+    rotate: -7
+
+  - kind: label
+    id: no-wall
+    label: No wall of text
+    caption: No Wall of Text
+    color: mint
+    rotate: 5
+
+  - kind: label
+    id: on-it
+    label: On it
+    caption: On It.
+    color: blush
+    rotate: -4
+
+  - kind: label
+    id: ahead
+    label: Three steps ahead
+    caption: 3 Steps Ahead
+    color: peri
+    rotate: 6
+
+  - kind: label
+    id: type-a
+    label: Type A and proud
+    caption: Type A & Proud
+    color: mustard
+    rotate: -5
+
+  - kind: label
+    id: most-popular
+    label: Most popular tier
+    caption: Crowd Favorite
+    color: tangerine
+    rotate: 8
+    decorative: false
+
+  - kind: drawn
+    id: star
+    label: Gold star
+    art: star
+    color: mustard
+    rotate: -12
+
+  - kind: drawn
+    id: sparkle
+    label: Sparkle
+    art: sparkle
+    color: peri
+    rotate: 8
+
+  - kind: drawn
+    id: bubble-hi
+    label: Speech bubble saying hello
+    art: bubble
+    caption: Hi!
+    color: blush
+    rotate: -6
+
+  - kind: drawn
+    id: arrow-call
+    label: Arrow pointing at the call button
+    art: arrow-curl
+    caption: Tap me
+    color: cream
+    rotate: 4
+
+  - kind: drawn
+    id: bolt
+    label: Lightning bolt
+    art: bolt
+    color: mustard
+    rotate: 10
+
+  - kind: drawn
+    id: heart
+    label: Heart
+    art: heart
+    color: blush
+    rotate: -10
+
+  - kind: drawn
+    id: megaphone
+    label: Megaphone
+    art: megaphone
+    color: tangerine
+    rotate: -8
+
+  - kind: drawn
+    id: crown
+    label: Crown
+    art: crown
+    color: mustard
+    rotate: 9
+
+  - kind: drawn
+    id: check
+    label: Check mark
+    art: check
+    color: mint
+    rotate: -5
+
+  - kind: drawn
+    id: target
+    label: Bullseye
+    art: target
+    color: blush
+    rotate: 6
+
+  - kind: drawn
+    id: squiggle
+    label: Squiggle
+    art: squiggle
+    color: peri
+    rotate: 0
+
+  - kind: drawn
+    id: badge
+    label: Rosette badge
+    art: badge
+    color: tangerine
+    rotate: -9
+
+  - kind: emoji
+    id: coffee
+    label: Coffee cup sticker, fueled by coffee
+    emoji: coffee.svg
+    caption: Fueled By Coffee
+    rotate: 7
+
+  - kind: emoji
+    id: hundred
+    label: One hundred points sticker
+    emoji: hundred.svg
+    rotate: -8
+
+  - kind: emoji
+    id: clipboard
+    label: Clipboard sticker
+    emoji: clipboard.svg
+    rotate: 6

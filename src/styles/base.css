@@ -1,0 +1,306 @@
+/* ==========================================================================
+   Base styles. Reads tokens only (src/styles/tokens.css).
+   Mobile-first: everything starts at 320px and widens with min-width queries.
+   ========================================================================== */
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--nav-height) + var(--space-s));
+  hanging-punctuation: first last;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within { scroll-behavior: smooth; }
+}
+body {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+  /* Room for the mobile tab bar + floating Call button */
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 900px) {
+  body { padding-bottom: 0; }
+}
+img, picture, svg, video, canvas { display: block; max-width: 100%; }
+img { height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+p, li, figcaption, blockquote { text-wrap: pretty; max-width: var(--measure); }
+h1, h2, h3, h4 { text-wrap: balance; overflow-wrap: break-word; }
+a { color: inherit; text-decoration-thickness: 0.09em; text-underline-offset: 0.18em; }
+a:hover { text-decoration-thickness: 0.16em; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+:target { scroll-margin-top: calc(var(--nav-height) + var(--space-m)); }
+::selection { background: var(--c-mustard); color: var(--c-ink); }
+
+/* ---------- Typography ---------- */
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  font-weight: 400; /* Alfa Slab One only has one, very heavy, weight */
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+}
+h1, .h1 { font-size: var(--step-5); }
+h2, .h2 { font-size: var(--step-4); }
+h3, .h3 { font-size: var(--step-2); line-height: var(--leading-snug); }
+h4, .h4 { font-family: var(--font-body); font-size: var(--step-1); font-weight: 800; line-height: var(--leading-snug); }
+.display-xl { font-family: var(--font-display); font-size: var(--step-6); line-height: 0.9; letter-spacing: -0.02em; }
+.hand { font-family: var(--font-hand); font-size: var(--step-hand); line-height: 1.1; letter-spacing: 0.01em; }
+.lede { font-size: var(--step-1); line-height: 1.45; font-weight: 500; }
+.eyebrow {
+  font-family: var(--font-hand);
+  font-size: var(--step-1);
+  line-height: 1;
+  display: inline-block;
+}
+strong, b { font-weight: 800; }
+.muted { color: var(--text-muted); }
+
+.prose > * + * { margin-top: var(--space-s); }
+.prose h2 { font-size: var(--step-3); margin-top: var(--space-xl); }
+.prose h3 { margin-top: var(--space-l); }
+.prose ul, .prose ol { padding-left: 1.25em; }
+.prose li + li { margin-top: var(--space-2xs); }
+.prose a { color: var(--accent-text); font-weight: 600; }
+
+/* ---------- Focus (visible on every interactive element, on any block) ---------- */
+:focus { outline: none; }
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px var(--focus-halo);
+  border-radius: var(--radius-xs);
+}
+
+/* ---------- Accessibility helpers ---------- */
+.visually-hidden:not(:focus):not(:active) {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+  white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: fixed;
+  top: var(--space-s);
+  left: var(--space-s);
+  z-index: var(--z-skip);
+  padding: var(--space-xs) var(--space-m);
+  background: var(--c-ink);
+  color: var(--c-cream);
+  font-weight: 800;
+  border-radius: var(--radius-pill);
+  transform: translateY(-200%);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus { transform: translateY(0); }
+
+/* ---------- Layout ---------- */
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--content-width));
+  margin-inline: auto;
+}
+.wrap--prose { width: min(100% - 2 * var(--gutter), var(--prose-width)); margin-inline: auto; }
+.stack > * + * { margin-top: var(--stack-gap, var(--space-s)); }
+.cluster { display: flex; flex-wrap: wrap; gap: var(--cluster-gap, var(--space-s)); align-items: center; }
+
+/* ---------- Colour blocks (each home section is one) ---------- */
+.block {
+  --block-color: var(--bg);
+  position: relative;
+  background: var(--block-color);
+  color: var(--on-block);
+  padding-block: var(--space-section);
+  isolation: isolate;
+}
+.block--hero { --block-color: var(--block-hero); }
+.block--services { --block-color: var(--block-services); }
+.block--pricing { --block-color: var(--block-pricing); }
+.block--contact { --block-color: var(--block-contact); }
+.block--about { --block-color: var(--block-about); }
+.block--reviews { --block-color: var(--block-reviews); color: var(--text); }
+.block--faq { --block-color: var(--block-faq); }
+.block--plain { --block-color: var(--bg); color: var(--text); }
+
+/* Scalloped top edge: a row of solid circles in the block's own colour
+   (an SVG mask, not a gradient), overlapping the block above. */
+.block--scallop::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--scallop-size) * -0.5 + 1px) 0 auto 0;
+  height: calc(var(--scallop-size) * 0.5);
+  background: var(--block-color);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='11' viewBox='0 0 22 11'%3E%3Cpath d='M0 11A11 11 0 0 1 22 11Z'/%3E%3C/svg%3E") repeat-x left bottom / var(--scallop-size) calc(var(--scallop-size) * 0.5);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='11' viewBox='0 0 22 11'%3E%3Cpath d='M0 11A11 11 0 0 1 22 11Z'/%3E%3C/svg%3E") repeat-x left bottom / var(--scallop-size) calc(var(--scallop-size) * 0.5);
+  z-index: 1;
+  pointer-events: none;
+}
+/* Overlap variant: block tucks up under the previous one like a stacked page */
+.block--overlap {
+  margin-top: calc(var(--radius-xl) * -1);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: 0 -2px 0 rgb(var(--shadow-color) / 0.12);
+}
+
+.section-head { display: grid; gap: var(--space-s); margin-bottom: var(--space-xl); }
+.section-head p { font-size: var(--step-1); line-height: 1.45; font-weight: 500; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  --btn-bg: var(--surface);
+  --btn-fg: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  min-height: var(--tap-min);
+  min-width: var(--tap-min);
+  padding: 0.7em 1.35em;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: var(--step-0);
+  line-height: 1.1;
+  text-decoration: none;
+  border: var(--border-chunky) solid var(--c-ink);
+  border-radius: var(--radius-pill);
+  box-shadow: 4px 4px 0 var(--c-ink);
+  transition:
+    transform var(--dur-spring) var(--ease-fallback-spring),
+    box-shadow var(--dur-fast) var(--ease-out);
+  transition-timing-function: var(--ease-spring);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+.btn:hover { transform: translate(-2px, -2px) rotate(-1.5deg) scale(1.03); box-shadow: 6px 6px 0 var(--c-ink); }
+.btn:active { transform: translate(2px, 2px) scale(0.96, 0.92); box-shadow: 1px 1px 0 var(--c-ink); transition-duration: var(--dur-instant); }
+.btn svg { width: 1.25em; height: 1.25em; flex: none; }
+.btn--accent { --btn-bg: var(--accent); --btn-fg: var(--on-accent); }
+.btn--ink { --btn-bg: var(--c-ink); --btn-fg: var(--c-cream); border-color: var(--c-ink); }
+.btn--ghost { --btn-bg: transparent; --btn-fg: currentColor; border-color: currentColor; box-shadow: none; }
+.btn--ghost:hover { box-shadow: none; }
+.btn--lg { font-size: var(--step-1); padding: 0.85em 1.6em; }
+:root[data-theme="dark"] .btn { border-color: var(--c-ink); }
+
+/* The giant sticker-style Call button: die-cut cream outline + phone number */
+.btn--call {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--on-accent);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1em;
+  padding: 0.75em 1.5em 0.8em;
+  border-radius: var(--radius-l) var(--radius-m) var(--radius-l) var(--radius-s);
+  outline: var(--sticker-outline-width) solid var(--sticker-outline);
+  outline-offset: 0;
+  box-shadow: var(--shadow-sticker), 0 0 0 calc(var(--sticker-outline-width) + 2px) rgb(var(--shadow-color) / 0.08);
+  rotate: -2deg;
+}
+.btn--call:hover { box-shadow: var(--shadow-lift); }
+.btn--call:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.btn--call .btn__label { font-family: var(--font-hand); font-size: var(--step-1); font-weight: 400; }
+.btn--call .btn__number { font-family: var(--font-display); font-size: var(--step-3); letter-spacing: 0; white-space: nowrap; }
+
+/* ---------- Stickers (die-cut: cream outline + soft shadow) ---------- */
+.sticker {
+  --rot: -4deg;
+  display: inline-grid;
+  place-items: center;
+  rotate: var(--rot);
+  filter: drop-shadow(0 5px 8px rgb(var(--shadow-color) / 0.22));
+  transform-origin: 50% 60%;
+  transition: transform var(--dur-spring) var(--ease-spring), rotate var(--dur-spring) var(--ease-spring);
+  z-index: var(--z-sticker);
+}
+.sticker svg { overflow: visible; }
+/* Drawn stickers carry their outline in the SVG via stroke + paint-order */
+.sticker .die-cut { stroke: var(--sticker-outline); stroke-width: 10; stroke-linejoin: round; paint-order: stroke; }
+.sticker--label {
+  padding: 0.35em 0.85em 0.45em;
+  background: var(--c-paper);
+  color: var(--c-ink);
+  font-family: var(--font-hand);
+  font-size: var(--step-hand);
+  line-height: 1;
+  border: var(--border-thin) solid var(--c-ink);
+  border-radius: var(--radius-s);
+  outline: var(--sticker-outline-width) solid var(--sticker-outline);
+  white-space: nowrap;
+}
+/* Emoji stickers: bundled Noto artwork on a die-cut cream disc */
+.sticker--emoji {
+  width: var(--sticker-size, 4.5rem);
+  aspect-ratio: 1;
+  padding: 14%;
+  background: var(--c-cream);
+  border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
+}
+.sticker--emoji img { width: 100%; height: 100%; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .sticker:not([data-static]):hover { transform: translateY(-4px) scale(1.06); rotate: calc(var(--rot) * -0.6); }
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--surface);
+  color: var(--text);
+  border: var(--border-chunky) solid var(--c-ink);
+  border-radius: var(--radius-wonky);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-l);
+}
+
+/* ---------- Placeholder photo frame (forgives phone shots) ---------- */
+.photo-frame {
+  position: relative;
+  background: var(--c-paper);
+  padding: 10px 10px 12px;
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-card);
+  border: var(--border-thin) solid var(--c-ink);
+}
+.photo-frame img { border-radius: calc(var(--radius-m) - 8px); width: 100%; height: 100%; object-fit: cover; }
+.photo-frame[data-placeholder]::after {
+  content: attr(data-placeholder-label);
+  position: absolute;
+  left: 18px; bottom: 20px;
+  padding: 0.2em 0.6em;
+  background: var(--c-ink);
+  color: var(--c-cream);
+  font-size: var(--step--1);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+}
+
+/* ---------- View transitions: colour-block wipe ---------- */
+@keyframes wipe-in { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes fade-out { to { opacity: 0.4; } }
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: fade-out var(--dur-slow) var(--ease-out) both; }
+  ::view-transition-new(root) { animation: wipe-in var(--dur-slow) var(--ease-in-out) both; }
+}
+
+/* ---------- Reduced motion: no movement anywhere, content stays ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  .btn:hover, .btn:active { transform: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
+}

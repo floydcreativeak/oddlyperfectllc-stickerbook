@@ -1,0 +1,55 @@
+/* Self-hosted, subset, OFL fonts (see public/fonts/OFL-*.txt).
+   Rebuild with scripts/subset-fonts.sh. All use font-display: swap.
+   The "Fallback" faces are metric-adjusted local fonts so the swap
+   doesn't shove the layout around (keeps CLS near zero). */
+
+@font-face {
+  font-family: "Alfa Slab One";
+  src: url("/fonts/alfa-slab-one-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Caveat Brush";
+  src: url("/fonts/caveat-brush-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Figtree Variable";
+  src: url("/fonts/figtree-latin-var.woff2") format("woff2-variations"),
+       url("/fonts/figtree-latin-var.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Figtree Variable";
+  src: url("/fonts/figtree-latin-var-italic.woff2") format("woff2-variations"),
+       url("/fonts/figtree-latin-var-italic.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Metric-matched fallbacks */
+@font-face {
+  font-family: "Alfa Slab Fallback";
+  src: local("Rockwell Extra Bold"), local("Rockwell"), local("Georgia Bold"), local("Georgia");
+  size-adjust: 112%;
+  ascent-override: 88%;
+  descent-override: 24%;
+}
+
+@font-face {
+  font-family: "Figtree Fallback";
+  src: local("Arial"), local("Helvetica"), local("Roboto");
+  size-adjust: 101%;
+  ascent-override: 94%;
+  descent-override: 25%;
+}

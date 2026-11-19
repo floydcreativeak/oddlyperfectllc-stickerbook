@@ -1,0 +1,70 @@
+# Publishes the site to GitHub Pages (custom domain from public/CNAME).
+# Runs on every push to main, or by hand from the Actions tab.
+#
+# Production deploys run the STRICT content lint: if any placeholder photo,
+# price, review or detail is still flagged, the deploy stops with a list of
+# what to replace. For a client preview, run it by hand and tick
+# "Allow placeholders".
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      allow_placeholders:
+        description: "Allow placeholders (preview deploy only, not for launch)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Content lint (strict, blocks placeholders)
+        if: ${{ !inputs.allow_placeholders }}
+        run: npm run lint:content:strict
+
+      - name: Content lint (preview, placeholders allowed)
+        if: ${{ inputs.allow_placeholders }}
+        run: npm run lint:content
+
+      - name: CMS config covers all content
+        run: npm run lint:cms
+
+      - name: Build
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

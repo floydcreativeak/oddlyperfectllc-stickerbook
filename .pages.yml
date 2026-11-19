@@ -1,0 +1,544 @@
+# Pages CMS configuration (https://pagescms.org).
+# Turns the files in /content into friendly web forms.
+# Field rules here mirror src/content.config.ts, so most typos are caught in
+# the form, and anything that slips through is caught by the build.
+
+media:
+  input: content/media
+  output: ../media
+  categories: [image]
+
+content:
+  # ------------------------------------------------------------------
+  - name: site
+    label: Site settings (phone, hours, socials)
+    description: Phone number, email, hours, social links, the announcement bar and the footer.
+    type: file
+    path: content/site.yml
+    format: yaml
+    fields:
+      - { name: name, label: Business name, type: string, required: true }
+      - { name: shortName, label: Short name, type: string, required: true }
+      - { name: legalName, label: Legal name, type: string, required: true }
+      - { name: tagline, label: Tagline, type: string, required: true }
+      - name: description
+        label: Search engine description
+        description: What Google shows under your name. Keep it under 160 characters.
+        type: text
+        required: true
+        options: { maxlength: 170 }
+      - { name: url, label: Website address, type: string, required: true, readonly: true }
+      - name: phone
+        label: Phone
+        type: object
+        fields:
+          - { name: display, label: Phone (as shown), description: "How it appears on the site, e.g. (907) 555-0142", type: string, required: true }
+          - name: tel
+            label: Phone (for dialing)
+            description: Digits only with country code, e.g. +19075550142
+            type: string
+            required: true
+            pattern: { regex: '^\+?[0-9]{7,15}$', message: "Digits only, starting with + and the country code." }
+          - { name: placeholder, label: Still a placeholder?, description: Untick once this is the real number., type: boolean }
+      - name: email
+        label: Email
+        type: object
+        fields:
+          - { name: address, label: Email address, type: string, required: true }
+          - { name: placeholder, label: Still a placeholder?, type: boolean }
+      - name: hours
+        label: Office hours
+        type: object
+        fields:
+          - name: rows
+            label: Hours
+            type: object
+            list: { min: 1 }
+            fields:
+              - { name: days, label: Days, type: string, required: true }
+              - { name: time, label: Time, type: string, required: true }
+          - { name: note, label: After-hours note, type: text }
+          - { name: placeholder, label: Still a placeholder?, type: boolean }
+      - { name: serviceArea, label: Who we serve (one line), type: string }
+      - name: socials
+        label: Social links
+        type: object
+        list: true
+        fields:
+          - name: platform
+            label: Platform
+            type: select
+            required: true
+            options: { values: [facebook, instagram, linkedin, x, tiktok, youtube, threads, google] }
+          - { name: label, label: Name shown, type: string, required: true }
+          - { name: handle, label: Handle, type: string }
+          - { name: url, label: Link, type: string, required: true, pattern: { regex: '^https://', message: Must start with https:// } }
+          - { name: placeholder, label: Still a placeholder?, type: boolean }
+      - name: announcement
+        label: Announcement bar
+        description: An optional strip across the top of every page.
+        type: object
+        fields:
+          - { name: enabled, label: Show the announcement bar, type: boolean }
+          - { name: text, label: Message, type: string, required: true }
+          - name: link
+            label: Link (optional)
+            type: object
+            fields:
+              - { name: label, label: Link text, type: string }
+              - { name: href, label: Link address, description: "A page like /pricing/, a web address, or tel:+1...", type: string }
+      - name: analytics
+        label: Google Analytics
+        type: object
+        fields:
+          - name: ga4Id
+            label: GA4 measurement ID
+            description: Looks like G-ABC123XYZ. Leave blank to turn analytics off.
+            type: string
+            pattern: { regex: '^(G-[A-Z0-9]{4,12})?$', message: "GA4 IDs start with G-" }
+          - name: consent
+            label: Consent banner wording
+            type: object
+            fields:
+              - { name: message, label: Message, type: text, required: true }
+              - { name: accept, label: Accept button, type: string, required: true }
+              - { name: decline, label: Decline button, type: string, required: true }
+              - { name: moreLabel, label: Privacy link text, type: string, required: true }
+      - name: nav
+        label: Navigation and buttons
+        type: object
+        fields:
+          - name: links
+            label: Menu links
+            type: object
+            list: { min: 2 }
+            fields:
+              - { name: label, label: Label, type: string, required: true }
+              - { name: href, label: Page address, type: string, required: true }
+              - { name: tab, label: Show in the mobile tab bar, type: boolean }
+              - { name: icon, label: Icon, type: select, required: true, options: { values: [home, services, pricing, reviews, about] } }
+              - { name: color, label: Color, type: select, required: true, options: { values: [mint, blush, mustard, peri, tangerine, cream] } }
+          - { name: callLabel, label: Call button text, type: string, required: true }
+          - { name: callShort, label: "Call button text (short, mobile)", type: string, required: true }
+          - { name: emailLabel, label: Email link text, type: string, required: true }
+          - { name: themeToLight, label: Theme toggle (to light), type: string, required: true }
+          - { name: themeToDark, label: Theme toggle (to dark), type: string, required: true }
+          - { name: skipLink, label: Skip link text, type: string, required: true }
+          - { name: homeLabel, label: Logo link text (for screen readers), type: string, required: true }
+      - name: footer
+        label: Footer
+        type: object
+        fields:
+          - { name: signoff, label: Big sign-off headline, type: string, required: true }
+          - { name: signoffSub, label: Line under the sign-off, type: text, required: true }
+          - { name: callLabel, label: Call button text, type: string, required: true }
+          - { name: hoursHeading, label: Hours heading, type: string, required: true }
+          - { name: socialHeading, label: Socials heading, type: string, required: true }
+          - { name: legalHeading, label: Legal links heading, type: string, required: true }
+          - { name: smallprint, label: Small print, type: string, required: true }
+          - name: easterEgg
+            label: Hidden easter egg
+            type: object
+            fields:
+              - { name: trigger, label: Button text, type: string, required: true }
+              - { name: reveal, label: Secret message, type: string, required: true }
+          - { name: backToTop, label: Back to top text, type: string, required: true }
+      - name: legalLinks
+        label: Legal links
+        type: object
+        list: { min: 1 }
+        fields:
+          - { name: label, label: Label, type: string, required: true }
+          - { name: href, label: Page address, type: string, required: true }
+      - name: notFound
+        label: Page-not-found screen
+        type: object
+        fields:
+          - { name: title, label: Tab title, type: string, required: true }
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: body, label: Message, type: text, required: true }
+          - { name: cta, label: Button text, type: string, required: true }
+      - { name: loadingText, label: Loading message, type: string, required: true }
+      - name: intro
+        label: Intro animation
+        type: object
+        fields:
+          - { name: enabled, label: Play the intro (once per visit), type: boolean }
+          - { name: skipLabel, label: Skip button text, type: string, required: true }
+          - { name: caption, label: Caption, type: string, required: true }
+      - name: brochure
+        label: Brochure download
+        type: object
+        fields:
+          - { name: label, label: Link text, type: string, required: true }
+          - { name: blurb, label: Short description, type: string }
+          - name: file
+            label: PDF address
+            description: Upload the PDF to public/downloads, then enter /downloads/file-name.pdf
+            type: string
+            required: true
+            pattern: { regex: '^/downloads/.+\.pdf$', message: "Must look like /downloads/name.pdf" }
+          - { name: placeholder, label: Still a placeholder?, type: boolean }
+      - name: logo
+        label: Logo
+        type: object
+        fields:
+          - { name: text, label: Wordmark text, type: string, required: true }
+          - { name: placeholder, label: Still a placeholder?, description: Untick once the real logo is in place., type: boolean }
+
+  # ------------------------------------------------------------------
+  - name: home
+    label: Home page
+    description: Every heading and line of copy on the home page, top to bottom.
+    type: file
+    path: content/home.yml
+    format: yaml
+    fields:
+      - name: seo
+        label: Search engine listing
+        type: object
+        fields:
+          - { name: title, label: Browser tab title, type: string, required: true }
+          - { name: description, label: Description, type: text, required: true, options: { maxlength: 170 } }
+      - name: hero
+        label: 1. Hero (top of page)
+        type: object
+        fields:
+          - { name: eyebrow, label: Small line above the headline, type: string, required: true }
+          - { name: headline, label: Giant headline, type: string, required: true }
+          - { name: headlineAccent, label: Words to underline, description: Must appear exactly in the headline., type: string, required: true }
+          - { name: sub, label: Supporting sentence, type: text, required: true }
+          - { name: callLabel, label: Call button text, type: string, required: true }
+          - { name: emailLabel, label: Email link text, type: string, required: true }
+          - { name: dragHint, label: Sticker drag hint, type: string, required: true }
+          - { name: keyboardHint, label: Keyboard hint (screen readers), type: string, required: true }
+          - { name: stickers, label: Stickers in the pile (ids), description: Use ids from the Sticker sheet. 3 to 9., type: string, list: { min: 3, max: 9 } }
+      - name: services
+        label: 2. Services section
+        type: object
+        fields:
+          - { name: eyebrow, label: Small line above the heading, type: string }
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - name: cta
+            label: Button
+            type: object
+            fields:
+              - { name: label, label: Button text, type: string }
+              - { name: hoverLabel, label: Hover text, type: string }
+          - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
+      - name: pricing
+        label: 3. Pricing section
+        type: object
+        fields:
+          - { name: eyebrow, label: Small line above the heading, type: string }
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - name: cta
+            label: Button
+            type: object
+            fields:
+              - { name: label, label: Button text, type: string }
+              - { name: hoverLabel, label: Hover text, type: string }
+          - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
+      - name: contact
+        label: 4. Contact section
+        type: object
+        fields:
+          - { name: eyebrow, label: Small line above the heading, type: string }
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - { name: callHeading, label: Call card heading, type: string, required: true }
+          - { name: emailHeading, label: Email card heading, type: string, required: true }
+          - { name: hoursHeading, label: Hours card heading, type: string, required: true }
+          - { name: afterHours, label: After-hours line, type: text, required: true }
+          - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
+      - name: about
+        label: 5. About section
+        type: object
+        fields:
+          - { name: eyebrow, label: Small line above the heading, type: string }
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - { name: body, label: Paragraphs, type: text, list: { min: 1, max: 4 } }
+          - name: cta
+            label: Button
+            type: object
+            fields:
+              - { name: label, label: Button text, type: string }
+              - { name: hoverLabel, label: Hover text, type: string }
+          - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
+      - name: process
+        label: How we work (story section)
+        type: object
+        fields:
+          - { name: eyebrow, label: Small line above the heading, type: string }
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - name: cta
+            label: Button
+            type: object
+            fields:
+              - { name: label, label: Button text, type: string }
+              - { name: hoverLabel, label: Hover text, type: string }
+          - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
+      - name: reviews
+        label: 6. Reviews section
+        type: object
+        fields:
+          - { name: eyebrow, label: Small line above the heading, type: string }
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - { name: dragHint, label: Drag hint, type: string, required: true }
+          - { name: listToggle, label: "'Show as list' button", type: string, required: true }
+          - { name: wallToggle, label: "'Show as wall' button", type: string, required: true }
+          - name: cta
+            label: Button
+            type: object
+            fields:
+              - { name: label, label: Button text, type: string }
+              - { name: hoverLabel, label: Hover text, type: string }
+          - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
+      - name: faq
+        label: 7. FAQ section
+        type: object
+        fields:
+          - { name: eyebrow, label: Small line above the heading, type: string }
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - name: cta
+            label: Button
+            type: object
+            fields:
+              - { name: label, label: Button text, type: string }
+              - { name: hoverLabel, label: Hover text, type: string }
+          - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
+
+  # ------------------------------------------------------------------
+  - name: services
+    label: Services
+    description: One entry per service. Order controls the position.
+    type: collection
+    path: content/services
+    format: yaml-frontmatter
+    filename: "{fields.title}.md"
+    view:
+      fields: [title, order, placeholder]
+      primary: title
+      sort: [order]
+    fields:
+      - { name: title, label: Service name, type: string, required: true }
+      - { name: order, label: Position (1 = first), type: number, required: true }
+      - { name: icon, label: Icon, type: select, required: true, options: { values: [megaphone, phone, calendar, chart, pen, camera, handshake, laptop, clipboard, target, crown, mic, bubble, bolt, star, flag] } }
+      - { name: color, label: Card color, type: select, required: true, options: { values: [mint, blush, mustard, peri, tangerine, cream] } }
+      - { name: summary, label: Card summary, type: text, required: true, options: { maxlength: 160 } }
+      - { name: highlights, label: Highlights (2 to 5), type: string, list: { min: 2, max: 5 } }
+      - { name: sticker, label: Sticker id (optional), type: string }
+      - { name: keywords, label: Search phrases (not shown), type: string, list: true }
+      - { name: placeholder, label: Still a placeholder?, description: Untick once the client has confirmed this service., type: boolean }
+      - { name: body, label: Full description (Services page), type: rich-text }
+
+  # ------------------------------------------------------------------
+  - name: pricing
+    label: Pricing
+    description: Plans and add-ons. Exactly one plan can be featured.
+    type: file
+    path: content/pricing.yml
+    format: yaml
+    fields:
+      - name: seo
+        label: Search engine listing
+        type: object
+        fields:
+          - { name: title, label: Browser tab title, type: string, required: true }
+          - { name: description, label: Description, type: text, required: true, options: { maxlength: 170 } }
+      - { name: heading, label: Heading, type: string, required: true }
+      - { name: intro, label: Intro, type: text, required: true }
+      - { name: currency, label: Currency, type: string, readonly: true }
+      - name: tiers
+        label: Plans
+        type: object
+        list: { min: 1, max: 4 }
+        fields:
+          - { name: name, label: Plan name, type: string, required: true }
+          - { name: tab, label: Folder tab label (short), type: string, required: true, options: { maxlength: 18 } }
+          - { name: price, label: Price (as shown), description: "e.g. $950 or From $1,200", type: string, required: true }
+          - { name: cadence, label: Per..., description: "e.g. per month", type: string, required: true }
+          - { name: pitch, label: One-line pitch, type: text, required: true }
+          - { name: features, label: What's included, type: string, list: { min: 2, max: 8 } }
+          - { name: featured, label: Featured plan, type: boolean }
+          - { name: sticker, label: Sticker id (optional), type: string }
+          - { name: color, label: Folder color, type: select, required: true, options: { values: [mint, blush, mustard, peri, tangerine, cream] } }
+          - { name: cta, label: Button text, type: string, required: true }
+          - { name: placeholder, label: Still a placeholder?, type: boolean }
+      - { name: addonsHeading, label: Add-ons heading, type: string, required: true }
+      - name: addons
+        label: Add-ons
+        type: object
+        list: true
+        fields:
+          - { name: name, label: Name, type: string, required: true }
+          - { name: price, label: Price (as shown), type: string, required: true }
+          - { name: note, label: Note, type: string }
+          - { name: placeholder, label: Still a placeholder?, type: boolean }
+      - { name: footnote, label: Footnote, type: text }
+
+  # ------------------------------------------------------------------
+  - name: reviews
+    label: Reviews
+    description: One sticky note per review. Use the reviewer's real words and get their permission first.
+    type: collection
+    path: content/reviews
+    format: yaml
+    filename: "{fields.name}-{year}{month}{day}.yml"
+    view:
+      fields: [name, source, rating, placeholder]
+      primary: name
+      sort: [order]
+    fields:
+      - { name: quote, label: Review, type: text, required: true, options: { maxlength: 420 } }
+      - { name: name, label: Reviewer name, description: "First name and last initial is fine, e.g. Jordan M.", type: string, required: true }
+      - { name: role, label: Who they are, description: "e.g. Small business owner. Don't name their business without permission.", type: string }
+      - { name: source, label: Where the review came from, type: select, required: true, options: { values: [email, message, yelp, facebook, google] } }
+      - { name: rating, label: Stars (1 to 5), type: number, required: true, options: { min: 1, max: 5 } }
+      - { name: date, label: Date, type: date }
+      - { name: link, label: Link to the original (optional), type: string }
+      - { name: featured, label: Show on the home page, type: boolean }
+      - { name: order, label: Position, type: number }
+      - { name: placeholder, label: Still a placeholder?, type: boolean }
+
+  # ------------------------------------------------------------------
+  - name: faq
+    label: FAQ
+    type: file
+    path: content/faq.yml
+    format: yaml
+    fields:
+      - name: items
+        label: Questions
+        type: object
+        list: { min: 1 }
+        fields:
+          - { name: question, label: Question, type: string, required: true }
+          - { name: answer, label: Answer, type: text, required: true }
+          - { name: home, label: Show on the home page, type: boolean }
+
+  - name: process
+    label: How we work (steps)
+    type: file
+    path: content/process.yml
+    format: yaml
+    fields:
+      - name: steps
+        label: Steps (3 to 6)
+        type: object
+        list: { min: 3, max: 6 }
+        fields:
+          - { name: title, label: Step title, type: string, required: true }
+          - { name: body, label: Description, type: text, required: true }
+          - { name: sticker, label: Sticker id (optional), type: string }
+          - { name: color, label: Color, type: select, required: true, options: { values: [mint, blush, mustard, peri, tangerine, cream] } }
+
+  # ------------------------------------------------------------------
+  - name: team
+    label: Team
+    type: collection
+    path: content/team
+    format: yaml-frontmatter
+    filename: "{fields.name}.md"
+    view:
+      fields: [name, title, placeholder]
+      primary: name
+      sort: [order]
+    fields:
+      - { name: name, label: Name, type: string, required: true }
+      - { name: title, label: Job title, type: string, required: true }
+      - { name: funFact, label: Fun fact, type: string, required: true }
+      - &photo
+        name: photo
+        label: Photo
+        type: object
+        fields:
+          - { name: src, label: Image, type: image, required: true }
+          - name: alt
+            label: Describe the photo
+            description: For people using screen readers. Say what's in it, e.g. "Sam laughing at her desk". Required.
+            type: string
+            required: true
+            options: { minlength: 8 }
+          - { name: placeholder, label: Still a placeholder photo?, description: Untick once you upload the real photo., type: boolean }
+      - { name: order, label: Position, type: number }
+      - { name: sticker, label: Sticker id (optional), type: string }
+      - { name: placeholder, label: Still a placeholder bio?, type: boolean }
+      - { name: body, label: Short bio, type: rich-text }
+
+  - name: gallery
+    label: Photo gallery
+    type: collection
+    path: content/gallery
+    format: yaml
+    filename: "photo-{year}{month}{day}-{hour}{minute}.yml"
+    view:
+      fields: [caption, order]
+      primary: caption
+      sort: [order]
+    fields:
+      - *photo
+      - { name: caption, label: Caption, type: string, required: true }
+      - { name: order, label: Position, type: number }
+
+  # ------------------------------------------------------------------
+  - name: stickers
+    label: Sticker sheet
+    description: The stickers used around the site. Emoji stickers use bundled artwork; never type emoji into normal text.
+    type: file
+    path: content/stickers.yml
+    format: yaml
+    fields:
+      - name: stickers
+        label: Stickers
+        type: object
+        list: { min: 1 }
+        fields:
+          - { name: kind, label: Kind, type: select, required: true, options: { values: [drawn, label, emoji] } }
+          - { name: id, label: Id (lowercase-with-dashes), type: string, required: true, pattern: { regex: '^[a-z0-9-]+$', message: Lowercase letters, numbers and dashes only } }
+          - { name: label, label: Description for screen readers, type: string, required: true }
+          - name: art
+            label: Drawing (drawn stickers only)
+            type: select
+            options: { values: [star, sparkle, squiggle, arrow, arrow-curl, bubble, bolt, heart, swoosh, megaphone, phone, calendar, chart, pen, camera, handshake, laptop, clipboard, target, crown, badge, flag, mic, thumbs, check, clock] }
+          - { name: emoji, label: Emoji artwork file (emoji stickers only), description: "File name in public/stickers/emoji, e.g. coffee.svg", type: string }
+          - { name: caption, label: Handwritten caption, type: string }
+          - { name: color, label: Color, type: select, options: { values: [mint, blush, mustard, peri, tangerine, cream] } }
+          - { name: rotate, label: "Tilt (degrees, -25 to 25)", type: number, options: { min: -25, max: 25 } }
+          - { name: decorative, label: Purely decorative (hidden from screen readers), type: boolean }
+
+  # ------------------------------------------------------------------
+  - name: pages
+    label: Pages (About, legal)
+    description: The About page plus Privacy, Terms and Accessibility.
+    type: collection
+    path: content/pages
+    format: yaml-frontmatter
+    operations: { create: false, delete: false, rename: false }
+    view:
+      fields: [heading, updated]
+      primary: heading
+    fields:
+      - { name: title, label: Browser tab title, type: string, required: true }
+      - { name: description, label: Search engine description, type: text, required: true, options: { maxlength: 170 } }
+      - { name: eyebrow, label: Small line above the heading, type: string }
+      - { name: heading, label: Heading, type: string, required: true }
+      - { name: intro, label: Intro, type: text }
+      - { name: color, label: Header color, type: select, options: { values: [mint, blush, mustard, peri, tangerine, cream] } }
+      - { name: updated, label: Last updated, type: date }
+      - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
+      - name: sections
+        label: Sections
+        type: object
+        list: true
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: body, label: Text, type: text, required: true }
+          - { name: sticker, label: Sticker id (optional), type: string }
+      - { name: body, label: Page text, type: rich-text }

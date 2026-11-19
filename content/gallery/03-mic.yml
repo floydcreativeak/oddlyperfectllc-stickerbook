@@ -1,0 +1,6 @@
+photo:
+  src: ../media/placeholder-mic.jpg
+  alt: "A microphone on a stand under warm studio light."
+  placeholder: true
+caption: "Interview prep: talking points first, nerves last."
+order: 3

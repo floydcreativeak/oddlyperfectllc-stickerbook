@@ -1,0 +1,18 @@
+# "How we work": the sticky-storytelling section. 3 to 6 steps.
+steps:
+  - title: You Call. We Listen.
+    body: Twenty minutes on the phone. You tell us what's working, what isn't and what keeps you up at night. We take very good notes.
+    sticker: bubble-hi
+    color: peri
+  - title: We Build The Plan.
+    body: Within a week you get a one-page plan, a calendar and a price. Clear goals, clear dates, no jargon.
+    sticker: check
+    color: mustard
+  - title: We Do The Work.
+    body: Posts go out, pitches go in, replies get answered. You approve the big stuff and skip the busywork.
+    sticker: bolt
+    color: mint
+  - title: You Get The Credit.
+    body: A short monthly report shows what worked. We adjust, you take the bow. Repeat until wildly successful.
+    sticker: crown
+    color: blush

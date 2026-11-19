@@ -1,0 +1,6 @@
+photo:
+  src: ../media/placeholder-flatlay.jpg
+  alt: "A phone, a notebook and a coffee mug arranged on a blush desk."
+  placeholder: true
+caption: "Brand shoot props, styled for the feed."
+order: 6

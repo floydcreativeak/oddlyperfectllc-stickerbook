@@ -1,0 +1,23 @@
+# Checks every branch and pull request: content lint (placeholders allowed,
+# but unfinished-text markers and emoji in text are not), type check, build.
+name: Check
+
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:content
+      - run: npm run lint:cms
+      - run: npm run check
+      - run: npm run build

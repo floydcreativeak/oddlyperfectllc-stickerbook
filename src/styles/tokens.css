@@ -1,0 +1,282 @@
+/* ==========================================================================
+   Oddly Perfect LLC: Design Tokens ("The Sticker Sheet")
+   --------------------------------------------------------------------------
+   The ONE place for colours, fonts, type scale, spacing, radii, shadows,
+   motion timing and layering. Components only ever read these variables.
+
+   Theme model
+   - Light is the default set on :root.
+   - Dark applies when the visitor's system prefers dark AND they haven't
+     picked a theme, or when they choose dark with the toggle
+     (html[data-theme="dark"]). Picking light sets data-theme="light".
+   - The dark values are written twice (media query + attribute) on purpose,
+     so the toggle works without JavaScript rewriting colours.
+
+   Contrast rules (WCAG 2.1 AA; ratios checked with scripts/contrast.mjs)
+   - Body text on any background is >= 4.5:1. Large display text >= 3:1.
+   - Pastel blocks NEVER carry pastel text: text on a block is always
+     --on-block (ink in light, cream in dark).
+   - --text-muted is only for cream/paper/surface backgrounds, never blocks.
+   - No pure white (#FFF), no pure black (#000), no gradients, no neon.
+   ========================================================================== */
+
+:root {
+  /* ---------- Raw palette (light). Ratios are vs. ink #2E2238. ---------- */
+  --c-cream: #f6eedc;      /* page background          ink on it: 12.97:1 */
+  --c-paper: #fbf6ea;      /* cards, sticky notes      ink on it: ~14:1   */
+  --c-ink: #2e2238;        /* all text + outlines                         */
+  --c-ink-soft: #5b4a66;   /* muted text, cream/paper only:   6.95:1      */
+  --c-mustard: #e8b94a;    /* block                    ink:    8.18:1     */
+  --c-blush: #f0b6b0;      /* block                    ink:    8.58:1     */
+  --c-mint: #a8d5ba;       /* block                    ink:    9.19:1     */
+  --c-peri: #a9b7e8;       /* block                    ink:    7.58:1     */
+  --c-tangerine: #e98b5b;  /* PRIMARY accent / hero    ink:    5.93:1     */
+  --c-tangerine-ink: #b5481a; /* tangerine readable AS text on cream 4.65:1 */
+
+  /* ---------- Semantic colours (what components use) ---------- */
+  --bg: var(--c-cream);
+  --surface: var(--c-paper);
+  --text: var(--c-ink);
+  --text-muted: var(--c-ink-soft);
+  --line: var(--c-ink);                  /* chunky outlines are ink, not grey */
+  --accent: var(--c-tangerine);
+  --on-accent: var(--c-ink);             /* text on the Call button: 5.93:1 */
+  --accent-text: var(--c-tangerine-ink); /* accent used as a text colour */
+  --focus: var(--c-ink);                 /* focus ring colour */
+  --focus-halo: var(--c-mustard);        /* second ring so focus shows on any block */
+
+  /* Section colour blocks (home page runs through these in order) */
+  --block-hero: var(--c-tangerine);
+  --block-services: var(--c-mint);
+  --block-pricing: var(--c-mustard);
+  --block-contact: var(--c-peri);
+  --block-about: var(--c-blush);
+  --block-reviews: var(--c-cream);
+  --block-faq: var(--c-mint);
+  --block-footer: var(--c-ink);
+  --on-block: var(--c-ink);
+  --on-footer: var(--c-cream);           /* cream on ink: 12.97:1 */
+
+  /* Sticky notes on the review wall (ink text on all: >= 7.5:1) */
+  --note-1: var(--c-mustard);
+  --note-2: var(--c-blush);
+  --note-3: var(--c-mint);
+  --note-4: var(--c-peri);
+  --on-note: var(--c-ink);
+  --star: var(--c-ink);                  /* stars are drawn in ink, never colour-only */
+
+  /* Stickers: die-cut cream outline + soft shadow, identical in both themes */
+  --sticker-outline: var(--c-cream);
+  --sticker-outline-width: 5px;
+  --sticker-ink: var(--c-ink);
+
+  /* Glass nav / tab bar (blur is decorative; colour alone keeps contrast) */
+  --glass-bg: rgb(246 238 220 / 0.78);
+  --glass-border: rgb(46 34 56 / 0.14);
+  --glass-blur: 14px;
+
+  /* ---------- Shadows (flat, offset, ink-tinted; no gradients) ---------- */
+  --shadow-color: 46 34 56;              /* ink as an RGB triplet */
+  --shadow-sticker: 0 6px 14px rgb(var(--shadow-color) / 0.22), 0 1px 2px rgb(var(--shadow-color) / 0.25);
+  --shadow-card: 0 2px 0 rgb(var(--shadow-color) / 0.9), 0 14px 30px -12px rgb(var(--shadow-color) / 0.35);
+  --shadow-lift: 0 4px 0 rgb(var(--shadow-color) / 0.9), 0 26px 40px -16px rgb(var(--shadow-color) / 0.4);
+  --shadow-pop: 6px 6px 0 var(--c-ink);  /* chunky "sticker sheet" offset */
+
+  /* ---------- Typography ---------- */
+  /* Alfa Slab One: heavy slab, used huge. Caveat Brush: sticker captions only.
+     Figtree: everything people actually read. All OFL, self-hosted, latin subset. */
+  --font-display: "Alfa Slab One", "Alfa Slab Fallback", Georgia, serif;
+  --font-hand: "Caveat Brush", "Comic Sans MS", "Marker Felt", cursive;
+  --font-body: "Figtree Variable", "Figtree Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Fluid type scale (mobile -> 1440px). Display is deliberately rude. */
+  --step--1: clamp(0.875rem, 0.84rem + 0.15vw, 0.95rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);      /* body */
+  --step-1: clamp(1.2rem, 1.1rem + 0.45vw, 1.45rem);
+  --step-2: clamp(1.45rem, 1.25rem + 0.9vw, 2rem);
+  --step-3: clamp(1.8rem, 1.45rem + 1.6vw, 2.9rem);       /* h3 */
+  --step-4: clamp(2.3rem, 1.7rem + 2.8vw, 4.4rem);       /* h2 */
+  --step-5: clamp(2.9rem, 1.9rem + 5vw, 7rem);           /* h1 */
+  --step-6: clamp(3.3rem, 1.6rem + 8.4vw, 10.5rem);      /* hero / footer sign-off */
+  --step-hand: clamp(1.15rem, 1.05rem + 0.5vw, 1.5rem);  /* sticker captions */
+
+  --leading-tight: 0.95;
+  --leading-snug: 1.2;
+  --leading-body: 1.6;
+  --tracking-display: -0.01em;
+  --measure: 62ch;                       /* max line length for prose */
+
+  /* ---------- Spacing (4px base; fluid section padding) ---------- */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4.5rem;
+  --space-3xl: 6.5rem;
+  --space-section: clamp(4rem, 2.5rem + 7vw, 9rem);
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);  /* page side padding */
+  --content-width: 72rem;               /* "medium" content width */
+  --prose-width: 44rem;
+
+  /* ---------- Radii (mixed corners are part of the hand-made look) ---------- */
+  --radius-xs: 6px;
+  --radius-s: 12px;
+  --radius-m: 20px;
+  --radius-l: 32px;
+  --radius-xl: 48px;
+  --radius-pill: 999px;
+  --radius-wonky: 28px 18px 32px 14px;   /* cards: deliberately uneven */
+  --radius-folder: 6px 22px 22px 22px;   /* pricing tiers look like folders */
+  --scallop-size: 22px;                  /* section edge scallop diameter */
+
+  /* ---------- Layout chrome ---------- */
+  --nav-height: 68px;
+  --nav-height-mobile: 56px;
+  --tabbar-height: 64px;
+  --tap-min: 44px;                       /* WCAG touch target minimum */
+  --border-chunky: 3px;
+  --border-thin: 2px;
+
+  /* ---------- Motion ---------- */
+  /* Spring-ish easings built with linear(). Browsers without linear()
+     fall back to the cubic-bezier declared first in each component. */
+  --ease-spring: linear(
+    0, 0.009, 0.035 2.1%, 0.141 4.4%, 0.723 12.9%, 0.938 16.7%, 1.017 19.4%,
+    1.067, 1.099 24.3%, 1.103 25.8%, 1.098 27.5%, 1.042 34.5%, 1.008 40.4%,
+    0.994 45.4%, 0.993 51.2%, 1 69.6%, 1
+  );                                     /* bouncy overshoot: stickers, buttons */
+  --ease-squish: linear(
+    0, 0.157 3.1%, 0.578 9.4%, 0.977 16.3%, 1.093 20.4%, 1.132 24.6%,
+    1.093 30.2%, 0.985 41.4%, 0.976 46.6%, 1.004 63.4%, 1
+  );                                     /* stronger bounce: "slap down" */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-fallback-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --dur-instant: 90ms;
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 600ms;
+  --dur-spring: 750ms;                   /* long enough for the overshoot to read */
+  --dur-intro: 1300ms;                   /* intro must stay under 1.5s */
+  --stagger: 60ms;                       /* word-by-word reveal gap */
+
+  --tilt-max: 7deg;                      /* card tilt follow-cursor limit */
+  --lift: -6px;                          /* hover lift distance */
+
+  /* ---------- Layering ---------- */
+  --z-base: 1;
+  --z-sticker: 5;
+  --z-nav: 50;
+  --z-tabbar: 60;
+  --z-call-fab: 61;
+  --z-cursor: 90;
+  --z-intro: 100;
+  --z-skip: 110;
+
+  color-scheme: light;
+}
+
+/* ---------- Dark set ----------
+   Plum night. Blocks keep their hues but deepen so cream text passes
+   (cream #F3EAD8 on each deep block: 5.2 - 6.4:1). */
+:root {
+  --dark-bg: #2a2033;
+  --dark-surface: #372b42;
+  --dark-text: #f3ead8;                  /* on bg 12.99:1, on surface 11.07:1 */
+  --dark-text-muted: #c9bcd3;            /* on bg 8.59:1 */
+  --dark-tangerine: #9a4a26;             /* cream on it 5.20:1 */
+  --dark-mustard: #7e5a12;               /* 5.23:1 */
+  --dark-blush: #8a3f4a;                 /* 6.08:1 */
+  --dark-mint: #2f6748;                  /* 5.57:1 */
+  --dark-peri: #3f4f94;                  /* 6.37:1 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: var(--dark-bg);
+    --surface: var(--dark-surface);
+    --text: var(--dark-text);
+    --text-muted: var(--dark-text-muted);
+    --line: var(--dark-text);
+    --accent: var(--c-tangerine);        /* bright tangerine button stays: ink on it 5.93:1 */
+    --on-accent: var(--c-ink);
+    --accent-text: var(--c-tangerine);   /* tangerine on plum bg: 6.14:1 */
+    --focus: var(--dark-text);
+    --focus-halo: var(--c-tangerine);
+    --block-hero: var(--dark-tangerine);
+    --block-services: var(--dark-mint);
+    --block-pricing: var(--dark-mustard);
+    --block-contact: var(--dark-peri);
+    --block-about: var(--dark-blush);
+    --block-reviews: var(--dark-bg);
+    --block-faq: var(--dark-mint);
+    --block-footer: #1f1726;             /* deeper plum, never #000 */
+    --on-block: var(--dark-text);
+    --on-footer: var(--dark-text);
+    --note-1: var(--dark-mustard);
+    --note-2: var(--dark-blush);
+    --note-3: var(--dark-mint);
+    --note-4: var(--dark-peri);
+    --on-note: var(--dark-text);
+    --star: var(--dark-text);
+    --glass-bg: rgb(42 32 51 / 0.8);
+    --glass-border: rgb(243 234 216 / 0.14);
+    --shadow-color: 15 10 20;
+    --shadow-pop: 6px 6px 0 rgb(15 10 20);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--dark-bg);
+  --surface: var(--dark-surface);
+  --text: var(--dark-text);
+  --text-muted: var(--dark-text-muted);
+  --line: var(--dark-text);
+  --accent: var(--c-tangerine);
+  --on-accent: var(--c-ink);
+  --accent-text: var(--c-tangerine);
+  --focus: var(--dark-text);
+  --focus-halo: var(--c-tangerine);
+  --block-hero: var(--dark-tangerine);
+  --block-services: var(--dark-mint);
+  --block-pricing: var(--dark-mustard);
+  --block-contact: var(--dark-peri);
+  --block-about: var(--dark-blush);
+  --block-reviews: var(--dark-bg);
+  --block-faq: var(--dark-mint);
+  --block-footer: #1f1726;
+  --on-block: var(--dark-text);
+  --on-footer: var(--dark-text);
+  --note-1: var(--dark-mustard);
+  --note-2: var(--dark-blush);
+  --note-3: var(--dark-mint);
+  --note-4: var(--dark-peri);
+  --on-note: var(--dark-text);
+  --star: var(--dark-text);
+  --glass-bg: rgb(42 32 51 / 0.8);
+  --glass-border: rgb(243 234 216 / 0.14);
+  --shadow-color: 15 10 20;
+  --shadow-pop: 6px 6px 0 rgb(15 10 20);
+}
+
+/* ---------- Reduced motion: collapse durations, keep fades ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-base: 160ms;   /* simple fades still allowed */
+    --dur-slow: 200ms;
+    --dur-spring: 1ms;
+    --dur-intro: 0ms;
+    --stagger: 0ms;
+    --tilt-max: 0deg;
+    --lift: 0px;
+    --ease-spring: linear;
+    --ease-squish: linear;
+  }
+}

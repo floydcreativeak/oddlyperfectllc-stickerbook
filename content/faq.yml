@@ -1,0 +1,23 @@
+# Frequently asked questions. "home: true" shows the question on the home page.
+items:
+  - question: Do I have to sign a long contract?
+    answer: No. We ask for three months to get a plan working properly, then it's month to month. If it's not a fit, we'll tell you before you have to tell us.
+    home: true
+  - question: Will the posts sound like me or like a robot?
+    answer: Like you, on a really good day. We start with a voice session, keep notes on your favorite phrases and you approve the calendar before anything goes live.
+    home: true
+  - question: I'm running for office. Do you work with campaigns?
+    answer: Yes. We plan campaign timelines, messaging and event promotion, and we keep every channel on the same page. Call us to talk through your race.
+    home: true
+  - question: How fast can we get started?
+    answer: Usually within two weeks of our first call. If you've got a launch or event coming up sooner, say so. We like a deadline.
+    home: true
+  - question: Do you run paid ads?
+    answer: We can plan and manage them. Ad spend is billed separately, at cost, so you always see exactly where the money goes.
+    home: true
+  - question: What do you need from me?
+    answer: One kickoff call, access to your accounts and a quick yes on each month's calendar. We handle the rest, including the reminders.
+    home: true
+  - question: Why "Oddly Perfect"?
+    answer: Because nobody's brand fits a template. The quirks are the good part. We tailor everything until it fits you oddly, perfectly well.
+    home: false
