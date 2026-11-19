@@ -15,7 +15,7 @@ const icon: StickerData = { kind: 'drawn', id: `svc-${d.icon}`, label: d.title, 
 const tilt = [-1.5, 1.2, -0.8, 1.6, -1.2, 0.9][index % 6];
 ---
 <article class:list={['svc', `tone-${d.color}`]} style={`--card-rot:${tilt}deg;--rise-i:${index % 3}`} data-rise>
-  <div class="svc__inner" data-tilt>
+  <div class="svc__inner" data-tilt data-surface>
     <Sticker sticker={icon} size="5.2rem" class="svc__icon" />
     <H class="svc__title">{d.title}</H>
     <p class="svc__summary">{d.summary}</p>

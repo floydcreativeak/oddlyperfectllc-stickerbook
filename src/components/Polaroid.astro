@@ -13,7 +13,7 @@ interface Props {
 }
 const { photo, caption, ratio = '4 / 5', rot = -2, sizes = '(min-width: 900px) 22rem, 70vw', eager = false, class: cls } = Astro.props;
 ---
-<figure class:list={['polaroid', cls]} style={`--pol-rot:${rot}deg;--ratio:${ratio}`} data-tilt>
+<figure class:list={['polaroid', cls]} style={`--pol-rot:${rot}deg;--ratio:${ratio}`} data-tilt data-surface>
   <span class="polaroid__tape" aria-hidden="true"></span>
   <Picture
     src={photo.src}

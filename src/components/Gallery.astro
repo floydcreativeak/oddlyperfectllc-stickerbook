@@ -15,7 +15,7 @@ const big = await Promise.all(items.map((g) => getImage({ src: g.data.photo.src,
 <div class="gallery" data-gallery>
   <ul class="gallery__grid" role="list">
     {items.map((g, i) => (
-      <li class="gallery__item" style={`--g-rot:${[-1.5, 1, -0.5, 1.5, -1, 0.5][i % 6]}deg;--rise-i:${i % 3}`} data-rise>
+      <li class="gallery__item" style={`--g-rot:${[-1.5, 1, -0.5, 1.5, -1, 0.5][i % 6]}deg;--rise-i:${i % 3}`} data-rise data-surface>
         <button type="button" class="gallery__btn" data-index={i} data-full={big[i].src} data-alt={g.data.photo.alt} data-caption={g.data.caption}>
           <Picture src={g.data.photo.src} alt={g.data.photo.alt} formats={['avif', 'webp']} widths={[320, 480, 720]} sizes="(min-width: 960px) 22rem, (min-width: 600px) 45vw, 90vw" loading="lazy" decoding="async" />
           <span class="gallery__zoom" aria-hidden="true"><Icon name="expand" /></span>

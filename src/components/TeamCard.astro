@@ -17,7 +17,7 @@ const [st] = d.sticker ? await getStickers([d.sticker]) : [];
   </div>
   <h3 class="team-card__name">{d.name}</h3>
   <p class="team-card__title">{d.title}</p>
-  <p class:list={['team-card__fact', index % 2 ? 'tone-mint' : 'tone-mustard']}>{d.funFact}</p>
+  <p class:list={['team-card__fact', index % 2 ? 'tone-mint' : 'tone-mustard']} data-surface>{d.funFact}</p>
   <div class="prose team-card__bio"><Content /></div>
 </article>
 

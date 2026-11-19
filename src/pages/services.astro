@@ -29,7 +29,7 @@ const ICON_FILL: Record<string, string> = { mint: 'var(--c-peri)', blush: 'var(-
   {rendered.map(({ s, Content }, i) => (
     <section class:list={['block', 'edge', i % 2 ? 'edge--wave' : 'edge--scallop', 'spread', { 'spread--flip': i % 2 }]} id={s.id} style={`--block-color:${i % 2 ? 'var(--surface)' : 'var(--bg)'}`} aria-labelledby={`${s.id}-title`}>
       <div class="wrap spread__grid">
-        <div class:list={['spread__badge', `tone-${s.data.color}`]} aria-hidden="true">
+        <div class:list={['spread__badge', `tone-${s.data.color}`]} aria-hidden="true" data-surface>
           <span class="spread__num">{String(i + 1).padStart(2, '0')}</span>
           <svg class="spread__icon" viewBox="0 0 100 100" style={`--sf:${ICON_FILL[s.data.color]}`}><use href={`#st-${ART[s.data.icon] ? s.data.icon : 'star'}`} /></svg>
         </div>
@@ -38,7 +38,7 @@ const ICON_FILL: Record<string, string> = { mint: 'var(--c-peri)', blush: 'var(-
           <p class="lede">{s.data.summary}</p>
           <div class="prose spread__body"><Content /></div>
         </div>
-        <div class:list={['spread__card', `tone-${s.data.color}`]} data-rise>
+        <div class:list={['spread__card', `tone-${s.data.color}`]} data-rise data-surface>
           <ul class="checklist" role="list">
             {s.data.highlights.map((h) => <li><CheckIcon /><span>{h}</span></li>)}
           </ul>

@@ -27,7 +27,7 @@ const find = (sid?: string) => stickers.find((s) => s.id === sid);
     {steps.map((s, i) => {
       const st = find(s.sticker);
       return (
-        <li class:list={['story__card', `tone-${s.color}`]} style={`--i:${i}`}>
+        <li class:list={['story__card', `tone-${s.color}`]} style={`--i:${i}`} data-surface>
           <span class="story__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <h3 class="story__step">{s.title}</h3>
           <p>{s.body}</p>

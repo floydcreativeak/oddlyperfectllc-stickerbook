@@ -142,6 +142,33 @@ Built (`src/scripts/stickers.ts`, fold CSS in `base.css`, `Sticker.astro`):
 - True curved paper bending would need WebGL per sticker; not worth the
   performance cost. The flat fold reads as a die-cut sticker peeling.
 
+## Client feedback round 3: stickers stick TO things
+
+Asked for: stickers inherit the behaviour of what they're placed on (3D tilt
+cards, nested elements, review notes they should follow).
+
+Built:
+- On drop, `surfaceAt()` takes the topmost element under the sticker's centre
+  that matches `[data-surface]`, else the section (`.block`, `.site-footer`),
+  skipping fixed chrome. The sticker becomes its child, so it inherits tilt,
+  sticky stacking, note nudging, list/wall toggling, scroll reveals.
+- Surfaces tagged with `data-surface`: service cards, pricing folders, add-on
+  tags, contact dial/index card/time card, polaroids, story cards, review note
+  papers, FAQ question rows (not the whole <details>, which hides children when
+  closed), about notes, team fun facts, gallery items, services spreads,
+  legal sheet and contents, footer cards.
+- Rotated/tilted surfaces: `frame()` measures a container's local-to-screen map
+  with three invisible probes (captures every ancestor transform), `toLocal()`
+  solves for the drop point, and the sticker's `--rot` is set to its visible
+  angle minus the surface's angle, so it lands exactly where and how you saw it.
+- Static surfaces get `position: relative` on first use (layout-neutral).
+- Peel/stick fold is animated with WAAPI on the registered `--fold`, because
+  moving an element in the DOM resets CSS transitions.
+- Sticker `pointerdown` stops propagation so grabbing a sticker on a note
+  doesn't also drag the note.
+- Gotcha fixed: measure a sticker's on-screen centre *before* freezing its
+  styles (`right: auto` can make an absolutely positioned sticker jump).
+
 ## Checks
 
 - `npm run test:a11y` (axe, 9 pages x light/dark x 375/1280): 0 serious/critical.

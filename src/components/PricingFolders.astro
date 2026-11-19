@@ -18,7 +18,7 @@ const stickerFor = (id?: string) => stickerList.find((s) => s.id === id);
     return (
       <article class:list={['folder', `tone-${t.color}`, { 'folder--featured': t.featured }]} style={`--rise-i:${i}`} data-rise>
         <p class="folder__tab" aria-hidden="true">{t.tab}</p>
-        <div class="folder__body">
+        <div class="folder__body" data-surface>
           {st && <Sticker sticker={st} size="6rem" class="folder__sticker" />}
           <H class="folder__name">{t.name}</H>
           <p class="folder__price"><span class="folder__amount">{t.price}</span> <span class="folder__cadence">{t.cadence}</span></p>
@@ -39,7 +39,7 @@ const stickerFor = (id?: string) => stickerList.find((s) => s.id === id);
     <H class="addons__title">{pricing.addonsHeading}</H>
     <ul class="addons__list" role="list">
       {pricing.addons.map((a, i) => (
-        <li class="tag" style={`--tag-rot:${[-3, 2, -1.5, 3][i % 4]}deg;--rise-i:${i}`} data-rise>
+        <li class="tag" style={`--tag-rot:${[-3, 2, -1.5, 3][i % 4]}deg;--rise-i:${i}`} data-rise data-surface>
           <span class="tag__shape">
             <span class="tag__face">
               <span class="tag__hole" aria-hidden="true"></span>

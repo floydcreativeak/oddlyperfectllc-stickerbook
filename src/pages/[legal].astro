@@ -21,14 +21,14 @@ const updated = d.updated?.toLocaleDateString('en-US', { year: 'numeric', month:
   <section class="block block--plain edge edge--zigzag" aria-label={d.heading}>
     <div class="wrap legal">
       {toc.length > 2 && (
-        <nav class="legal__toc" aria-labelledby="toc-title">
+        <nav class="legal__toc" aria-labelledby="toc-title" data-surface>
           <p id="toc-title" class="legal__toc-title hand">{ui.tocLabel}</p>
           <ol role="list">
             {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
           </ol>
         </nav>
       )}
-      <article class="legal__sheet prose">
+      <article class="legal__sheet prose" data-surface>
         {updated && <p class="legal__updated">{ui.updatedLabel}: <time datetime={d.updated!.toISOString().slice(0, 10)}>{updated}</time></p>}
         <Content />
       </article>

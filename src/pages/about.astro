@@ -21,7 +21,7 @@ const tones = ['peri', 'mustard', 'mint', 'tangerine'];
       {d.sections.map((s, i) => {
         const st = stickerFor(s.sticker);
         return (
-          <article class:list={['page-note', `tone-${tones[i % tones.length]}`]} style={`--n-rot:${[-1.5, 1.2, -0.8][i % 3]}deg;--rise-i:${i}`} data-rise>
+          <article class:list={['page-note', `tone-${tones[i % tones.length]}`]} style={`--n-rot:${[-1.5, 1.2, -0.8][i % 3]}deg;--rise-i:${i}`} data-rise data-surface>
             <span class="page-note__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <h2 class="page-note__title">{s.heading}</h2>
             <p>{s.body}</p>

@@ -15,7 +15,7 @@ const brochure = site.brochure && existsSync(`public${site.brochure.file}`) ? si
   <div class="wrap">
     <SectionHead id="contact-title" eyebrow={c.eyebrow} heading={c.heading} intro={c.intro} />
     <div class="contact__grid">
-      <a class="dial" href={`tel:${site.phone.tel}`} data-track="call-contact" data-rise data-tilt>
+      <a class="dial" href={`tel:${site.phone.tel}`} data-track="call-contact" data-rise data-tilt data-surface>
         <span class="dial__ring" aria-hidden="true"><Icon name="phone" /></span>
         <span class="dial__label">{c.callHeading}</span>
         <span class="dial__number">{site.phone.display}</span>
@@ -23,13 +23,13 @@ const brochure = site.brochure && existsSync(`public${site.brochure.file}`) ? si
       </a>
 
       <div class="contact__side">
-        <div class="index-card" data-rise style="--rise-i:1">
+        <div class="index-card" data-rise data-surface style="--rise-i:1">
           <h3 class="index-card__title">{c.emailHeading}</h3>
           <p>{c.emailBody}</p>
           <a class="index-card__link" href={`mailto:${site.email.address}`}><Icon name="mail" /> <span>{site.email.address}</span></a>
         </div>
 
-        <div class="timecard" data-rise style="--rise-i:2">
+        <div class="timecard" data-rise data-surface style="--rise-i:2">
           <h3 class="timecard__title"><Icon name="clock" /> {c.hoursHeading}</h3>
           <dl class="timecard__rows">
             {site.hours.rows.map((r) => <div><dt>{r.days}</dt><dd>{r.time}</dd></div>)}

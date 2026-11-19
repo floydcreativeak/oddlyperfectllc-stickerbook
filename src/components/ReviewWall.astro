@@ -28,7 +28,7 @@ const SOURCE_ICON: Record<string, IconName> = { email: 'mail', message: 'chat', 
       const d = r.data;
       return (
         <li class:list={['note', `tone-${tones[i % tones.length]}`]} style={`--note-rot:${rots[i % rots.length]}deg`} data-drag aria-describedby={`${id}-help`}>
-          <article class="note__paper" data-source={d.source}>
+          <article class="note__paper" data-source={d.source} data-surface>
             <span class="note__tape" aria-hidden="true"></span>
             <StarRating rating={d.rating} />
             <blockquote class="note__quote"><p>{d.quote}</p></blockquote>
