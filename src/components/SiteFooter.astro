@@ -6,6 +6,7 @@
 import { getSite, getStickers } from '../lib/content';
 import Icon from './Icon.astro';
 import Sticker from './Sticker.astro';
+import { withBase } from '../lib/url';
 
 const site = await getSite();
 const f = site.footer;
@@ -64,7 +65,7 @@ const tileTilt = [-4, 3, -2, 5, -3, 2, -5, 4];
       <section class="footer-card" aria-labelledby="ft-legal">
         <h3 id="ft-legal" class="footer-card__title">{f.legalHeading}</h3>
         <ul class="legal-links" role="list">
-          {site.legalLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          {site.legalLinks.map((l) => <li><a href={withBase(l.href)}>{l.label}</a></li>)}
         </ul>
         {site.serviceArea && <p class="service-area">{site.serviceArea}</p>}
       </section>

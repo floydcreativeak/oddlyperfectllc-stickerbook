@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://oddlyperfectllc.com/sitemap-index.xml

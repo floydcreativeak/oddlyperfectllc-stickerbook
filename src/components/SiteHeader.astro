@@ -11,6 +11,7 @@ import Logo from './Logo.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import AnnouncementBar from './AnnouncementBar.astro';
 import { isCurrent } from '../lib/nav';
+import { withBase } from '../lib/url';
 
 const site = await getSite();
 const path = Astro.url.pathname;
@@ -19,7 +20,7 @@ const path = Astro.url.pathname;
   <AnnouncementBar />
   <div class="site-header__bar">
     <div class="site-header__inner">
-      <a class="site-header__logo" href="/" aria-label={site.nav.homeLabel} data-wipe={PASTEL_VAR.tangerine}>
+      <a class="site-header__logo" href={withBase('/')} aria-label={site.nav.homeLabel} data-wipe={PASTEL_VAR.tangerine}>
         <Logo />
       </a>
 
@@ -27,7 +28,7 @@ const path = Astro.url.pathname;
         <ul role="list">
           {site.nav.links.map((l) => (
             <li>
-              <a href={l.href} aria-current={isCurrent(path, l.href) ? 'page' : undefined} data-wipe={PASTEL_VAR[l.color]}>
+              <a href={withBase(l.href)} aria-current={isCurrent(path, l.href) ? 'page' : undefined} data-wipe={PASTEL_VAR[l.color]}>
                 {l.label}
               </a>
             </li>

@@ -8,6 +8,7 @@
  */
 import type { Sticker as StickerData } from '../lib/content';
 import { PASTEL_VAR } from '../lib/colors';
+import { withBase } from '../lib/url';
 
 interface Props {
   sticker: StickerData;
@@ -38,7 +39,7 @@ const vars = `--rot:${s.rotate}deg;--sf:${fill};--sticker-size:${size};${style}`
   {s.kind === 'label' && <span class="sticker__text" aria-hidden="true">{s.caption}</span>}
   {s.kind === 'emoji' && (
     <>
-      <img class="sticker__emoji" src={`/stickers/emoji/${s.emoji}`} alt="" width="128" height="128" loading="lazy" decoding="async" draggable="false" />
+      <img class="sticker__emoji" src={withBase(`/stickers/emoji/${s.emoji}`)} alt="" width="128" height="128" loading="lazy" decoding="async" draggable="false" />
       {s.caption && <span class="sticker__caption sticker__caption--tag" aria-hidden="true">{s.caption}</span>}
     </>
   )}

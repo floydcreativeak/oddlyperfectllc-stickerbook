@@ -83,6 +83,19 @@ what's left. The editor-facing guide is `README.md`; open client asks are in
   `scripts/serve-dist.mjs` instead.
 - Screenshots: `npm run build && node scripts/screenshots.mjs <dir> / /services/`.
 
+## Preview deploys (GitHub Pages address)
+
+- The site is base-path aware: `astro.config.mjs` reads `SITE_URL` and
+  `BASE_PATH`; all internal links go through `withBase()` (`src/lib/url.ts`);
+  content keeps writing plain `/pricing/`. Vite prefixes the font URLs in CSS.
+- `deploy.yml` asks GitHub (`actions/configure-pages`) where the site lives.
+  A non-empty `base_path` means the github.io address, so it's a **preview**:
+  placeholders allowed, `noindex` meta, `robots.txt` disallows all. An empty
+  base path means the custom domain, so it's **production**: strict lint.
+- Canonical and OG URLs always point at oddlyperfectllc.com.
+- Local subfolder test: `BASE_PATH=/oddlyperfectllc-stickerbook PUBLIC_PREVIEW=true npm run build`,
+  then serve with `scripts/serve-dist.mjs` (honours `BASE_PATH`).
+
 ## To do / open threads
 
 - [x] Phase 2 screenshots for approval (375 and 1440, light and dark).

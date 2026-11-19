@@ -27,4 +27,5 @@ go live by accident. Tick them off as they arrive.
 - [ ] **Google Analytics (GA4) measurement ID** (looks like `G-XXXXXXX`). Until then analytics is off.
 - [ ] **Brochure PDF.** Send yours, or approve us generating a branded one-pager.
 - [ ] **GitHub plan.** The brief calls for a private repo. GitHub Pages from a private repo needs a paid plan (Pro, Team or Enterprise). Confirm before the first deploy. (The repo is currently named `oddlyperfectllc-stickerbook`; the brief says `oddlyperfectllc`. Either works with the custom domain.)
+- [ ] **Turn on GitHub Pages** (Settings, Pages, Source: GitHub Actions). Needed for the preview link too.
 - [ ] **Domain DNS.** Point `oddlyperfectllc.com` at GitHub Pages (we'll send exact records when ready).

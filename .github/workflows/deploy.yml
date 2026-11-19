@@ -1,10 +1,20 @@
-# Publishes the site to GitHub Pages (custom domain from public/CNAME).
-# Runs on every push to main, or by hand from the Actions tab.
+# Publishes the site to GitHub Pages. Runs on every push to main, or by hand
+# from the Actions tab ("Run workflow").
 #
-# Production deploys run the STRICT content lint: if any placeholder photo,
-# price, review or detail is still flagged, the deploy stops with a list of
-# what to replace. For a client preview, run it by hand and tick
-# "Allow placeholders".
+# It decides PREVIEW vs PRODUCTION from GitHub's own Pages settings:
+#
+#   PREVIEW     No custom domain set yet, so the site lives at
+#               https://<owner>.github.io/<repo>/. Placeholders are allowed
+#               and the site is hidden from search engines.
+#
+#   PRODUCTION  Custom domain set (Settings -> Pages -> Custom domain), so the
+#               site lives at the root of oddlyperfectllc.com. The STRICT
+#               content lint runs: if any placeholder photo, price, review or
+#               detail is still flagged, the deploy stops with a list of what
+#               to replace.
+#
+# "Force preview" (manual runs only) allows placeholders even on the custom
+# domain, for a client walkthrough. Don't use it for launch.
 name: Deploy to GitHub Pages
 
 on:
@@ -12,8 +22,8 @@ on:
     branches: [main]
   workflow_dispatch:
     inputs:
-      allow_placeholders:
-        description: "Allow placeholders (preview deploy only, not for launch)"
+      force_preview:
+        description: "Force preview (allow placeholders, hide from search)"
         type: boolean
         default: false
 
@@ -39,12 +49,31 @@ jobs:
 
       - run: npm ci
 
+      # Reads this repo's Pages settings: origin (https://host) and base_path
+      # ("" on a custom domain, "/<repo>" on the github.io address).
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Choose preview or production
+        id: mode
+        env:
+          BASE: ${{ steps.pages.outputs.base_path }}
+          FORCE: ${{ inputs.force_preview }}
+        run: |
+          if [ -n "$BASE" ] || [ "$FORCE" = "true" ]; then
+            echo "preview=true" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Preview deploy::Placeholders allowed, hidden from search engines."
+          else
+            echo "preview=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Production deploy::Strict content check is on."
+          fi
+
       - name: Content lint (strict, blocks placeholders)
-        if: ${{ !inputs.allow_placeholders }}
+        if: steps.mode.outputs.preview == 'false'
         run: npm run lint:content:strict
 
       - name: Content lint (preview, placeholders allowed)
-        if: ${{ inputs.allow_placeholders }}
+        if: steps.mode.outputs.preview == 'true'
         run: npm run lint:content
 
       - name: CMS config covers all content
@@ -52,8 +81,10 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - uses: actions/configure-pages@v5
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          PUBLIC_PREVIEW: ${{ steps.mode.outputs.preview }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

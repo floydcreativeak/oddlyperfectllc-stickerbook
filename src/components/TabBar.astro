@@ -6,6 +6,7 @@
 import { getSite } from '../lib/content';
 import { PASTEL_VAR } from '../lib/colors';
 import { isCurrent } from '../lib/nav';
+import { withBase } from '../lib/url';
 import Icon from './Icon.astro';
 
 const site = await getSite();
@@ -22,7 +23,7 @@ const tabs = site.nav.links.filter((l) => l.tab);
     <ul role="list">
       {tabs.map((t) => (
         <li>
-          <a href={t.href} aria-current={isCurrent(path, t.href) ? 'page' : undefined} data-wipe={PASTEL_VAR[t.color]} style={`--tab-color:${PASTEL_VAR[t.color]}`}>
+          <a href={withBase(t.href)} aria-current={isCurrent(path, t.href) ? 'page' : undefined} data-wipe={PASTEL_VAR[t.color]} style={`--tab-color:${PASTEL_VAR[t.color]}`}>
             <span class="tabbar__icon"><Icon name={t.icon} /></span>
             <span class="tabbar__label">{t.label}</span>
           </a>

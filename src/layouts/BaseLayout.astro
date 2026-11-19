@@ -8,6 +8,7 @@ import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import { getSite } from '../lib/content';
+import { withBase, IS_PREVIEW } from '../lib/url';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import TabBar from '../components/TabBar.astro';
@@ -21,8 +22,10 @@ interface Props {
 }
 const { title, description, noindex = false } = Astro.props;
 const site = await getSite();
-const canonical = new URL(Astro.url.pathname, site.url).href;
+// Canonical/OG always point at the real domain, even on the preview address.
+const canonical = new URL(Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/', site.url).href;
 const ogImage = new URL('/og.png', site.url).href;
+const hideFromSearch = noindex || IS_PREVIEW;
 ---
 <!doctype html>
 <html lang="en">
@@ -32,7 +35,7 @@ const ogImage = new URL('/og.png', site.url).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {hideFromSearch && <meta name="robots" content="noindex, nofollow" />}
     <meta name="theme-color" content="#f6eedc" />
     <meta name="color-scheme" content="light dark" />
 
@@ -44,12 +47,12 @@ const ogImage = new URL('/og.png', site.url).href;
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
 
     <!-- Only the fonts above the fold are preloaded; Caveat Brush swaps in later. -->
-    <link rel="preload" href="/fonts/alfa-slab-one-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/figtree-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={withBase('/fonts/alfa-slab-one-latin.woff2')} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={withBase('/fonts/figtree-latin-var.woff2')} as="font" type="font/woff2" crossorigin />
 
     <!-- Theme before first paint (no flash). Re-applied to each new page on navigation. -->
     <script is:inline>

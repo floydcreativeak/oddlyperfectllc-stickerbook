@@ -1,6 +1,9 @@
-/** True when `href` is the current page (or a parent section of it). */
-export function isCurrent(path: string, href: string): boolean {
+import { stripBase } from './url';
+
+/** True when `href` (a content link like "/pricing/") is the current page or a parent of it. */
+export function isCurrent(pathname: string, href: string): boolean {
   const norm = (p: string) => (p.endsWith('/') ? p : `${p}/`);
-  if (href === '/') return norm(path) === '/';
-  return norm(path).startsWith(norm(href));
+  const path = norm(stripBase(pathname));
+  if (href === '/') return path === '/';
+  return path.startsWith(norm(href));
 }

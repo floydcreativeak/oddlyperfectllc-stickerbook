@@ -1,13 +1,14 @@
 ---
 /** Optional strip above the nav, switched on in content/site.yml -> announcement. */
 import { getSite } from '../lib/content';
+import { withBase } from '../lib/url';
 const { announcement: a, a11y } = await getSite();
 ---
 {a.enabled && (
   <div class="announce" role="region" aria-label={a11y.announcement}>
     <p>
       {a.text}
-      {a.link && <> <a href={a.link.href}>{a.link.label}</a></>}
+      {a.link && <> <a href={withBase(a.link.href)}>{a.link.label}</a></>}
     </p>
   </div>
 )}
