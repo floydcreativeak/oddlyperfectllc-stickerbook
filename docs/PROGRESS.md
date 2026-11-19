@@ -117,6 +117,31 @@ Response:
 - Sections clip horizontal overhang (`overflow-x: clip`) so stickers can't
   create sideways scroll on phones.
 
+## Client feedback round 2: peel-and-stick
+
+Asked for: every sticker interactive and movable anywhere on the page; no
+gliding; a subtle top-left fold on hover instead of the tilt; a 3D peel on
+pickup that reverses into a "stick" on drop.
+
+Built (`src/scripts/stickers.ts`, fold CSS in `base.css`, `Sticker.astro`):
+- Each sticker = `.sticker__face` (corner clipped along x + y = K) and
+  `.sticker__flap` (the same artwork reflected across that line, tinted as the
+  paper back, with a crease shadow). `--fold` is a registered `@property`
+  so it animates: 0 at rest, ~13% on hover, ~25% when peeled.
+- K starts where the artwork starts. `scripts/measure-fold.mjs` rasterises each
+  drawing and records min(x + y) of its silhouette into `FOLD_START`, so the
+  fold lands on stars/hearts/bubbles rather than empty corner space.
+- Pickup moves the sticker into `#sticker-layer` (page coordinates) with an
+  invisible placeholder, so it can cross sections. Peel = fold deepens + lift +
+  `rotate3d` lean; drop = fold flattens + press squish. No momentum.
+- Touch: press-and-hold (260 ms) to peel; swipes still scroll. Mouse inside a
+  link/button: peels only after a drag starts, so clicks still work.
+- Edge auto-scroll while held. Keyboard arrows on focusable (hero) stickers.
+- "Tidy up" restores every sticker to its original spot and inline style.
+- Review notes keep their own nudge (drag.ts), momentum removed.
+- True curved paper bending would need WebGL per sticker; not worth the
+  performance cost. The flat fold reads as a die-cut sticker peeling.
+
 ## Checks
 
 - `npm run test:a11y` (axe, 9 pages x light/dark x 375/1280): 0 serious/critical.

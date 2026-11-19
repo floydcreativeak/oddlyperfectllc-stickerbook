@@ -1,53 +1,75 @@
 ---
 /**
- * A die-cut sticker. All stickers come from content/stickers.yml.
- *  - drawn: hand-drawn SVG from the sprite, with optional handwritten caption
- *  - label: a short handwritten word on a cream tag
- *  - emoji: bundled Noto artwork on a cream die-cut disc (never a font glyph)
- * Decorative stickers are hidden from assistive tech; meaningful ones get role="img".
+ * A die-cut sticker. Every sticker on the site can be peeled off and stuck
+ * anywhere on the page (src/scripts/stickers.ts).
+ *
+ * Structure:
+ *   .sticker            positioning, tilt, drop shadow, fold state (--fold)
+ *     .sticker__face    the artwork, with its top-left corner clipped along the fold line
+ *     .sticker__flap    a mirrored copy of the artwork, coloured like the sticker's
+ *                       paper back, reflected across the fold line = the folded corner
+ *
+ * Kinds (from content/stickers.yml):
+ *  - drawn: hand-drawn SVG from the sprite, optional handwritten caption
+ *  - label: a short handwritten word on a tag
+ *  - emoji: bundled Noto artwork on a cream disc (never a font glyph)
+ * Decorative stickers are hidden from assistive tech. Pass `focusable` to make
+ * one keyboard-movable (arrow keys), e.g. the hero pile.
  */
 import type { Sticker as StickerData } from '../lib/content';
 import { PASTEL_VAR } from '../lib/colors';
 import { withBase } from '../lib/url';
+import { FOLD_START } from '../lib/sticker-art';
 
 interface Props {
   sticker: StickerData;
   size?: string;           // CSS length, e.g. "5rem"
   class?: string;
   style?: string;
-  draggable?: boolean;     // hero pile: marks it as a drag target
-  index?: number;
+  focusable?: boolean;     // keyboard-movable, labelled for screen readers
+  describedBy?: string;    // id of the "how to move" help text
 }
-const { sticker: s, size = '5rem', class: cls, style = '', draggable = false, index } = Astro.props;
+const { sticker: s, size = '5rem', class: cls, style = '', focusable = false, describedBy } = Astro.props;
 const fill = 'color' in s && s.color ? PASTEL_VAR[s.color] : 'var(--c-paper)';
-// Draggable stickers are labelled by their focusable wrapper, so the sticker itself is hidden.
-const a11y = s.decorative || draggable ? { 'aria-hidden': 'true' as const } : { role: 'img' as const, 'aria-label': s.label };
-const vars = `--rot:${s.rotate}deg;--sf:${fill};--sticker-size:${size};${style}`;
+// Where the artwork begins along the top-left diagonal, so the fold lands on it.
+const foldStart = s.kind === 'drawn' ? `calc(var(--sticker-size) * ${FOLD_START[s.art] ?? 0.4})` : s.kind === 'emoji' ? 'calc(var(--sticker-size) * 0.27)' : '-14px';
+const a11y = focusable
+  ? { role: 'img' as const, 'aria-label': s.label, tabindex: 0, 'aria-describedby': describedBy }
+  : s.decorative
+    ? { 'aria-hidden': 'true' as const }
+    : { role: 'img' as const, 'aria-label': s.label };
+const vars = `--rot:${s.rotate}deg;--sf:${fill};--sticker-size:${size};--fold-c:${foldStart};${style}`;
+const emojiSrc = s.kind === 'emoji' ? withBase(`/stickers/emoji/${s.emoji}`) : '';
 ---
-<span
-  class:list={['sticker', `sticker--${s.kind}`, cls, { 'sticker--drag': draggable }]}
-  style={vars}
-  data-sticker={s.id}
-  data-index={index}
-  {...a11y}
->
-  {s.kind === 'drawn' && (
-    <>
-      <svg class="sticker__art" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href={`#st-${s.art}`} /></svg>
-      {s.caption && <span class="sticker__caption" aria-hidden="true">{s.caption}</span>}
-    </>
-  )}
-  {s.kind === 'label' && <span class="sticker__text" aria-hidden="true">{s.caption}</span>}
-  {s.kind === 'emoji' && (
-    <>
-      <img class="sticker__emoji" src={withBase(`/stickers/emoji/${s.emoji}`)} alt="" width="128" height="128" loading="lazy" decoding="async" draggable="false" />
-      {s.caption && <span class="sticker__caption sticker__caption--tag" aria-hidden="true">{s.caption}</span>}
-    </>
-  )}
+<span class:list={['sticker', `sticker--${s.kind}`, cls]} style={vars} data-sticker={s.id} {...a11y}>
+  {[0, 1].map((copy) => (
+    copy === 0 ? (
+      <span class="sticker__face">
+        {s.kind === 'drawn' && <svg class="sticker__art" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href={`#st-${s.art}`} /></svg>}
+        {s.kind === 'drawn' && s.caption && <span class="sticker__caption" aria-hidden="true">{s.caption}</span>}
+        {s.kind === 'label' && <span class="sticker__text" aria-hidden="true">{s.caption}</span>}
+        {s.kind === 'emoji' && <img class="sticker__emoji" src={emojiSrc} alt="" width="128" height="128" loading="lazy" decoding="async" draggable="false" />}
+        {s.kind === 'emoji' && s.caption && <span class="sticker__caption sticker__caption--tag" aria-hidden="true">{s.caption}</span>}
+      </span>
+    ) : (
+      <span class="sticker__flap" aria-hidden="true">
+        <span class="sticker__flap-paper">
+          <span class="sticker__face">
+            {s.kind === 'drawn' && <svg class="sticker__art" viewBox="0 0 100 100" focusable="false"><use href={`#st-${s.art}`} /></svg>}
+            {s.kind === 'drawn' && s.caption && <span class="sticker__caption">{s.caption}</span>}
+            {s.kind === 'label' && <span class="sticker__text">{s.caption}</span>}
+            {s.kind === 'emoji' && <img class="sticker__emoji" src={emojiSrc} alt="" width="128" height="128" loading="lazy" decoding="async" draggable="false" />}
+            {s.kind === 'emoji' && s.caption && <span class="sticker__caption sticker__caption--tag">{s.caption}</span>}
+          </span>
+        </span>
+      </span>
+    )
+  ))}
 </span>
 
 <style is:global>
-  .sticker--drawn { width: var(--sticker-size); aspect-ratio: 1; position: relative; }
+  /* ---- Kind-specific faces ---- */
+  .sticker--drawn .sticker__face { position: relative; width: var(--sticker-size); aspect-ratio: 1; }
   .sticker--drawn .sticker__art { width: 100%; height: 100%; overflow: visible; }
   .sticker__caption {
     position: absolute;
@@ -63,8 +85,28 @@ const vars = `--rot:${s.rotate}deg;--sf:${fill};--sticker-size:${size};${style}`
     pointer-events: none;
   }
   .sticker[data-sticker^="arrow"] .sticker__caption { inset: auto -30% -18% auto; padding: 0.15em 0.5em; background: var(--c-paper); border: 2px solid var(--c-ink); border-radius: var(--radius-s); outline: 4px solid var(--sticker-outline); font-size: var(--step-hand); white-space: nowrap; rotate: 6deg; }
-  .sticker--label { background: var(--sf); }
-  .sticker--emoji { position: relative; }
+
+  .sticker--label { font-size: max(var(--step-hand), calc(var(--sticker-size, 5rem) * 0.22)); }
+  .sticker--label .sticker__face {
+    padding: 0.35em 0.85em 0.45em;
+    background: var(--sf, var(--c-paper));
+    color: var(--c-ink);
+    font-family: var(--font-hand);
+    line-height: 1;
+    border: var(--border-thin) solid var(--c-ink);
+    border-radius: var(--radius-s);
+    outline: var(--sticker-outline-width) solid var(--sticker-outline);
+    white-space: nowrap;
+  }
+
+  .sticker--emoji .sticker__face {
+    position: relative;
+    width: var(--sticker-size, 4.5rem);
+    aspect-ratio: 1;
+    padding: calc(var(--sticker-size, 4.5rem) * 0.14); /* not %, which would follow the parent's width */
+    background: var(--c-cream);
+    border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
+  }
   .sticker__emoji { width: 100%; height: 100%; }
   .sticker__caption--tag {
     inset: auto -20% -12% -20%;

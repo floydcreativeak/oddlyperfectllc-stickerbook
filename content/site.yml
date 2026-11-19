@@ -147,7 +147,7 @@ ui:
   tocLabel: On this page
   updatedLabel: Last updated
   callBandLabel: Call us
-  moveHelp: Drag to move. With a keyboard, focus a sticker and use the arrow keys. Hold Shift to move further.
+  moveHelp: Every sticker can be peeled off and stuck anywhere on the page. Drag it with a mouse, or press and hold on a touchscreen. With a keyboard, focus a sticker and use the arrow keys. Hold Shift to move further.
   reset: Tidy up
 
 loadingText: Sharpening pencils...

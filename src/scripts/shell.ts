@@ -8,6 +8,7 @@
  */
 
 import { initDrag } from './drag';
+import { initStickers } from './stickers';
 import { initTilt, initReveal } from './tilt';
 
 const STORAGE_KEY = 'op-theme';
@@ -116,6 +117,7 @@ document.addEventListener('astro:page-load', () => {
   bindTheme();
   bindEgg();
   initDrag();
+  initStickers();
   initTilt();
   initReveal();
 });

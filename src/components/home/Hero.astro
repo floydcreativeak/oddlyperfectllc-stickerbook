@@ -54,19 +54,19 @@ const SPOTS = [
       </div>
     </div>
 
-    <div class="hero__pile" data-sticker-pile data-drag-area role="group" aria-label={site.a11y.stickerPile} aria-describedby="pile-help">
+    <div class="hero__pile" role="group" aria-label={site.a11y.stickerPile} aria-describedby="pile-help">
       <p class="visually-hidden" id="pile-help">{site.ui.moveHelp}</p>
       {stickers.map((s, i) => {
         const spot = SPOTS[i % SPOTS.length];
         return (
-          <div class="hero__slot" style={`--x:${spot.x}%;--y:${spot.y}%;--i:${i}`} data-drag role="img" aria-label={s.label} aria-describedby="pile-help">
-            <Sticker sticker={s} size={spot.s} draggable index={i} />
+          <div class="hero__slot" style={`--x:${spot.x}%;--y:${spot.y}%;--i:${i}`}>
+            <Sticker sticker={s} size={spot.s} focusable describedBy="pile-help" />
           </div>
         );
       })}
       <div class="hero__pile-foot">
         <p class="hero__hint hand" aria-hidden="true">{hero.dragHint}</p>
-        <button type="button" class="hero__reset" data-drag-reset>{site.ui.reset}</button>
+        <button type="button" class="hero__reset" data-sticker-tidy>{site.ui.reset}</button>
       </div>
     </div>
   </div>

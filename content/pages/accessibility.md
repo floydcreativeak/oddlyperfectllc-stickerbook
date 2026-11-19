@@ -15,7 +15,7 @@ We want everyone to be able to use this website comfortably. We aim to meet the 
 
 - **Contrast.** Every text and background pairing, in both light and dark mode, is checked to meet AA contrast. Text on colored sections is always dark ink or cream, never pastel on pastel.
 - **Keyboard.** Everything works without a mouse. A "skip" link jumps straight to the main content, and focus is always clearly visible.
-- **Stickers you can move.** Draggable stickers and sticky notes can also be moved with the arrow keys. They're decorative, so nothing important depends on them.
+- **Stickers you can move.** Every sticker can be peeled off and stuck anywhere on the page: drag with a mouse, or press and hold on a touchscreen so normal swiping still scrolls. The stickers at the top of the home page and the review notes can also be moved with the arrow keys. Stickers are decorative, so nothing important depends on them, and "Tidy up" puts them all back.
 - **Reviews.** The sticky-note wall can be switched to a plain list, and star ratings are announced as text.
 - **Motion.** If your device is set to reduce motion, animations are replaced with simple fades or turned off, and the 3D sticker pile is replaced with a still version. No content is removed.
 - **Images.** Every photo has a written description.

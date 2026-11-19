@@ -14,8 +14,8 @@ const stickers = await getStickers(['squiggle', 'bubble-hi', 'star']);
       <h1 id="lost-title" class="lost__title">{nf.heading}</h1>
       <p class="lede lost__body">{nf.body}</p>
       <CtaButton href="/" label={nf.cta} variant="ink" icon="home" />
-      <div class="lost__stickers" data-drag-area aria-hidden="true">
-        {stickers.map((s, i) => <div class="lost__st" data-drag tabindex="-1" style={`--i:${i}`}><Sticker sticker={s} size="6rem" draggable /></div>)}
+      <div class="lost__stickers">
+        {stickers.map((s, i) => <div class="lost__st" style={`--i:${i}`}><Sticker sticker={s} size="6rem" /></div>)}
       </div>
     </div>
   </section>

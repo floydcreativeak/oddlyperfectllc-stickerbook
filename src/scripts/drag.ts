@@ -1,5 +1,5 @@
 /**
- * Grab-and-fling stickers (and nudgeable sticky notes). Vanilla, ~3 KB.
+ * Nudgeable sticky notes (the review wall). Stickers use src/scripts/stickers.ts.
  *
  * Markup contract:
  *   [data-drag-area]              the box items can move within
@@ -7,15 +7,13 @@
  *     [data-drag]                 a movable item (focusable; arrow keys move it)
  *     [data-drag-reset]           optional button that puts everything back
  *
- * Physics: pointer velocity is sampled while dragging; on release the item
- * keeps moving with friction and bounces off the area's edges, tilting with
- * its speed. Reduced motion: drag still works, but no momentum or tilt.
+ * No momentum: a note stays exactly where it's dropped. A slight tilt follows
+ * the drag direction while held (off with reduced motion).
  */
 
 type Item = {
   el: HTMLElement;
   x: number; y: number; vx: number; vy: number; tilt: number;
-  raf?: number;
 };
 
 const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -39,23 +37,6 @@ function bounds(it: Item, area: HTMLElement) {
   };
 }
 
-function settle(it: Item, area: HTMLElement) {
-  cancelAnimationFrame(it.raf ?? 0);
-  const step = () => {
-    const b = bounds(it, area);
-    it.x += it.vx; it.y += it.vy;
-    if (it.x < b.minX || it.x > b.maxX) { it.x = clamp(it.x, b.minX, b.maxX); it.vx *= -0.55; }
-    if (it.y < b.minY || it.y > b.maxY) { it.y = clamp(it.y, b.minY, b.maxY); it.vy *= -0.55; }
-    it.vx *= 0.93; it.vy *= 0.93;
-    it.tilt = it.tilt * 0.88 + clamp(it.vx * 1.4, -18, 18) * 0.12;
-    apply(it);
-    if (Math.hypot(it.vx, it.vy) > 0.15 || Math.abs(it.tilt) > 0.2) it.raf = requestAnimationFrame(step);
-    else { it.tilt = 0; apply(it); it.el.classList.remove('is-flying'); }
-  };
-  it.el.classList.add('is-flying');
-  it.raf = requestAnimationFrame(step);
-}
-
 function bindArea(area: HTMLElement) {
   if (area.dataset.dragBound) return;
   area.dataset.dragBound = '1';
@@ -74,7 +55,6 @@ function bindArea(area: HTMLElement) {
       if (e.button !== 0) return;
       if (!allowTouch && e.pointerType === 'touch') return;
       e.preventDefault();
-      cancelAnimationFrame(it.raf ?? 0);
       el.setPointerCapture(e.pointerId);
       startX = e.clientX; startY = e.clientY; ox = it.x; oy = it.y; moved = false;
       samples = [{ t: performance.now(), x: e.clientX, y: e.clientY }];
@@ -95,7 +75,7 @@ function bindArea(area: HTMLElement) {
       if (!reduce()) {
         const s0 = samples[0];
         const vx = (e.clientX - s0.x) / Math.max(16, now - s0.t);
-        it.tilt = clamp(vx * 22, -20, 20);
+        it.tilt = clamp(vx * 10, -8, 8);
       }
       apply(it);
     });
@@ -104,14 +84,10 @@ function bindArea(area: HTMLElement) {
       if (!el.hasPointerCapture(e.pointerId)) return;
       el.releasePointerCapture(e.pointerId);
       el.classList.remove('is-dragging');
-      const now = performance.now();
-      const s0 = samples[0];
-      const dt = Math.max(16, now - s0.t);
-      // px per ms -> px per frame (~16ms)
-      it.vx = clamp(((e.clientX - s0.x) / dt) * 16, -38, 38);
-      it.vy = clamp(((e.clientY - s0.y) / dt) * 16, -38, 38);
-      if (reduce()) { it.vx = it.vy = 0; it.tilt = 0; apply(it); return; }
-      settle(it, area);
+      it.tilt = 0;
+      el.classList.add('is-nudged');
+      apply(it);
+      window.setTimeout(() => el.classList.remove('is-nudged'), 300);
     };
     el.addEventListener('pointerup', release);
     el.addEventListener('pointercancel', release);
@@ -137,7 +113,6 @@ function bindArea(area: HTMLElement) {
   area.querySelectorAll<HTMLButtonElement>('[data-drag-reset]').forEach((btn) => {
     btn.addEventListener('click', () => {
       for (const it of items) {
-        cancelAnimationFrame(it.raf ?? 0);
         it.x = it.y = it.vx = it.vy = it.tilt = 0;
         it.el.classList.add('is-returning');
         apply(it);
