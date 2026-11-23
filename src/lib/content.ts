@@ -4,7 +4,7 @@
  */
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 
-async function single<C extends 'site' | 'home' | 'pricing' | 'stickers' | 'faq' | 'process'>(name: C, id: string) {
+async function single<C extends 'site' | 'home' | 'pricing' | 'policies' | 'stickers' | 'faq' | 'process'>(name: C, id: string) {
   const entry = await getEntry(name, id);
   if (!entry) throw new Error(`Missing content file: content/${id}.yml`);
   return entry.data as CollectionEntry<C>['data'];
@@ -13,6 +13,7 @@ async function single<C extends 'site' | 'home' | 'pricing' | 'stickers' | 'faq'
 export const getSite = () => single('site', 'site');
 export const getHome = () => single('home', 'home');
 export const getPricing = () => single('pricing', 'pricing');
+export const getPolicies = () => single('policies', 'policies');
 export const getFaq = () => single('faq', 'faq');
 export const getProcess = () => single('process', 'process');
 

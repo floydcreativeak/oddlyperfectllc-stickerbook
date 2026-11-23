@@ -13,7 +13,7 @@ This website shares information about Oddly Perfect LLC and the public relations
 
 ## Prices And Services
 
-Prices and service descriptions on this site are a starting point. Your actual scope, price and timeline are confirmed in a written agreement before any work begins. If something on the site and your agreement disagree, your agreement wins.
+Our prices and policies are published on this site. Your exact scope, price and timeline are confirmed in a written agreement before any work begins. If something on the site and your agreement disagree, your agreement wins.
 
 ## Reviews
 

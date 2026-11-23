@@ -2,72 +2,72 @@
 # Sticker lists use ids from content/stickers.yml (max 3 per section).
 
 seo:
-  title: Oddly Perfect | PR, Marketing & Social Media Management
-  description: PR, marketing and social media management for business owners, candidates and entrepreneurs. Tailored plans, zero fluff. Call Oddly Perfect.
+  title: Oddly Perfect | Marketing & PR Partner, Kenai Peninsula, Alaska
+  description: Marketing, PR and event help for Kenai Peninsula businesses and nonprofits. Published prices, plain English, no kickbacks. Book a free Blind Date With a Marketer.
 
 hero:
-  eyebrow: Public relations, minus the snooze
+  eyebrow: Marketing, minus the mystery
   headline: Oddly Specific. Perfectly Yours.
   headlineAccent: Perfectly Yours.
-  sub: PR, marketing and social media management for people who'd rather be running the show. We plan it, post it and pitch it. You take the bow.
-  callLabel: Call us. We're ready.
+  sub: Your marketing partner on Alaska's Kenai Peninsula. Plans, campaigns, PR and events, explained in plain English and priced right out in the open.
+  callLabel: Book a free Blind Date With a Marketer
   emailLabel: Or send an email
   dragHint: Peel any sticker. Stick it anywhere. We won't tell.
-  stickers: [tailored, star, coffee, bubble-hi, bolt, no-wall, heart, megaphone, crown]
+  stickers: [tailored, star, blind-date, bubble-hi, bolt, plain-english, heart, megaphone, coffee]
 
 services:
   eyebrow: What we do
-  heading: Everything Your Brand Keeps Putting Off.
-  intro: Pick one. Pick five. Each one is fitted to you, like a suit, but for your reputation.
+  heading: Everything Your Marketing Keeps Putting Off.
+  intro: Planning, messaging, advertising, content, PR and events. Hire us monthly, for one project or for one event.
   cta:
-    label: See every service
-    hoverLabel: Yes, every single one
+    label: See how to hire us
+    hoverLabel: Monthly, project or event
   detailsLabel: What's included
   stickers: [no-wall, sparkle]
 
 pricing:
   eyebrow: The money part
   heading: Clear Prices. No Mystery Math.
-  intro: Three ways to work together, plus extras when you want a little more sparkle. Every plan starts with a real conversation.
+  intro: Three monthly partnerships, priced in the open. Commit to a year for the better rate and the freedom to switch packages, or go month-to-month.
   cta:
-    label: Compare the plans
+    label: See every price and policy
     hoverLabel: Spreadsheet lovers, rejoice
   stickers: [check]
 
 contact:
   eyebrow: The easy part
-  heading: Pick Up The Phone. We'll Handle The Rest.
-  intro: No forms, no chatbots, no "someone will be in touch." A real person answers and you leave the call with a next step.
-  callHeading: Call Us
+  heading: Start With A Blind Date. We're Serious.
+  intro: A free, 30-minute conversation to see if we're a good fit for each other. No obligation, no sales pitch, and no pretending it's a free strategy session.
+  callHeading: Book Your Blind Date
   emailHeading: Email Us
   hoursHeading: Office Hours
-  afterHours: After hours? Leave a voicemail. We return calls first thing, with a plan in hand.
-  emailBody: Prefer typing? Send the details and we'll reply within one business day.
+  afterHours: After hours? Leave a voicemail and we'll call you back the next business day.
+  emailBody: Prefer typing? Tell us a little about your business and what you're trying to get done.
   brochureHeading: Want It On Paper?
-  stickers: [arrow-call, coffee]
+  stickers: [arrow-call, local]
 
 about:
   eyebrow: Who's behind the clipboard
   heading: Tailored Is Our Whole Thing.
-  intro: Oddly Perfect exists because cookie-cutter PR doesn't fit anyone. Including us.
+  intro: A marketing and communications partner for businesses and nonprofits that need marketing to actually happen.
   body:
-    - We're the organized friend with the color-coded calendar and the strong opinions about your bio. Every client gets a plan built around their goals, their voice and their actual schedule.
-    - Business owners, candidates and entrepreneurs come to us when they're tired of posting into the void. We bring the strategy, the calendar and the follow-through. You get your evenings back.
+    - Some clients can do the work and need experienced direction. Some need a hand making sure it gets done. Some need someone to take marketing off their plate entirely. We built a package for each, and you can move between them as your year changes.
+    - We say what things cost before you ask. We don't take commissions from media or vendors, we don't sell access to our relationships, and we never bill you to fix our own mistakes.
   cta:
-    label: Meet the team
-    hoverLabel: They're lovely, promise
+    label: Meet the person behind it
+    hoverLabel: Organized, not intimidating
   stickers: [type-a, heart]
 
 process:
   eyebrow: How we work
   heading: Four Steps. Zero Guesswork.
-  intro: We've done the planning so you don't have to. Here's exactly what happens after you call.
+  intro: Here's exactly what happens after you call.
   stickers: [ahead]
 
 reviews:
   eyebrow: Kind words, pinned up
   heading: Our Fridge Of Fan Mail.
-  intro: Real notes from real clients, stuck to the wall where we can admire them.
+  intro: Notes from clients, stuck to the wall where we can admire them.
   dragHint: Nudge the notes around. They like the attention.
   listToggle: Show as a plain list
   wallToggle: Show as a sticky-note wall
@@ -79,5 +79,5 @@ reviews:
 faq:
   eyebrow: Good questions
   heading: You Asked. We Over-Prepared.
-  intro: The short answers. For the long ones, call. We love a long answer.
+  intro: The short answers. For the long ones, book a Blind Date. We love a long answer.
   stickers: [bubble-hi]

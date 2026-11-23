@@ -42,12 +42,40 @@ stickers:
     rotate: -5
 
   - kind: label
-    id: most-popular
-    label: Most popular tier
-    caption: Crowd Favorite
+    id: featured-tier
+    label: The hands-on package
+    caption: Hands-On
     color: tangerine
     rotate: 8
     decorative: false
+
+  - kind: label
+    id: no-kickbacks
+    label: No kickbacks
+    caption: No Kickbacks
+    color: mint
+    rotate: -6
+
+  - kind: label
+    id: plain-english
+    label: Plain English
+    caption: Plain English
+    color: peri
+    rotate: 5
+
+  - kind: label
+    id: local
+    label: Kenai Peninsula local
+    caption: Kenai Peninsula Local
+    color: mustard
+    rotate: -4
+
+  - kind: label
+    id: blind-date
+    label: Free blind date with a marketer
+    caption: $0 Blind Date
+    color: blush
+    rotate: 6
 
   - kind: drawn
     id: star

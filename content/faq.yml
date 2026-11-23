@@ -1,23 +1,32 @@
 # Frequently asked questions. "home: true" shows the question on the home page.
 items:
+  - question: What's a Blind Date With a Marketer?
+    answer: A free, 30-minute conversation to see whether working together makes sense for both of us. We talk about your business, who you need to reach and what keeps falling through the cracks. No obligation. It isn't a free strategy session, but you'll leave knowing which option fits, if any.
+    home: true
   - question: Do I have to sign a long contract?
-    answer: No. We ask for three months to get a plan working properly, then it's month to month. If it's not a fit, we'll tell you before you have to tell us.
+    answer: You choose. The 12-Month Flex Partnership has the lower price, no onboarding fee and lets you switch packages as your year changes. Month-to-month costs a little more, has a $750 onboarding fee and a 3-month minimum, then 30 days' written notice to cancel.
     home: true
-  - question: Will the posts sound like me or like a robot?
-    answer: Like you, on a really good day. We start with a voice session, keep notes on your favorite phrases and you approve the calendar before anything goes live.
+  - question: Is advertising spend included in the monthly price?
+    answer: No. Ad spend, printing, postage and other outside costs are always separate, and you pay vendors directly whenever practical. We don't mark anything up or take commissions, so our advice is never tied to how much you spend.
     home: true
-  - question: I'm running for office. Do you work with campaigns?
-    answer: Yes. We plan campaign timelines, messaging and event promotion, and we keep every channel on the same page. Call us to talk through your race.
+  - question: Do you work with nonprofits?
+    answer: Yes. Qualified nonprofits automatically get our Community Rate, 10% off professional service fees. Same discount for everyone, no special ask required.
     home: true
-  - question: How fast can we get started?
-    answer: Usually within two weeks of our first call. If you've got a launch or event coming up sooner, say so. We like a deadline.
+  - question: Can you run our event?
+    answer: We can plan it, promote it, run the day or coordinate a defined one-day event. We're a marketing firm that knows how to run a very good event, not a full-service production company, and we'll tell you honestly which one you need.
     home: true
-  - question: Do you run paid ads?
-    answer: We can plan and manage them. Ad spend is billed separately, at cost, so you always see exactly where the money goes.
+  - question: Will you find sponsors for us?
+    answer: We'll build a sponsorship program worth saying yes to, with levels, benefits, packet copy and tracking tools. We don't make sponsor asks on your behalf or sell access to our contacts. You own the relationships.
     home: true
-  - question: What do you need from me?
-    answer: One kickoff call, access to your accounts and a quick yes on each month's calendar. We handle the rest, including the reminders.
-    home: true
+  - question: Where do you work?
+    answer: There's no travel fee in Soldotna, Kenai, Nikiski, Sterling and Kasilof. Everywhere else, meetings are remote by default, and in-person travel is billed only when you ask for it and we agree.
+    home: false
+  - question: What if I need something fast?
+    answer: Rush service is available when capacity allows, from +25% for two business days to +50% for same day, with a $225 minimum. If a tight timeline is our fault, there's no rush fee.
+    home: false
+  - question: Can you guarantee results?
+    answer: No honest marketer can. We guarantee a clear plan, honest reporting on what's working and what isn't, and that we'll tell you when something needs to change.
+    home: false
   - question: Why "Oddly Perfect"?
-    answer: Because nobody's brand fits a template. The quirks are the good part. We tailor everything until it fits you oddly, perfectly well.
+    answer: Because nobody's business fits a template. The quirks are the good part. We tailor everything until it fits you oddly, perfectly well.
     home: false

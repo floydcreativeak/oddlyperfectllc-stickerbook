@@ -377,7 +377,7 @@ content:
   # ------------------------------------------------------------------
   - name: pricing
     label: Pricing
-    description: Plans and add-ons. Exactly one plan can be featured.
+    description: Every price on the site. Monthly packages, projects, events and published fees.
     type: file
     path: content/pricing.yml
     format: yaml
@@ -393,25 +393,99 @@ content:
       - { name: intro, label: Intro, type: text, required: true }
       - { name: stickers, label: Stickers (ids), type: string, list: { max: 3 } }
       - { name: currency, label: Currency, type: string, readonly: true }
+      - name: priceLabels
+        label: Price labels
+        type: object
+        fields:
+          - { name: flex, label: Main price label, description: "e.g. 12-Month Flex", type: string, required: true }
+          - { name: monthly, label: Second price label, description: "e.g. Month-to-month", type: string, required: true }
+          - { name: or, label: Word between the prices, type: string, required: true }
+      - { name: includesLabel, label: "'What's included' label", type: string, required: true }
+      - { name: bestForLabel, label: "'Best for' label", type: string, required: true }
+      - { name: exampleLabel, label: "'For example' label", type: string, required: true }
+      - { name: moreLabel, label: "'More items' link", description: "Keep {n} in it, e.g. + {n} more. See the full list", type: string, required: true }
       - name: tiers
-        label: Plans
+        label: Monthly packages
         type: object
         list: { min: 1, max: 4 }
         fields:
-          - { name: name, label: Plan name, type: string, required: true }
+          - { name: name, label: Package name, type: string, required: true }
           - { name: tab, label: Folder tab label (short), type: string, required: true, options: { maxlength: 18 } }
-          - { name: price, label: Price (as shown), description: "e.g. $950 or From $1,200", type: string, required: true }
+          - { name: price, label: 12-Month Flex price, description: "e.g. $1,500", type: string, required: true }
+          - { name: altPrice, label: Month-to-month price, description: "e.g. $1,750", type: string }
           - { name: cadence, label: Per..., description: "e.g. per month", type: string, required: true }
-          - { name: pitch, label: One-line pitch, type: text, required: true }
-          - { name: features, label: What's included, type: string, list: { min: 2, max: 8 } }
-          - { name: featured, label: Featured plan, type: boolean }
+          - { name: pitch, label: One-line fit, type: text, required: true }
+          - { name: bestFor, label: Best for, type: text, required: true }
+          - { name: features, label: What's included, type: string, list: { min: 2, max: 20 } }
+          - { name: example, label: Example (optional), type: text }
+          - { name: notes, label: Notes (optional), type: text, list: true }
+          - { name: featured, label: Featured package, type: boolean }
           - { name: sticker, label: Sticker id (optional), type: string }
           - { name: color, label: Folder color, type: select, required: true, options: { values: [mint, blush, mustard, peri, tangerine, cream] } }
           - { name: cta, label: Button text, type: string, required: true }
           - { name: placeholder, label: Still a placeholder?, type: boolean }
-      - { name: addonsHeading, label: Add-ons heading, type: string, required: true }
+      - { name: extrasHeading, label: Home page extras heading, type: string, required: true }
+      - name: extras
+        label: Home page extras (price tags)
+        type: object
+        list: true
+        fields:
+          - { name: name, label: Name, type: string, required: true }
+          - { name: price, label: Price (as shown), type: string, required: true }
+          - { name: note, label: Note, type: string }
+          - { name: href, label: Links to, description: "e.g. /services/#projects", type: string, required: true }
+      - { name: projectsHeading, label: Projects heading, type: string, required: true }
+      - { name: projectsIntro, label: Projects intro, type: text, required: true }
+      - { name: whenLabel, label: "'When you need it' label", type: string, required: true }
+      - name: projects
+        label: One-time projects
+        type: object
+        list: true
+        fields:
+          - { name: name, label: Name, type: string, required: true }
+          - { name: price, label: Price (as shown), type: string, required: true }
+          - { name: when, label: When someone needs it, type: text, required: true }
+          - { name: details, label: What's included, type: text, required: true }
+          - { name: icon, label: Icon, type: select, required: true, options: { values: [star, sparkle, squiggle, arrow, arrow-curl, bubble, bolt, heart, swoosh, megaphone, phone, calendar, chart, pen, camera, handshake, laptop, clipboard, target, crown, badge, flag, mic, thumbs, check, clock] } }
+          - { name: placeholder, label: Still a placeholder?, type: boolean }
+      - { name: eventsHeading, label: Events heading, type: string, required: true }
+      - { name: eventsIntro, label: Events intro, type: text, required: true }
+      - name: events
+        label: Event services
+        type: object
+        list: true
+        fields:
+          - { name: name, label: Name, type: string, required: true }
+          - { name: price, label: Price (as shown), type: string, required: true }
+          - { name: tagline, label: One-line summary, type: string, required: true }
+          - { name: includes, label: What's included, type: string, list: { min: 1 } }
+          - { name: icon, label: Icon, type: select, required: true, options: { values: [star, sparkle, squiggle, arrow, arrow-curl, bubble, bolt, heart, swoosh, megaphone, phone, calendar, chart, pen, camera, handshake, laptop, clipboard, target, crown, badge, flag, mic, thumbs, check, clock] } }
+          - { name: placeholder, label: Still a placeholder?, type: boolean }
+      - { name: eventBoundariesHeading, label: Event boundaries heading, type: string, required: true }
+      - { name: eventBoundaries, label: Event boundaries, type: string, list: true }
+      - name: sponsorshipNote
+        label: Sponsorship note
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: body, label: Text, type: text }
+      - name: matcher
+        label: "'Which one do I need?' table"
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: string }
+          - name: rows
+            label: Rows
+            type: object
+            list: { min: 1 }
+            fields:
+              - { name: says, label: The customer says, type: text, required: true }
+              - { name: pointTo, label: We point them to, type: string, required: true }
+              - { name: href, label: Links to, type: string, required: true }
+      - { name: addonsHeading, label: Fees heading, type: string, required: true }
       - name: addons
-        label: Add-ons
+        label: Published fees
         type: object
         list: true
         fields:
@@ -419,8 +493,7 @@ content:
           - { name: price, label: Price (as shown), type: string, required: true }
           - { name: note, label: Note, type: string }
           - { name: placeholder, label: Still a placeholder?, type: boolean }
-      - { name: footnote, label: Footnote, type: text }
-      - { name: includesLabel, label: Features heading inside each plan, type: string, required: true }
+      - { name: footnote, label: Footnote under the packages, type: text }
       - { name: faqHeading, label: Pricing questions heading, type: string, required: true }
       - name: faq
         label: Pricing questions
@@ -437,6 +510,135 @@ content:
           - { name: heading, label: Heading, type: string, required: true }
           - { name: body, label: Text, type: text, required: true }
           - { name: label, label: Button text, type: string, required: true }
+
+  # ------------------------------------------------------------------
+  - name: policies
+    label: Policies (fees, rush, travel)
+    description: The published guardrails shown on the Pricing page.
+    type: file
+    path: content/policies.yml
+    format: yaml
+    fields:
+      - { name: heading, label: Fine print heading, type: string, required: true }
+      - { name: intro, label: Fine print intro, type: text, required: true }
+      - name: flex
+        label: 12-Month Flex Partnership
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: tagline, label: Tagline, type: string, required: true }
+          - { name: rulesHeading, label: Rules heading, type: string, required: true }
+          - { name: rules, label: Rules, type: string, list: { min: 1 } }
+          - { name: benefitsHeading, label: Perks heading, type: string, required: true }
+          - { name: benefits, label: Perks, type: string, list: { min: 1 } }
+      - name: community
+        label: Community Rate
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: tagline, label: Tagline, type: string, required: true }
+          - { name: badge, label: Badge text, description: "Short, e.g. 10%", type: string, required: true, options: { maxlength: 6 } }
+          - { name: body, label: Text, type: text, required: true }
+          - { name: points, label: Points, type: string, list: true }
+      - name: noSurprises
+        label: No surprise bills
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: body, label: Text, type: text, required: true }
+      - name: notIncluded
+        label: Not included in monthly packages
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - { name: items, label: Items, type: string, list: { min: 1 } }
+      - name: rush
+        label: Rush fees (marketing and projects)
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - { name: whenLabel, label: First column label, type: string, required: true }
+          - { name: feeLabel, label: Second column label, type: string, required: true }
+          - name: rows
+            label: Rows
+            type: object
+            list: { min: 1 }
+            fields:
+              - { name: when, label: When, type: string, required: true }
+              - { name: fee, label: Fee, type: string, required: true }
+          - { name: note, label: Note, type: text }
+      - name: eventRush
+        label: Rush fees (events)
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - { name: whenLabel, label: First column label, type: string, required: true }
+          - { name: feeLabel, label: Second column label, type: string, required: true }
+          - name: rows
+            label: Rows
+            type: object
+            list: { min: 1 }
+            fields:
+              - { name: when, label: When, type: string, required: true }
+              - { name: fee, label: Fee, type: string, required: true }
+          - { name: note, label: Note, type: text }
+      - name: delays
+        label: Client delays
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: body, label: Text, type: text, required: true }
+          - { name: options, label: Options, type: string, list: { min: 1 } }
+      - name: travel
+        label: Travel and service area
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: local, label: Local area (no travel fee), type: text, required: true }
+          - { name: outside, label: Outside the local area, type: text, required: true }
+          - { name: expenses, label: Travel expenses, type: text, required: true }
+      - name: noKickbacks
+        label: No kickbacks
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: body, label: Text, type: text, required: true }
+          - { name: items, label: Promises, type: string, list: { min: 1 } }
+          - { name: kicker, label: Closing line, type: string, required: true }
+      - name: relationships
+        label: Relationships are not for sale
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: body, label: Text, type: text, required: true }
+      - name: revisions
+        label: Revisions
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: body, label: Text, type: text, required: true }
+      - name: payments
+        label: Payment terms
+        description: Have an Alaska attorney or accountant review this before launch, then untick "Still a placeholder?".
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - { name: monthly, label: Monthly payment terms, type: string, list: { min: 1 } }
+          - { name: projectsHeading, label: Project schedules heading, type: string, required: true }
+          - { name: projectLabel, label: First column label, type: string, required: true }
+          - { name: scheduleLabel, label: Second column label, type: string, required: true }
+          - name: projects
+            label: Project payment schedules
+            type: object
+            list: true
+            fields:
+              - { name: project, label: Project, type: string, required: true }
+              - { name: schedule, label: Schedule, type: string, required: true }
+          - { name: placeholder, label: Still a placeholder? (needs legal review), type: boolean }
 
   # ------------------------------------------------------------------
   - name: reviews
@@ -597,6 +799,15 @@ content:
           - { name: body, label: Text, type: text, required: true }
           - { name: sticker, label: Sticker id (optional), type: string }
       - { name: jumpLabel, label: "Services page: jump menu label", type: string }
+      - name: jump
+        label: "Services page: jump links"
+        type: object
+        list: true
+        fields:
+          - { name: label, label: Label, type: string, required: true }
+          - { name: href, label: Links to, description: "e.g. #projects", type: string, required: true }
+      - { name: monthlyHeading, label: "Services page: monthly heading", type: string }
+      - { name: monthlyIntro, label: "Services page: monthly intro", type: text }
       - { name: teamHeading, label: "About page: team heading", type: string }
       - { name: teamIntro, label: "About page: team intro", type: text }
       - { name: galleryHeading, label: "About page: gallery heading", type: string }

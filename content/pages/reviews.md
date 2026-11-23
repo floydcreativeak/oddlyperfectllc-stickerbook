@@ -10,6 +10,6 @@ filterLabel: Show reviews from
 allLabel: Everywhere
 cta:
   heading: Want To Be On The Fridge?
-  body: Every note on this wall started with one phone call. Yours could be next.
-  label: Start your note
+  body: Every note on this wall started with one free 30-minute conversation. Yours could be next.
+  label: Book the blind date
 ---

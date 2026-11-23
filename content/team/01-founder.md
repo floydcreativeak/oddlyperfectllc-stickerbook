@@ -1,6 +1,6 @@
 ---
 name: The Founder
-title: Founder & Chief Strategist
+title: Founder & Marketing Partner
 funFact: Owns more highlighters than shoes. Has a system for both.
 photo:
   src: ../media/placeholder-team-founder.jpg
@@ -10,4 +10,4 @@ order: 1
 sticker: crown
 placeholder: true
 ---
-Started Oddly Perfect after one too many conversations with business owners who'd been sold a template. Believes every brand has a story worth telling and every calendar has room for one more color.
+Started Oddly Perfect to give Kenai Peninsula businesses and nonprofits experienced marketing help without hiring a whole department. Believes in written plans, honest prices and calendars with room for one more color.

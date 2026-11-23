@@ -169,6 +169,28 @@ Built:
 - Gotcha fixed: measure a sticker's on-screen centre *before* freezing its
   styles (`right: auto` can make an absolutely positioned sticker jump).
 
+## Client planning packet (Nov 2026)
+
+Source: `Oddly Perfect Planning Packet` (working draft, September 2026).
+
+- Content model: every price now lives in `content/pricing.yml` (monthly tiers
+  with Flex + month-to-month prices, projects, events, fees, matcher, extras);
+  the guardrails live in new `content/policies.yml` (Flex rules, Community Rate,
+  rush tables, delays, travel, no kickbacks, relationships, revisions, payments).
+- Services collection now holds six capability cards for the home page; the
+  Services page is built from pricing.yml (monthly spreads, projects, events,
+  boundaries, sponsorship note, matcher, process story).
+- Pricing page: folders, Flex + Community Rate, published fees, projects and
+  events at a glance, rush tables, no kickbacks, and the fine print.
+- Primary CTA is now the free "Blind Date With a Marketer" (still a call).
+- Team reduced to one person (packet describes a solo practice).
+- Left off the public site on purpose: capacity points, financial guardrails,
+  fit check, warning signs, internal shorthand, nonprofit cap idea, KSRM/radio
+  boundary (it names the owner and her employer).
+- `policies.payments.placeholder: true` until an Alaska attorney/accountant
+  reviews the payment, late-fee and cancellation wording (the packet asks for this).
+- No invented popularity claims: the featured tier's sticker says "Hands-On".
+
 ## Checks
 
 - `npm run test:a11y` (axe, 9 pages x light/dark x 375/1280): 0 serious/critical.

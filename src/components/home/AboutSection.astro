@@ -1,19 +1,22 @@
 ---
-import { getHome, getTeam, getStickers } from '../../lib/content';
+import { getHome, getTeam, getGallery, getStickers } from '../../lib/content';
 import Polaroid from '../Polaroid.astro';
 import Sticker from '../Sticker.astro';
 import CtaButton from '../CtaButton.astro';
 import ProcessStory from '../ProcessStory.astro';
 const { about, process } = await getHome();
-const team = (await getTeam()).slice(0, 2);
+// Founder portrait(s) first, topped up with behind-the-scenes photos to make a pair.
+const team = (await getTeam()).slice(0, 2).map((m) => ({ photo: m.data.photo, caption: `${m.data.name}, ${m.data.title}` }));
+const extras = (await getGallery()).slice(0, Math.max(0, 2 - team.length)).map((g) => ({ photo: g.data.photo, caption: g.data.caption }));
+const photos = [...team, ...extras];
 const stickers = await getStickers(about.stickers);
 ---
 <section class="block block--about edge edge--tilt about" id="about" aria-labelledby="about-title">
   <div class="wrap">
     <div class="about__grid">
       <div class="about__photos">
-        {team.map((m, i) => (
-          <Polaroid photo={m.data.photo} caption={`${m.data.name}, ${m.data.title}`} rot={i ? 4 : -3} class={`about__pol about__pol--${i}`} />
+        {photos.map((m, i) => (
+          <Polaroid photo={m.photo} caption={m.caption} rot={i ? 4 : -3} class={`about__pol about__pol--${i}`} />
         ))}
         {stickers[0] && <Sticker sticker={stickers[0]} size="6rem" class="about__st" />}
       </div>

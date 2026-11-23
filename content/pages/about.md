@@ -1,27 +1,27 @@
 ---
-title: About | Oddly Perfect PR & Marketing
-description: Meet Oddly Perfect, the PR and marketing firm that tailors every plan to fit. Organized, a little bossy and always three steps ahead.
+title: About | Oddly Perfect Marketing & PR, Kenai Peninsula
+description: Meet Oddly Perfect, a marketing and communications partner on Alaska's Kenai Peninsula. Published prices, plain English, no kickbacks and no funny business.
 eyebrow: About us
 heading: Tailored Is Our Whole Thing.
-intro: We're the organized friend with the plan, the calendar and the strong opinions about your bio.
+intro: A marketing and communications partner for Kenai Peninsula businesses and nonprofits that need marketing to actually happen.
 color: blush
-stickers: [type-a, coffee]
+stickers: [type-a, local]
 sections:
   - heading: Why We Exist
-    body: Cookie-cutter PR doesn't fit anyone. We kept watching good businesses get handed the same template, the same posting schedule and the same results. So we built a firm that starts with you and works backwards.
+    body: Plenty of businesses don't need a full in-house marketing department. They need experienced direction, a hand making sure the work happens, or someone to own it for a while. We built one package for each, and a Flex partnership so you can move between them as your year changes.
     sticker: tailored
-  - heading: How We Think
-    body: Short sentences. Clear plans. Deadlines with a little buffer built in. We'd rather over-prepare than wing it, and we'll tell you the truth even when it's not the fun answer.
-    sticker: ahead
-  - heading: Who We Work With
-    body: Business owners, candidates, nonprofits and entrepreneurs who want to be seen and heard, without spending every evening on it. If you have something worth talking about, we'll help you say it well.
-    sticker: megaphone
-teamHeading: The Clipboard Crew
-teamIntro: Small team, big planners. You'll know every person working on your account by name.
+  - heading: How We Work
+    body: Prices are published. Scope is written down. Normal emails and calls aren't tracked with a stopwatch, and if something would cost extra, we say so before we start. We never bill you to fix our own mistakes.
+    sticker: plain-english
+  - heading: What We Won't Do
+    body: We don't take commissions from media or vendors, we don't mark up what you buy, and we don't sell access to our relationships. We don't make more money when you spend more money, and we like it that way.
+    sticker: no-kickbacks
+teamHeading: The Person Behind The Clipboard
+teamIntro: Oddly Perfect is a hands-on, owner-led practice. The person you meet on the Blind Date is the person doing the work.
 galleryHeading: Behind The Scenes
-galleryIntro: Where the plans get made, the content gets shot and the coffee gets cold.
+galleryIntro: Where the plans get made, the campaigns get built and the coffee gets cold.
 cta:
   heading: We'd Love To Meet You.
-  body: Bring your goals, your questions and your messiest content folder. We'll bring the plan.
-  label: Say hello
+  body: Bring your goals, your questions and your messiest marketing folder. The first 30 minutes are on us.
+  label: Book the blind date
 ---

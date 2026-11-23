@@ -1,97 +1,301 @@
-# Pricing. Edit in Pages CMS under "Pricing".
-# Every price below is a placeholder until the client confirms real numbers.
-# Exactly one tier can be "featured" (it peeks out with a sticker).
+# Pricing: everything with a price tag. Edit in Pages CMS under "Pricing".
+# Source: client planning packet (working draft, September 2026).
+# Exactly one monthly package can be "featured" (it peeks out with a sticker).
 
 seo:
-  title: Pricing | Oddly Perfect PR & Social Media Management
-  description: Clear monthly plans for social media management, PR and marketing, plus add-ons. No mystery math. Call Oddly Perfect to find your fit.
+  title: Pricing | Oddly Perfect Marketing & PR, Kenai Peninsula
+  description: Monthly marketing partnerships from $1,500, one-time projects from $1,500 and event services from $2,500. Published prices, plain English, no kickbacks.
 
 eyebrow: Pricing
 heading: Clear Prices. No Mystery Math.
-intro: Every plan is a starting point. We tailor the details on a quick call, then put it all in writing. No surprises, no fine print in size four font.
-stickers: [check, coffee]
+intro: Every price is published, every package is explained in plain English, and the first conversation is free. Commit to a year and you get the better rate plus the freedom to switch packages as you go.
+stickers: [no-kickbacks, check]
 currency: USD
 
-tiers:
-  - name: The Starter
-    tab: Starter
-    price: $650
-    cadence: per month
-    pitch: For businesses ready to show up online consistently, without it eating their week.
-    features:
-      - Two social platforms, managed
-      - Twelve posts a month, written and designed
-      - Monthly content calendar for your approval
-      - A short monthly results report
-    color: mint
-    cta: Start here
-    placeholder: true
-
-  - name: The Main Event
-    tab: Main Event
-    price: $1,350
-    cadence: per month
-    pitch: Social, PR and strategy working together. The plan most clients grow into, fast.
-    features:
-      - Three social platforms, managed
-      - Twenty posts a month, plus stories
-      - One press release or media pitch a month
-      - Comments and messages answered
-      - Monthly strategy call
-    featured: true
-    sticker: most-popular
-    color: mustard
-    cta: Book the favorite
-    placeholder: true
-
-  - name: The Full Spotlight
-    tab: Spotlight
-    price: $2,400
-    cadence: per month
-    pitch: For campaigns, launches and leaders who need a team in their corner every single day.
-    features:
-      - Everything in The Main Event
-      - Up to five platforms, managed
-      - Ongoing media outreach and interview prep
-      - Reputation monitoring and replies
-      - Campaign and event planning
-      - Priority same-day responses
-    color: blush
-    cta: Go all in
-    placeholder: true
-
-addonsHeading: Little Extras, Big Difference
-addons:
-  - name: Brand photo direction
-    price: From $300
-    note: Shot list, styling notes and on-the-day direction.
-    placeholder: true
-  - name: Press release, one-off
-    price: $400
-    note: Written, polished and pitched.
-    placeholder: true
-  - name: Event promotion package
-    price: From $750
-    note: Before, during and after.
-    placeholder: true
-  - name: Media training session
-    price: $350
-    note: Ninety minutes. You'll walk out ready.
-    placeholder: true
+priceLabels:
+  flex: 12-Month Flex
+  monthly: Month-to-month
+  or: or
 
 includesLabel: What's in the folder
+bestForLabel: Best for
+exampleLabel: For example
+moreLabel: "+ {n} more. See the full list"
+
+tiers:
+  - name: I Need a Plan
+    tab: Plan
+    price: $1,500
+    altPrice: $1,750
+    cadence: per month
+    pitch: You can do the work. You need experienced direction.
+    bestFor: A business with someone who can handle the day-to-day work but needs experienced help deciding what to do, what to say, where to spend money and what should happen next.
+    features:
+      - One main marketing goal at a time
+      - One 60-minute planning meeting each month
+      - Rolling 90-day marketing plan
+      - Marketing calendar
+      - Campaign ideas and direction
+      - Advertising and media guidance
+      - Messaging help
+      - Community partnership and visibility ideas
+      - Sponsorship strategy guidance
+      - Feedback on up to 4 marketing items you create each month
+      - Help figuring out what is working and what is not
+      - Recommendations for outside specialists when needed
+    example: You need to recruit seasonal employees. We define the audience, message, advertising approach, timeline and what your staff should create. Your team does the work; we make sure they are working from a good plan.
+    notes: []
+    color: mint
+    cta: Let's make a plan
+    placeholder: false
+
+  - name: Help Me Get It Done
+    tab: Get It Done
+    price: $2,750
+    altPrice: $3,150
+    cadence: per month
+    pitch: You need strategy plus someone helping make sure the work happens.
+    bestFor: A business that does not just need ideas. It needs someone helping make sure the marketing actually happens.
+    features:
+      - Two main marketing goals at a time
+      - Two working and planning meetings each month
+      - Marketing plan and calendar management
+      - Campaign development
+      - Copywriting
+      - Social media content
+      - Email and newsletter content
+      - Radio, print and digital advertising copy
+      - Press releases when appropriate
+      - Simple graphics using your existing brand
+      - Basic website copy updates
+      - Advertising and media coordination
+      - Coordination with your existing vendors and media reps
+      - Community partnership ideas
+      - Sponsorship strategy
+      - Simple monthly reporting
+      - Up to 8 routine finished marketing items each month
+    example: ""
+    notes:
+      - "Routine items look like: a social post with a simple graphic, a customer email, a radio script, a print or digital ad, a press release, a basic flyer or a short website update."
+      - We use the production time where your business needs it. We do not manufacture content just to fill a quota.
+    featured: true
+    sticker: featured-tier
+    color: mustard
+    cta: Let's get it done
+    placeholder: false
+
+  - name: Take Marketing Off My Plate
+    tab: Off My Plate
+    price: $4,250
+    altPrice: $4,850
+    cadence: per month
+    pitch: You need someone to largely own and coordinate your marketing.
+    bestFor: A business with enough marketing happening that somebody needs to own it, without hiring an in-house marketing director and team.
+    features:
+      - Three to four main marketing goals at a time
+      - More frequent strategy and working meetings
+      - Annual and quarterly planning
+      - Marketing budget guidance
+      - Coordination across advertising channels
+      - Vendor oversight
+      - Public relations and business communications
+      - Community partnership development
+      - Sponsorship strategy
+      - Campaign management
+      - Leadership-level marketing guidance
+      - A seat in the right leadership meetings
+      - More detailed reporting and recommendations
+      - Up to 12 routine finished marketing items each month
+      - Up to 2 larger communications pieces each month
+    example: ""
+    notes:
+      - "Larger pieces look like: a substantial newsletter, a media package, a multi-version ad campaign or a bigger promotional piece."
+      - Large events, complete rebrands, website development, major publications, extensive photo and video work and unusually large standalone campaigns are priced separately.
+    color: blush
+    cta: Take it off my plate
+    placeholder: false
+
+# Shown under the monthly folders on the home page
+extrasHeading: Also On The Menu
+extras:
+  - name: Blind Date With a Marketer
+    price: $0
+    note: A 30-minute fit conversation. No obligation.
+    href: /pricing/#fees
+  - name: One-time projects
+    price: From $1,500
+    note: One defined thing, done properly.
+    href: /services/#projects
+  - name: Event services
+    price: From $2,500
+    note: Plan it, promote it, run the day.
+    href: /services/#events
+
+projectsHeading: One-Time Projects
+projectsIntro: For when you need one defined thing rather than an ongoing monthly relationship.
+whenLabel: When you need it
+projects:
+  - name: Marketing Checkup + 90-Day Plan
+    price: $2,500
+    when: Tell us what is working, what is not and what to do next.
+    details: We review your current marketing, messaging, advertising and communications, then hand you a prioritized 90-day action plan.
+    icon: clipboard
+  - name: Annual Marketing Plan
+    price: $3,500
+    when: Build the priorities, calendar and marketing roadmap for the year.
+    details: Priorities, calendar, major campaigns, seasonal opportunities, advertising approach and a communications roadmap.
+    icon: calendar
+  - name: Messaging Reset
+    price: $3,000
+    when: We know what we do. We just do not explain it very well.
+    details: Clarify your key messages, audience, business description, talking points and core marketing language.
+    icon: bubble
+  - name: Campaign Sprint
+    price: $4,500
+    when: One important thing needs focused promotion for about 4 to 6 weeks.
+    details: One focused campaign with a concept, audience, messaging, rollout plan, media recommendations and up to 8 campaign communications.
+    icon: bolt
+  - name: PR Announcement
+    price: $1,500
+    when: We have news and need help telling people.
+    details: A messaging consultation, one polished press release, a media contact strategy, distribution guidance and one follow-up cycle.
+    icon: megaphone
+  - name: Sponsorship Program
+    price: $3,500
+    when: Build a professional sponsorship structure and the tools to run it.
+    details: Levels, pricing recommendations, benefits, packet copy, tracking, fulfillment, recognition and renewal tools. We build the program; we do not solicit sponsors.
+    icon: badge
+
+eventsHeading: Event Services
+eventsIntro: We are a marketing and communications firm that knows how to run a very good event. We are not a full-service event production company, and we're upfront about that.
+events:
+  - name: Help Us Plan It
+    price: $3,000
+    tagline: You run it. We build the roadmap.
+    includes:
+      - Kickoff and event goals or concept
+      - Preliminary budget framework and planning timeline
+      - Venue and space considerations
+      - Vendor-needs checklist
+      - Registration and ticketing recommendations
+      - Sponsorship-opportunity recommendations
+      - Staffing and volunteer planning
+      - Marketing roadmap and preliminary schedule
+      - Run-of-show framework
+      - Final planning meeting and two reasonable revision rounds
+    icon: clipboard
+  - name: Help Us Promote It
+    price: $4,500
+    tagline: You have the logistics. We help get people there.
+    includes:
+      - Event positioning and messaging
+      - Promotion timeline
+      - Advertising and media recommendations
+      - Social and email plans
+      - PR approach when appropriate
+      - Sponsor-recognition plan
+      - Community promotion opportunities
+      - Up to 8 finished event-marketing pieces
+    icon: megaphone
+  - name: Run Event Day
+    price: $2,500
+    tagline: You planned it. We run the room.
+    includes:
+      - Advance handoff and review of your plan
+      - Final timeline and run-of-show
+      - Vendor confirmations and arrival coordination
+      - An event-day point person
+      - Program and timeline management
+      - Troubleshooting
+      - Up to 10 consecutive onsite hours
+    icon: clock
+  - name: Coordinate the Event
+    price: $6,500
+    tagline: You know what the event is. We make sure the moving pieces come together.
+    includes:
+      - For a defined one-day event at one main location
+      - Kickoff, detailed timeline and budget tracking
+      - Up to 6 planning meetings
+      - Coordination with up to 10 primary vendors
+      - Venue, registration and ticketing
+      - Sponsor logistics and fulfillment
+      - Signage and materials coordination
+      - Staffing and volunteer planning
+      - Run-of-show, confirmations and event-day lead
+      - Up to 10 onsite hours and a post-event wrap-up
+    icon: flag
+
+eventBoundariesHeading: Where The Event Help Stops
+eventBoundaries:
+  - No full-service event production
+  - No large multi-day production management
+  - No unlimited vendor management
+  - No sponsor solicitation
+  - You keep responsibility for vendor contracts and major decisions
+  - Outside vendors are paid directly by you whenever practical
+  - We may decline an event if it would put existing client commitments at risk
+
+sponsorshipNote:
+  heading: About Sponsorships
+  body: We help build a sponsorship program worth saying yes to. We do not sell access to contacts or make sponsor asks on a client's behalf. You own the relationships; we build the structure and the tools.
+
+matcher:
+  heading: Which One Do I Need?
+  intro: Find the sentence that sounds like you.
+  rows:
+    - says: I can do the work. I just need someone to tell me what makes sense.
+      pointTo: I Need a Plan
+      href: /pricing/#tiers
+    - says: I know we need marketing, but nobody has time to make it happen.
+      pointTo: Help Me Get It Done
+      href: /pricing/#tiers
+    - says: Marketing keeps landing back on my desk. I need someone to own it.
+      pointTo: Take Marketing Off My Plate
+      href: /pricing/#tiers
+    - says: We have one big thing we need people to know about.
+      pointTo: Campaign Sprint
+      href: /services/#projects
+    - says: We need help with an event, but not a full event-production company.
+      pointTo: Event services
+      href: /services/#events
+    - says: I have no idea which one I need.
+      pointTo: Blind Date With a Marketer
+      href: /pricing/#fees
+
+addonsHeading: Fees, Published
+addons:
+  - name: Blind Date With a Marketer
+    price: $0
+    note: A 30-minute fit conversation. No obligation. Not a free strategy session.
+  - name: Out-of-scope work
+    price: $225/hr
+    note: In 15-minute increments. Always disclosed and approved before work begins.
+  - name: After-hours or weekend work
+    price: $300/hr
+    note: One-hour minimum, only when specifically requested and accepted.
+  - name: Travel outside the local area
+    price: $125/hr
+    note: In 30-minute increments, plus the current IRS business mileage rate.
+  - name: Month-to-month onboarding
+    price: $750
+    note: Waived for 12-Month Flex clients.
+
+footnote: Paid advertising, printing, postage and other outside costs are never hidden inside a package. You pay vendors directly whenever practical, at their price, with no markup from us.
+
 faqHeading: Money Questions, Answered
 faq:
-  - question: Is there a setup fee?
-    answer: No. Your first month includes the kickoff call, the plan and account setup. We'd rather earn the second month than charge for the first.
-  - question: Can I switch plans later?
-    answer: Anytime. Move up for a launch, move down for a quiet season. Just give us notice before the next month starts.
-  - question: What if I only need one thing?
-    answer: Grab an add-on on its own. A single press release or media training session is a great way to see how we work.
-  - question: Do you require a deposit?
-    answer: The first month is paid up front. After that we bill monthly, on the same day, with no surprises.
+  - question: What's the difference between 12-Month Flex and month-to-month?
+    answer: Flex is a 12-month commitment to us, not to one package. You get the lower price, a waived onboarding fee, locked pricing for the year and the freedom to switch packages. Month-to-month costs a little more, has a $750 onboarding fee and a 3-month minimum.
+  - question: Can I switch packages?
+    answer: On 12-Month Flex, yes. Send a written request at least 5 calendar days before month-end and the new package starts on the first of the next month. One change per month, no mid-month changes and no prorating.
+  - question: Will I get surprise hourly bills?
+    answer: No. Normal emails, regular calls, scheduled meetings and the everyday communication it takes to deliver your package are not tracked with a stopwatch. If something would cross into out-of-scope work, we tell you and get your approval first.
+  - question: Is ad spend included?
+    answer: No, and that's on purpose. Paid advertising, printing, postage and other outside costs are separate, and you pay vendors directly whenever practical. We don't take commissions or mark anything up.
+  - question: Do nonprofits get a discount?
+    answer: Yes. Qualified nonprofits automatically get 10% off professional service fees. No special ask, no private negotiation and the same discount for everyone.
+
 cta:
   heading: Not Sure Which Folder Is Yours?
-  body: Call us. Ten minutes and we'll point you to the right plan, or tell you honestly if you don't need one yet.
-  label: Help me pick
-footnote: Month-to-month after the first three months. Ad spend and printing are billed separately, at cost, with receipts.
+  body: Book a free Blind Date With a Marketer. Thirty minutes, no obligation, and you'll leave knowing whether we're the right fit.
+  label: Book the blind date

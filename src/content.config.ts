@@ -26,6 +26,9 @@ const text = (min = 1) =>
       message: 'Emoji are only allowed as sticker artwork (content/stickers.yml), not in text.',
     });
 const optText = () => text().optional();
+/** Optional text that may also be left blank in the CMS. */
+const maybeText = () =>
+  z.string().trim().refine((v) => !EMOJI.test(v), { message: 'Emoji are only allowed as sticker artwork.' }).optional();
 
 /** A photo. Alt text is required; placeholder flags it for the CI check. */
 const photo = ({ image }: SchemaContext) =>
@@ -302,7 +305,7 @@ const services = defineCollection({
 });
 
 /* ------------------------------------------------------------------ */
-/* Pricing: content/pricing.yml                                        */
+/* Pricing: content/pricing.yml (every price on the site lives here)    */
 /* ------------------------------------------------------------------ */
 const pricing = defineCollection({
   loader: glob({ pattern: 'pricing.yml', base: './content' }),
@@ -314,15 +317,24 @@ const pricing = defineCollection({
       intro: text(),
       stickers: z.array(stickerRef).max(3).default([]),
       currency: z.string().default('USD'),
+      priceLabels: z.object({ flex: text(), monthly: text(), or: text() }),
+      includesLabel: text(),
+      bestForLabel: text(),
+      exampleLabel: text(),
+      moreLabel: text().refine((v) => v.includes('{n}'), 'Must contain {n} (the number of extra items)'),
       tiers: z
         .array(
           z.object({
             name: text(),
             tab: text().max(18).describe('Short label on the folder tab'),
-            price: text().describe('Shown as written, e.g. "$950" or "From $1,200"'),
+            price: text().describe('Main (12-Month Flex) price as shown, e.g. "$1,500"'),
+            altPrice: maybeText().describe('Month-to-month price, e.g. "$1,750"'),
             cadence: text().describe('e.g. "per month"'),
             pitch: text(),
-            features: z.array(text()).min(2).max(8),
+            bestFor: text(),
+            features: z.array(text()).min(2).max(20),
+            example: maybeText(),
+            notes: z.array(text()).default([]),
             featured: z.boolean().default(false),
             sticker: stickerRef.optional(),
             color: PASTEL,
@@ -332,12 +344,32 @@ const pricing = defineCollection({
         )
         .min(1)
         .max(4),
+      extrasHeading: text(),
+      extras: z.array(z.object({ name: text(), price: text(), note: optText(), href })).default([]),
+      projectsHeading: text(),
+      projectsIntro: text(),
+      whenLabel: text(),
+      projects: z
+        .array(z.object({ name: text(), price: text(), when: text(), details: text(), icon: z.enum(DRAWN_ART), placeholder: z.boolean().default(false) }))
+        .default([]),
+      eventsHeading: text(),
+      eventsIntro: text(),
+      events: z
+        .array(z.object({ name: text(), price: text(), tagline: text(), includes: z.array(text()).min(1), icon: z.enum(DRAWN_ART), placeholder: z.boolean().default(false) }))
+        .default([]),
+      eventBoundariesHeading: text(),
+      eventBoundaries: z.array(text()).default([]),
+      sponsorshipNote: z.object({ heading: text(), body: text() }).optional(),
+      matcher: z.object({
+        heading: text(),
+        intro: optText(),
+        rows: z.array(z.object({ says: text(), pointTo: text(), href })).min(1),
+      }),
       addonsHeading: text(),
       addons: z
         .array(z.object({ name: text(), price: text(), note: optText(), placeholder: z.boolean().default(false) }))
         .default([]),
       footnote: optText(),
-      includesLabel: text(),
       faqHeading: text(),
       faq: z.array(z.object({ question: text(), answer: text() })).default([]),
       cta: z.object({ heading: text(), body: text(), label: text() }),
@@ -346,6 +378,53 @@ const pricing = defineCollection({
       message: 'Only one pricing tier can be featured.',
       path: ['tiers'],
     }),
+});
+
+/* ------------------------------------------------------------------ */
+/* Policies: content/policies.yml (shown on the Pricing page)           */
+/* ------------------------------------------------------------------ */
+const feeTable = z.object({
+  heading: text(),
+  intro: optText(),
+  whenLabel: text(),
+  feeLabel: text(),
+  rows: z.array(z.object({ when: text(), fee: text() })).min(1),
+  note: optText(),
+});
+const policies = defineCollection({
+  loader: glob({ pattern: 'policies.yml', base: './content' }),
+  schema: z.object({
+    heading: text(),
+    intro: text(),
+    flex: z.object({
+      heading: text(),
+      tagline: text(),
+      rulesHeading: text(),
+      rules: z.array(text()).min(1),
+      benefitsHeading: text(),
+      benefits: z.array(text()).min(1),
+    }),
+    community: z.object({ heading: text(), tagline: text(), badge: text().max(6), body: text(), points: z.array(text()).default([]) }),
+    noSurprises: z.object({ heading: text(), body: text() }),
+    notIncluded: z.object({ heading: text(), intro: optText(), items: z.array(text()).min(1) }),
+    rush: feeTable,
+    eventRush: feeTable,
+    delays: z.object({ heading: text(), body: text(), options: z.array(text()).min(1) }),
+    travel: z.object({ heading: text(), local: text(), outside: text(), expenses: text() }),
+    noKickbacks: z.object({ heading: text(), body: text(), items: z.array(text()).min(1), kicker: text() }),
+    relationships: z.object({ heading: text(), body: text() }),
+    revisions: z.object({ heading: text(), body: text() }),
+    payments: z.object({
+      heading: text(),
+      intro: optText(),
+      monthly: z.array(text()).min(1),
+      projectsHeading: text(),
+      projectLabel: text(),
+      scheduleLabel: text(),
+      projects: z.array(z.object({ project: text(), schedule: text() })).default([]),
+      placeholder: z.boolean().default(false).describe('True until reviewed by an Alaska attorney/accountant'),
+    }),
+  }),
 });
 
 /* ------------------------------------------------------------------ */
@@ -433,6 +512,9 @@ const pages = defineCollection({
       .default([]),
     // Optional labels used by specific page layouts
     jumpLabel: optText(),
+    jump: z.array(z.object({ label: text(), href })).default([]),
+    monthlyHeading: optText(),
+    monthlyIntro: optText(),
     teamHeading: optText(),
     teamIntro: optText(),
     galleryHeading: optText(),
@@ -443,4 +525,4 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { site, stickers, home, services, pricing, reviews, faq, process: howWeWork, team, gallery, pages };
+export const collections = { site, stickers, home, services, pricing, policies, reviews, faq, process: howWeWork, team, gallery, pages };

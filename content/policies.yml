@@ -1,0 +1,154 @@
+# The published guardrails: how working together actually works.
+# Shown on the Pricing page. Edit in Pages CMS under "Policies".
+# Source: client planning packet (working draft, September 2026).
+# Anything marked placeholder: true is waiting on review (for example by an
+# Alaska attorney or accountant) and will block the live site until approved.
+
+heading: The Fine Print, In Big Print.
+intro: The ground rules that keep prices predictable and keep small requests from quietly turning into unlimited work. Written down, so nobody has to guess.
+
+flex:
+  heading: 12-Month Flex Partnership
+  tagline: Commit to us. Not to one package.
+  rulesHeading: How it works
+  rules:
+    - 12 consecutive months
+    - Move between any of the three monthly packages
+    - Send a written request at least 5 calendar days before month-end
+    - The new package begins on the first of the following month
+    - No mid-month changes and no prorating
+    - One package change per month, at most
+    - Unused monthly scope does not roll over
+    - Your package prices are locked for the contract year
+    - Separately contracted projects, events and outside expenses are not affected by package changes
+  benefitsHeading: Flex partner perks
+  benefits:
+    - Waived $750 onboarding fee
+    - Locked pricing for the contract year
+    - Priority scheduling for projects and events
+    - 10% off separately contracted professional-service projects
+
+community:
+  heading: Community Rate
+  tagline: Nonprofits save 10%.
+  badge: 10%
+  body: Qualified nonprofit organizations automatically receive 10% off professional service fees. No special ask, no private negotiation and no different discount depending on who you are.
+  points:
+    - Applies to professional service fees
+    - Discounts do not stack
+    - Third-party expenses are not discounted
+
+noSurprises:
+  heading: No Surprise Hourly Bills
+  body: Normal emails, regular calls, scheduled meetings and the ordinary communication it takes to deliver your package are not tracked with a stopwatch. If a request would cross from included work into $225/hour out-of-scope work or a separately priced project, we tell you first.
+
+notIncluded:
+  heading: What's Never Hidden Inside A Monthly Package
+  intro: These cost real money from other people, so they're always separate and always visible.
+  items:
+    - Paid advertising spend
+    - Printing and postage
+    - Website development or programming
+    - A new brand identity or complete rebrand
+    - Extensive custom graphic design
+    - Professional photography or video
+    - Audio production
+    - Major publications
+    - Specialty software bought for you
+    - Venue, catering, rentals and entertainment
+    - Extensive event planning
+    - Substantial travel
+    - Other outside vendors and specialty production
+
+rush:
+  heading: Need It Fast?
+  intro: Rush service for marketing and project work.
+  whenLabel: Turnaround
+  feeLabel: Rush fee
+  rows:
+    - when: Within 2 business days
+      fee: +25%
+    - when: By the next business day
+      fee: +35%
+    - when: Same business day
+      fee: +50%
+    - when: Minimum rush fee
+      fee: $225
+  note: Rush service depends on capacity, and a rush fee can't buy impossible capacity. If the tight timeline is our fault, there's no rush fee. Ever.
+
+eventRush:
+  heading: Event Booked Late?
+  whenLabel: Booked
+  feeLabel: Rush fee
+  rows:
+    - when: 30 to 44 days before the event
+      fee: +15%
+    - when: 14 to 29 days before
+      fee: +25%
+    - when: 7 to 13 days before
+      fee: +40%
+    - when: Fewer than 7 days
+      fee: +50%, if accepted
+
+delays:
+  heading: When Things Arrive Late
+  body: If approvals, information, photos or logos arrive late and squeeze the original timeline, you get two choices whenever practical.
+  options:
+    - Move the deadline.
+    - Approve the rush fee so we can try to keep the original deadline, if capacity allows.
+
+travel:
+  heading: Where We Work
+  local: No travel fee in Soldotna, Kenai, Nikiski, Sterling and Kasilof.
+  outside: Outside those communities, meetings are remote by default. If in-person travel is requested and accepted, travel time is $125/hour in 30-minute increments, plus the current IRS standard business mileage rate.
+  expenses: Airfare, lodging, rental vehicles and other necessary travel costs are paid at actual cost with no markup. Whenever practical, you can book and pay for major travel directly.
+
+noKickbacks:
+  heading: No Kickbacks. No Markups. No Funny Business.
+  body: Need a photographer, videographer, radio or TV station, web developer, printer, designer or event vendor? We'll help you find good options. We just don't take a cut.
+  items:
+    - No referral commissions
+    - No media commissions
+    - No vendor kickbacks
+    - No hidden markups
+    - No rebates tied to what you spend
+    - You contract with and pay outside vendors directly whenever practical
+  kicker: We don't make more money when you spend more money. And we like it that way.
+
+relationships:
+  heading: Our Relationships Are Not For Sale
+  body: We'll help you spot the partners, organizations and opportunities worth pursuing, and help you plan how to approach them. We don't sell contact lists, promise personal introductions, solicit sponsors for you or trade on private professional relationships just because you hired us.
+
+revisions:
+  heading: Revisions
+  body: Fixed-price projects include two reasonable rounds of revisions unless the scope says otherwise. A completely new direction after approval is new work. Extra revisions are $225/hour with your approval first. We never bill you to fix our own mistake.
+
+payments:
+  heading: How Payment Works
+  intro: The short version. Your written agreement has the full details.
+  monthly:
+    - Monthly fees are paid in advance
+    - We invoice on the 25th of the month before service
+    - Payment is due on the 1st of the service month, with a 5-day grace period
+    - At 10 days past due, work may pause until the account is current
+    - "Month-to-month: 3-month minimum, then 30 days' written notice to cancel"
+    - Work begins once the agreement is signed, the first payment is in and onboarding information is provided
+  projectsHeading: Project payment schedules
+  projectLabel: Project
+  scheduleLabel: Schedule
+  projects:
+    - project: Fixed projects $1,500 to $3,499
+      schedule: 50% to schedule, 50% before final delivery
+    - project: Fixed projects $3,500 and up
+      schedule: 50% to schedule, 25% at the agreed midpoint, 25% before final delivery
+    - project: Help Us Plan It
+      schedule: 50% to schedule, 50% before final planning materials
+    - project: Help Us Promote It
+      schedule: 50% to schedule, 25% at campaign launch, 25% before event week
+    - project: Run Event Day
+      schedule: 50% to reserve the date, 50% due 7 days before the event
+    - project: Coordinate the Event
+      schedule: 50% to reserve the date, 25% at the planning midpoint, 25% due 14 days before the event
+  # The planning packet asks for attorney/accountant review of payment,
+  # late-fee and cancellation wording before launch.
+  placeholder: true

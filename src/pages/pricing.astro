@@ -1,19 +1,178 @@
 ---
+/**
+ * Pricing: every price and the policies around it.
+ * Prices: content/pricing.yml. Policies: content/policies.yml.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import PricingFolders from '../components/PricingFolders.astro';
 import FaqList from '../components/FaqList.astro';
 import CallBand from '../components/CallBand.astro';
-import { getPricing } from '../lib/content';
+import CheckIcon from '../components/CheckIcon.astro';
+import Icon from '../components/Icon.astro';
+import { getPricing, getPolicies } from '../lib/content';
+import { withBase } from '../lib/url';
 const p = await getPricing();
+const pol = await getPolicies();
 ---
 <BaseLayout title={p.seo.title} description={p.seo.description}>
   <PageHeader eyebrow={p.eyebrow} heading={p.heading} intro={p.intro} color="mustard" stickers={p.stickers} />
+
+  <!-- Monthly packages -->
   <section class="block block--plain edge edge--zigzag" aria-label={p.heading}>
-    <div class="wrap pricing-page"><PricingFolders headingLevel="h2" /></div>
+    <div class="wrap">
+      <PricingFolders headingLevel="h2" />
+      {p.footnote && <p class="pricing-footnote">{p.footnote}</p>}
+    </div>
   </section>
+
+  <!-- Flex + Community Rate -->
+  <section class="block block--contact edge edge--wave" aria-labelledby="flex-title">
+    <div class="wrap flex-grid">
+      <article class="flex-card" data-surface>
+        <p class="flex-card__tagline hand">{pol.flex.tagline}</p>
+        <h2 id="flex-title" class="flex-card__title">{pol.flex.heading}</h2>
+        <h3 class="flex-card__sub">{pol.flex.rulesHeading}</h3>
+        <ul class="checklist" role="list">{pol.flex.rules.map((r) => <li><CheckIcon /><span>{r}</span></li>)}</ul>
+        <div class="flex-card__perks tone-mustard" data-surface>
+          <h3 class="flex-card__sub">{pol.flex.benefitsHeading}</h3>
+          <ul class="checklist" role="list">{pol.flex.benefits.map((b) => <li><CheckIcon /><span>{b}</span></li>)}</ul>
+        </div>
+      </article>
+      <article class="community" data-surface>
+        <p class="community__badge" aria-hidden="true">{pol.community.badge}</p>
+        <h2 class="community__title">{pol.community.heading}</h2>
+        <p class="community__tagline hand">{pol.community.tagline}</p>
+        <p>{pol.community.body}</p>
+        <ul class="checklist" role="list">{pol.community.points.map((x) => <li><CheckIcon /><span>{x}</span></li>)}</ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- Published fees -->
+  <section class="block block--plain edge edge--scallop" id="fees" aria-labelledby="fees-title">
+    <div class="wrap">
+      <header class="section-head"><h2 id="fees-title">{p.addonsHeading}</h2></header>
+      <ul class="fees" role="list">
+        {p.addons.map((a, i) => (
+          <li class="tag" style={`--tag-rot:${[-2.5, 2, -1.5, 2.5, -2][i % 5]}deg;--rise-i:${i % 3}`} data-rise data-surface>
+            <span class="tag__shape"><span class="tag__face">
+              <span class="tag__hole" aria-hidden="true"></span>
+              <span class="tag__name">{a.name}</span>
+              <span class="tag__price">{a.price}</span>
+              {a.note && <span class="tag__note">{a.note}</span>}
+            </span></span>
+          </li>
+        ))}
+      </ul>
+      <div class="callout tone-mint" data-surface>
+        <h3>{pol.noSurprises.heading}</h3>
+        <p>{pol.noSurprises.body}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects & events at a glance -->
+  <section class="block block--services edge edge--tilt" aria-labelledby="glance-projects">
+    <div class="wrap glance">
+      {[
+        { id: 'glance-projects', heading: p.projectsHeading, intro: p.projectsIntro, rows: p.projects.map((x) => ({ name: x.name, price: x.price, note: x.when })), href: '/services/#projects' },
+        { id: 'glance-events', heading: p.eventsHeading, intro: p.eventsIntro, rows: p.events.map((x) => ({ name: x.name, price: x.price, note: x.tagline })), href: '/services/#events' },
+      ].map((g) => (
+        <article class="menu" data-surface>
+          <h2 id={g.id} class="menu__title"><a href={withBase(g.href)}>{g.heading}</a></h2>
+          <p class="menu__intro">{g.intro}</p>
+          <dl class="menu__rows">
+            {g.rows.map((r) => (
+              <div class="menu__row">
+                <dt>{r.name}</dt>
+                <dd class="menu__price">{r.price}</dd>
+                <dd class="menu__note">{r.note}</dd>
+              </div>
+            ))}
+          </dl>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Rush + delays -->
+  <section class="block block--plain edge edge--zigzag" aria-labelledby="rush-title">
+    <div class="wrap rush-grid">
+      {[pol.rush, pol.eventRush].map((t, i) => (
+        <article class:list={['rush', i ? 'tone-blush' : 'tone-peri']} data-surface>
+          <h2 id={i ? 'event-rush-title' : 'rush-title'} class="rush__title">{t.heading}</h2>
+          {t.intro && <p>{t.intro}</p>}
+          <table class="rush__table">
+            <thead><tr><th scope="col">{t.whenLabel}</th><th scope="col">{t.feeLabel}</th></tr></thead>
+            <tbody>{t.rows.map((r) => <tr><td>{r.when}</td><td class="rush__fee">{r.fee}</td></tr>)}</tbody>
+          </table>
+          {t.note && <p class="rush__note">{t.note}</p>}
+        </article>
+      ))}
+      <article class="callout tone-mustard" data-surface>
+        <h2 class="rush__title">{pol.delays.heading}</h2>
+        <p>{pol.delays.body}</p>
+        <ol class="delays">{pol.delays.options.map((o) => <li>{o}</li>)}</ol>
+      </article>
+    </div>
+  </section>
+
+  <!-- No kickbacks (the big promise) -->
+  <section class="block block--reviews edge edge--scallop" aria-labelledby="kick-title">
+    <div class="wrap kick">
+      <div class="kick__main">
+        <h2 id="kick-title" class="kick__title">{pol.noKickbacks.heading}</h2>
+        <p class="lede">{pol.noKickbacks.body}</p>
+        <ul class="kick__list" role="list">{pol.noKickbacks.items.map((x, i) => <li class={`tone-${['mint', 'blush', 'mustard', 'peri', 'tangerine', 'mint'][i % 6]}`} data-surface>{x}</li>)}</ul>
+        <p class="kick__kicker hand">{pol.noKickbacks.kicker}</p>
+      </div>
+      <article class="callout tone-cream kick__side" data-surface>
+        <h3>{pol.relationships.heading}</h3>
+        <p>{pol.relationships.body}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- The fine print, in big print -->
+  <section class="block block--plain edge edge--wave" aria-labelledby="fine-title">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="fine-title">{pol.heading}</h2>
+        <p>{pol.intro}</p>
+      </header>
+      <div class="fine">
+        <article class="fine__card tone-cream" data-surface>
+          <h3>{pol.notIncluded.heading}</h3>
+          {pol.notIncluded.intro && <p>{pol.notIncluded.intro}</p>}
+          <ul class="chips" role="list">{pol.notIncluded.items.map((x) => <li>{x}</li>)}</ul>
+        </article>
+        <article class="fine__card tone-mint" data-surface>
+          <h3>{pol.travel.heading}</h3>
+          <p><strong>{pol.travel.local}</strong></p>
+          <p>{pol.travel.outside}</p>
+          <p>{pol.travel.expenses}</p>
+        </article>
+        <article class="fine__card tone-peri" data-surface>
+          <h3>{pol.revisions.heading}</h3>
+          <p>{pol.revisions.body}</p>
+        </article>
+        <article class="fine__card tone-blush fine__card--wide" data-surface>
+          <h3>{pol.payments.heading}</h3>
+          {pol.payments.intro && <p>{pol.payments.intro}</p>}
+          <ul class="checklist" role="list">{pol.payments.monthly.map((x) => <li><CheckIcon /><span>{x}</span></li>)}</ul>
+          <h4 class="fine__sub">{pol.payments.projectsHeading}</h4>
+          <table class="rush__table">
+            <thead><tr><th scope="col">{pol.payments.projectLabel}</th><th scope="col">{pol.payments.scheduleLabel}</th></tr></thead>
+            <tbody>{pol.payments.projects.map((r) => <tr><td>{r.project}</td><td>{r.schedule}</td></tr>)}</tbody>
+          </table>
+        </article>
+      </div>
+    </div>
+  </section>
+
   {p.faq.length > 0 && (
-    <section class="block block--contact edge edge--wave" aria-labelledby="money-faq">
+    <section class="block block--contact edge edge--zigzag" aria-labelledby="money-faq">
       <div class="wrap money">
         <h2 id="money-faq" class="money__title">{p.faqHeading}</h2>
         <FaqList items={p.faq} name="pricing-faq" />
@@ -24,7 +183,98 @@ const p = await getPricing();
 </BaseLayout>
 
 <style>
-  .pricing-page { padding-top: var(--space-l); }
+  .pricing-footnote { margin-top: var(--space-2xl); font-weight: 600; max-width: 62ch; padding-left: var(--space-s); border-left: 4px solid var(--accent); }
+
+  /* Flex + community */
+  .flex-grid { display: grid; gap: var(--space-2xl) var(--space-xl); align-items: start; }
+  @media (min-width: 960px) { .flex-grid { grid-template-columns: 1.35fr 0.85fr; } }
+  .flex-card {
+    position: relative; display: grid; gap: var(--space-s); padding: var(--space-xl) var(--space-l);
+    background: var(--surface); color: var(--text);
+    border: var(--border-chunky) solid var(--c-ink); border-left: 10px double var(--accent-text);
+    border-radius: var(--radius-m); box-shadow: var(--shadow-pop); rotate: -0.6deg;
+  }
+  .flex-card__tagline { font-size: var(--step-2); line-height: 1; }
+  .flex-card__title { font-size: var(--step-4); max-width: 13ch; }
+  .flex-card__sub { font-family: var(--font-body); font-size: var(--step-1); font-weight: 800; margin-top: var(--space-xs); }
+  .flex-card__perks { position: relative; padding: var(--space-m) var(--space-l); margin-top: var(--space-s); background: var(--tone); color: var(--on-tone); border-radius: 2px 2px 18px 2px; box-shadow: 0 12px 18px -12px rgb(var(--shadow-color) / 0.5); rotate: 1.2deg; }
+  .community {
+    position: relative; display: grid; gap: var(--space-s); padding: var(--space-xl) var(--space-l) var(--space-l);
+    background: var(--c-mint); color: var(--c-ink);
+    border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-wonky); box-shadow: var(--shadow-pop); rotate: 1.2deg;
+  }
+  .community__badge {
+    position: absolute; top: -2.2rem; right: 1rem; display: grid; place-items: center; width: 5.5rem; aspect-ratio: 1;
+    font-family: var(--font-display); font-size: var(--step-2); background: var(--c-tangerine); color: var(--c-ink);
+    border: var(--border-chunky) solid var(--c-ink); border-radius: 50%; outline: 5px solid var(--sticker-outline); rotate: 10deg;
+  }
+  .community__title { font-size: var(--step-3); }
+  .community__tagline { font-size: var(--step-2); line-height: 1; }
+
+  /* Fees */
+  .fees { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: var(--space-l); }
+  .tag { rotate: var(--tag-rot); filter: drop-shadow(3px 4px 0 var(--c-ink)); max-width: none; }
+  .tag__shape { display: block; height: 100%; padding: 2.5px; background: var(--c-ink); clip-path: polygon(1.6rem 0, 100% 0, 100% 100%, 1.6rem 100%, 0 50%); border-radius: 0 14px 14px 0; }
+  .tag__face { position: relative; display: grid; gap: 0.2rem; height: 100%; padding: var(--space-m) var(--space-m) var(--space-m) 3.2rem; background: var(--surface); color: var(--text); clip-path: polygon(calc(1.6rem - 1px) 0, 100% 0, 100% 100%, calc(1.6rem - 1px) 100%, 1px 50%); border-radius: 0 12px 12px 0; }
+  .tag__hole { position: absolute; left: 1.3rem; top: 50%; width: 0.8rem; height: 0.8rem; margin-top: -0.4rem; border-radius: 50%; border: 2px solid var(--c-ink); background: var(--bg); }
+  .tag__name { font-weight: 800; }
+  .tag__price { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.05; }
+  .tag__note { font-size: var(--step--1); }
+
+  .callout { position: relative; margin-top: var(--space-2xl); padding: var(--space-l); background: var(--tone); color: var(--on-tone); border-radius: 2px 2px 20px 2px; box-shadow: 0 14px 20px -12px rgb(var(--shadow-color) / 0.45); rotate: -0.8deg; max-width: 48rem; }
+  .callout h3 { font-size: var(--step-2); margin-bottom: var(--space-xs); }
+
+  /* At a glance */
+  .glance { display: grid; gap: var(--space-xl); align-items: start; }
+  @media (min-width: 960px) { .glance { grid-template-columns: 1fr 1fr; } }
+  .menu { position: relative; padding: var(--space-xl) var(--space-l); background: var(--surface); color: var(--text); border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-m); box-shadow: var(--shadow-pop); }
+  .menu:nth-child(2) { rotate: 0.8deg; }
+  .menu:nth-child(1) { rotate: -0.6deg; }
+  .menu__title { font-size: var(--step-3); }
+  .menu__title a { color: inherit; text-decoration-thickness: 0.06em; }
+  .menu__intro { margin: var(--space-xs) 0 var(--space-m); font-size: var(--step--1); }
+  .menu__rows { display: grid; }
+  .menu__row { display: grid; grid-template-columns: 1fr auto; gap: 0.1rem var(--space-s); padding: var(--space-s) 0; border-top: 2px dashed currentColor; }
+  .menu__row dt { font-weight: 800; }
+  .menu__price { margin: 0; font-family: var(--font-display); font-size: var(--step-1); white-space: nowrap; }
+  .menu__note { margin: 0; grid-column: 1 / -1; font-size: var(--step--1); }
+
+  /* Rush */
+  .rush-grid { display: grid; gap: var(--space-xl); align-items: start; }
+  @media (min-width: 900px) { .rush-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rush-grid .callout { margin-top: 0; grid-column: 1 / -1; } }
+  .rush { position: relative; display: grid; gap: var(--space-s); padding: var(--space-l); background: var(--tone); color: var(--on-tone); border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-folder); box-shadow: var(--shadow-pop); }
+  .rush:nth-child(2) { rotate: 1deg; }
+  .rush__title { font-size: var(--step-2); }
+  .rush__table { width: 100%; border-collapse: collapse; font-size: var(--step--1); }
+  .rush__table th { text-align: left; font-weight: 800; padding: 0.4rem 0.5rem 0.4rem 0; border-bottom: 3px solid currentColor; }
+  .rush__table td { padding: 0.5rem 0.5rem 0.5rem 0; border-bottom: 2px dashed currentColor; vertical-align: top; }
+  .rush__fee { font-family: var(--font-display); font-size: var(--step-1); white-space: nowrap; }
+  .rush__note { font-size: var(--step--1); font-weight: 600; }
+  .delays { padding-left: 1.3em; display: grid; gap: var(--space-2xs); font-weight: 700; }
+
+  /* Kickbacks */
+  .kick { display: grid; gap: var(--space-2xl); align-items: start; }
+  @media (min-width: 960px) { .kick { grid-template-columns: 1.4fr 0.8fr; } }
+  .kick__main { display: grid; gap: var(--space-m); }
+  .kick__title { font-size: var(--step-4); max-width: 14ch; }
+  .kick__list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-s); }
+  .kick__list li { position: relative; padding: 0.55rem 1rem; background: var(--tone); color: var(--on-tone); font-weight: 800; border: 2px solid var(--c-ink); border-radius: var(--radius-pill); outline: 4px solid var(--sticker-outline); max-width: none; }
+  .kick__list li:nth-child(odd) { rotate: -2deg; }
+  .kick__list li:nth-child(even) { rotate: 1.5deg; }
+  .kick__kicker { font-size: var(--step-2); line-height: 1.15; color: var(--c-mustard); max-width: 28ch; }
+  .kick__side { margin-top: 0; rotate: 1.4deg; }
+
+  /* Fine print */
+  .fine { display: grid; gap: var(--space-xl) var(--space-l); align-items: start; }
+  @media (min-width: 900px) { .fine { grid-template-columns: repeat(3, minmax(0, 1fr)); } .fine__card--wide { grid-column: 1 / -1; } }
+  .fine__card { position: relative; display: grid; gap: var(--space-s); padding: var(--space-l); background: var(--tone); color: var(--on-tone); border: var(--border-thin) solid var(--c-ink); border-radius: var(--radius-wonky); box-shadow: 5px 5px 0 var(--c-ink); }
+  .fine__card:nth-child(1) { rotate: -1deg; }
+  .fine__card:nth-child(3) { rotate: 1deg; }
+  .fine__card h3 { font-size: var(--step-2); }
+  .fine__sub { margin-top: var(--space-s); }
+  .chips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .chips li { padding: 0.3rem 0.75rem; border: 2px solid currentColor; border-radius: var(--radius-pill); font-size: var(--step--1); font-weight: 700; max-width: none; }
+
   .money { display: grid; gap: var(--space-xl); }
   .money__title { font-size: var(--step-4); max-width: 12ch; }
   @media (min-width: 960px) { .money { grid-template-columns: 0.8fr 1.2fr; align-items: start; } }

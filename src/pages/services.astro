@@ -1,51 +1,160 @@
 ---
-import { render } from 'astro:content';
+/**
+ * Services: the three ways to hire Oddly Perfect.
+ * Monthly partnerships, one-time projects and event services (all from
+ * content/pricing.yml), a "which one do I need?" matcher, and the process story.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import ProcessStory from '../components/ProcessStory.astro';
 import CallBand from '../components/CallBand.astro';
 import CheckIcon from '../components/CheckIcon.astro';
-import { getPage, getServices, getHome } from '../lib/content';
-import { ART } from '../lib/sticker-art';
+import Sticker from '../components/Sticker.astro';
+import Icon from '../components/Icon.astro';
+import { getPage, getHome, getPricing, getSite, getStickers, type Sticker as StickerData } from '../lib/content';
+import { withBase } from '../lib/url';
+
 const page = await getPage('services');
 const d = page.data;
-const services = await getServices();
-const { process } = await getHome();
-const rendered = await Promise.all(services.map(async (s) => ({ s, Content: (await render(s)).Content })));
-const ICON_FILL: Record<string, string> = { mint: 'var(--c-peri)', blush: 'var(--c-mustard)', mustard: 'var(--c-blush)', peri: 'var(--c-mint)', tangerine: 'var(--c-mustard)', cream: 'var(--c-tangerine)' };
+const pricing = await getPricing();
+const site = await getSite();
+const { process, services: servicesCopy } = await getHome();
+const tierStickers = await getStickers(pricing.tiers.map((t) => t.sticker).filter(Boolean) as string[]);
+const ICON_COLOR = ['mint', 'blush', 'mustard', 'peri', 'tangerine', 'mint'] as const;
+type Art = Extract<StickerData, { kind: 'drawn' }>['art'];
+const iconSticker = (id: string, label: string, art: Art, i: number): StickerData => ({
+  kind: 'drawn', id, label, art, color: ICON_COLOR[i % ICON_COLOR.length], rotate: i % 2 ? 8 : -9, decorative: true,
+});
+const TIER_ICON = ['target', 'bolt', 'crown'] as const;
 ---
 <BaseLayout title={d.title} description={d.description}>
   <PageHeader eyebrow={d.eyebrow} heading={d.heading} intro={d.intro} color={d.color} stickers={d.stickers}>
-    {d.jumpLabel && (
+    {d.jump.length > 0 && (
       <nav class="jump" aria-label={d.jumpLabel}>
-        <p class="jump__label hand">{d.jumpLabel}</p>
+        {d.jumpLabel && <p class="jump__label hand" aria-hidden="true">{d.jumpLabel}</p>}
         <ul role="list">
-          {services.map((s) => <li><a href={`#${s.id}`} class={`tone-${s.data.color}`}>{s.data.title}</a></li>)}
+          {d.jump.map((j, i) => <li><a href={j.href} class={`tone-${['mint', 'blush', 'mustard', 'peri'][i % 4]}`}>{j.label}</a></li>)}
         </ul>
       </nav>
     )}
   </PageHeader>
 
-  {rendered.map(({ s, Content }, i) => (
-    <section class:list={['block', 'edge', i % 2 ? 'edge--wave' : 'edge--scallop', 'spread', { 'spread--flip': i % 2 }]} id={s.id} style={`--block-color:${i % 2 ? 'var(--surface)' : 'var(--bg)'}`} aria-labelledby={`${s.id}-title`}>
-      <div class="wrap spread__grid">
-        <div class:list={['spread__badge', `tone-${s.data.color}`]} aria-hidden="true" data-surface>
-          <span class="spread__num">{String(i + 1).padStart(2, '0')}</span>
-          <svg class="spread__icon" viewBox="0 0 100 100" style={`--sf:${ICON_FILL[s.data.color]}`}><use href={`#st-${ART[s.data.icon] ? s.data.icon : 'star'}`} /></svg>
-        </div>
-        <div class="spread__copy">
-          <h2 id={`${s.id}-title`} class="spread__title">{s.data.title}</h2>
-          <p class="lede">{s.data.summary}</p>
-          <div class="prose spread__body"><Content /></div>
-        </div>
-        <div class:list={['spread__card', `tone-${s.data.color}`]} data-rise data-surface>
-          <ul class="checklist" role="list">
-            {s.data.highlights.map((h) => <li><CheckIcon /><span>{h}</span></li>)}
-          </ul>
-        </div>
+  <!-- Monthly partnerships: one spread per package -->
+  <section class="block block--plain edge edge--scallop" id="monthly" aria-labelledby="monthly-title">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="monthly-title">{d.monthlyHeading}</h2>
+        {d.monthlyIntro && <p>{d.monthlyIntro}</p>}
+      </header>
+      <div class="spreads">
+        {pricing.tiers.map((t, i) => {
+          const st = tierStickers.find((s) => s.id === t.sticker);
+          return (
+            <article class:list={['spread', { 'spread--flip': i % 2 }]} aria-labelledby={`tier-${i}`}>
+              <div class:list={['spread__badge', `tone-${t.color}`]} data-surface>
+                <Sticker sticker={iconSticker(`tier-icon-${i}`, t.name, TIER_ICON[i % 3], i + 1)} size="5.5rem" class="spread__icon" />
+                <p class="spread__tab hand">{t.tab}</p>
+                <p class="spread__price">{t.price}</p>
+                <p class="spread__per">{t.cadence}, {pricing.priceLabels.flex}</p>
+                {t.altPrice && <p class="spread__alt">{pricing.priceLabels.or} {t.altPrice} {pricing.priceLabels.monthly.toLowerCase()}</p>}
+                {st && <Sticker sticker={st} size="5.5rem" class="spread__st" />}
+              </div>
+              <div class="spread__copy">
+                <h3 id={`tier-${i}`} class="spread__title">{t.name}</h3>
+                <p class="lede">{t.pitch}</p>
+                <p><strong>{pricing.bestForLabel}:</strong> {t.bestFor}</p>
+                {t.example && <p class="spread__example"><strong>{pricing.exampleLabel}:</strong> {t.example}</p>}
+                {t.notes.map((n) => <p class="spread__note">{n}</p>)}
+                <a class="btn btn--ink spread__cta" href={`tel:${site.phone.tel}`} data-track="call-services">{t.cta}</a>
+              </div>
+              <div class:list={['spread__card', `tone-${t.color}`]} data-rise data-surface>
+                <p class="spread__inc hand">{pricing.includesLabel}</p>
+                <ul class="checklist" role="list">
+                  {t.features.map((f) => <li><CheckIcon /><span>{f}</span></li>)}
+                </ul>
+              </div>
+            </article>
+          );
+        })}
       </div>
-    </section>
-  ))}
+    </div>
+  </section>
+
+  <!-- One-time projects -->
+  <section class="block block--services edge edge--zigzag" id="projects" aria-labelledby="projects-title">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="projects-title">{pricing.projectsHeading}</h2>
+        <p>{pricing.projectsIntro}</p>
+      </header>
+      <ul class="projects" role="list">
+        {pricing.projects.map((p, i) => (
+          <li class:list={['project', `tone-${['cream', 'blush', 'mustard', 'peri', 'tangerine', 'cream'][i % 6]}`]} style={`--p-rot:${[-1.2, 1, -0.6, 1.4, -1, 0.7][i % 6]}deg;--rise-i:${i % 3}`} data-rise data-surface>
+            <Sticker sticker={iconSticker(`project-icon-${i}`, p.name, p.icon, i)} size="4.6rem" class="project__icon" />
+            <h3 class="project__name">{p.name}</h3>
+            <p class="project__price">{p.price}</p>
+            <p class="project__when"><span class="hand">{pricing.whenLabel}:</span> {p.when}</p>
+            <p class="project__details">{p.details}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Event services -->
+  <section class="block block--contact edge edge--wave" id="events" aria-labelledby="events-title">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="events-title">{pricing.eventsHeading}</h2>
+        <p>{pricing.eventsIntro}</p>
+      </header>
+      <div class="events">
+        {pricing.events.map((e, i) => (
+          <article class="event" style={`--rise-i:${i % 2}`} data-rise data-surface>
+            <Sticker sticker={iconSticker(`event-icon-${i}`, e.name, e.icon, i + 2)} size="4.6rem" class="event__icon" />
+            <h3 class="event__name">{e.name}</h3>
+            <p class="event__price">{e.price}</p>
+            <p class="event__tagline hand">{e.tagline}</p>
+            <details class="event__more">
+              <summary><span>{servicesCopy.detailsLabel}</span><Icon name="plus" /></summary>
+              <ul class="checklist" role="list">{e.includes.map((x) => <li><CheckIcon /><span>{x}</span></li>)}</ul>
+            </details>
+          </article>
+        ))}
+      </div>
+      <div class="event-fine">
+        <div class="event-fine__card" data-surface>
+          <h3>{pricing.eventBoundariesHeading}</h3>
+          <ul role="list" class="nope">{pricing.eventBoundaries.map((b) => <li>{b}</li>)}</ul>
+        </div>
+        {pricing.sponsorshipNote && (
+          <div class="event-fine__card event-fine__card--note" data-surface>
+            <h3>{pricing.sponsorshipNote.heading}</h3>
+            <p>{pricing.sponsorshipNote.body}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Which one do I need? -->
+  <section class="block block--plain edge edge--scallop" id="matcher" aria-labelledby="matcher-title">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="matcher-title">{pricing.matcher.heading}</h2>
+        {pricing.matcher.intro && <p>{pricing.matcher.intro}</p>}
+      </header>
+      <ul class="matcher" role="list">
+        {pricing.matcher.rows.map((r, i) => (
+          <li class="matcher__row" style={`--rise-i:${i % 3}`} data-rise>
+            <p class:list={['matcher__says', `tone-${['mint', 'blush', 'mustard', 'peri', 'tangerine', 'cream'][i % 6]}`]} data-surface>&ldquo;{r.says}&rdquo;</p>
+            <span class="matcher__arrow" aria-hidden="true"><Icon name="arrow-right" /></span>
+            <a class="matcher__to" href={withBase(r.href)}>{r.pointTo}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
 
   <section class="block block--about edge edge--tilt" aria-labelledby="svc-process-title">
     <div class="wrap"><ProcessStory id="svc-process-title" eyebrow={process.eyebrow} heading={process.heading} intro={process.intro} /></div>
@@ -59,56 +168,105 @@ const ICON_FILL: Record<string, string> = { mint: 'var(--c-peri)', blush: 'var(-
   .jump__label { font-size: var(--step-1); }
   .jump ul { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
   .jump a {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--tap-min);
-    padding: 0 1rem;
-    background: var(--tone);
-    color: var(--on-tone);
-    font-weight: 800;
-    text-decoration: none;
-    border: 2px solid var(--c-ink);
-    border-radius: var(--radius-pill);
-    box-shadow: 3px 3px 0 var(--c-ink);
+    display: inline-flex; align-items: center; min-height: var(--tap-min); padding: 0 1rem;
+    background: var(--tone); color: var(--on-tone); font-weight: 800; text-decoration: none;
+    border: 2px solid var(--c-ink); border-radius: var(--radius-pill); box-shadow: 3px 3px 0 var(--c-ink);
     transition: transform var(--dur-spring) var(--ease-spring);
   }
   .jump a:hover { transform: translate(-1px, -2px) rotate(-2deg); }
 
-  .spread { color: var(--text); padding-block: calc(var(--space-section) * 0.8); }
-  .spread__grid { display: grid; gap: var(--space-xl); align-items: start; }
+  /* Monthly spreads */
+  .spreads { display: grid; gap: var(--space-section); }
+  .spread { display: grid; gap: var(--space-xl); align-items: start; }
   .spread__badge {
-    position: relative;
-    width: min(16rem, 70%);
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center;
-    background: var(--tone);
-    color: var(--on-tone);
+    position: relative; display: grid; justify-items: center; align-content: center; gap: 0.15rem;
+    width: min(15rem, 100%); aspect-ratio: 1; padding: var(--space-m); text-align: center; container-type: inline-size;
+    background: var(--tone); color: var(--on-tone);
     border: var(--border-chunky) solid var(--c-ink);
     border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
-    box-shadow: var(--shadow-pop);
-    rotate: -4deg;
+    box-shadow: var(--shadow-pop); rotate: -4deg;
   }
-  .spread__icon { width: 62%; height: 62%; overflow: visible; filter: drop-shadow(0 6px 6px rgb(var(--shadow-color) / 0.25)); }
-  .spread__num { position: absolute; top: -0.4rem; left: -0.4rem; font-family: var(--font-display); font-size: var(--step-4); line-height: 1; color: var(--text); }
-  .spread__title { font-size: var(--step-4); max-width: 14ch; margin-bottom: var(--space-s); }
-  .spread__body { margin-top: var(--space-m); }
+  .spread__badge :global(.spread__icon) { position: absolute; top: -1.5rem; left: -0.5rem; }
+  .spread__badge :global(.spread__st) { position: absolute; bottom: -1rem; right: -1.5rem; }
+  .spread__tab { font-size: var(--step-1); line-height: 1; }
+  .spread__price { font-family: var(--font-display); font-size: clamp(2rem, 1.6rem + 1.6vw, 2.8rem); line-height: 1; letter-spacing: -0.01em; }
+  .spread__per { font-weight: 700; font-size: var(--step--1); max-width: 14ch; }
+  .spread__alt { font-size: var(--step--1); }
+  .spread__copy { display: grid; gap: var(--space-s); }
+  .spread__title { font-size: var(--step-4); max-width: 14ch; }
+  .spread__note, .spread__example { font-size: var(--step--1); padding-left: var(--space-s); border-left: 4px solid var(--accent); }
+  .spread__cta { justify-self: start; margin-top: var(--space-xs); }
   .spread__card {
-    padding: var(--space-l);
-    background: var(--tone);
-    color: var(--on-tone);
-    border: var(--border-thin) solid var(--c-ink);
-    border-radius: 2px 2px 22px 2px;
-    box-shadow: 0 14px 20px -12px rgb(var(--shadow-color) / 0.45);
-    rotate: 1.5deg;
+    position: relative; padding: var(--space-l); background: var(--tone); color: var(--on-tone);
+    border-radius: 2px 2px 22px 2px; box-shadow: 0 14px 20px -12px rgb(var(--shadow-color) / 0.45); rotate: 1.2deg;
   }
-  @media (min-width: 960px) {
-    .spread__grid { grid-template-columns: 15rem minmax(0, 1.35fr) minmax(16rem, 1fr); gap: var(--space-2xl); }
-    .spread__badge { width: 100%; }
+  .spread__inc { font-size: var(--step-2); line-height: 1; margin-bottom: var(--space-s); }
+  @media (min-width: 1000px) {
+    .spread { grid-template-columns: 15rem minmax(0, 1.2fr) minmax(16rem, 1fr); gap: var(--space-2xl); }
     .spread--flip .spread__badge { order: 3; rotate: 5deg; }
-    .spread--flip .spread__card { order: 2; rotate: -1.5deg; }
-    .spread--flip .spread__grid { grid-template-columns: minmax(16rem, 1fr) minmax(0, 1.35fr) 15rem; }
+    .spread--flip .spread__card { order: 1; rotate: -1.2deg; }
     .spread--flip .spread__copy { order: 2; }
-    .spread--flip .spread__card { order: 1; }
+    .spread--flip { grid-template-columns: minmax(16rem, 1fr) minmax(0, 1.2fr) 15rem; }
   }
+
+  /* Projects */
+  .projects { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: var(--space-2xl) var(--space-l); padding-top: var(--space-l); }
+  .project {
+    position: relative; display: grid; gap: var(--space-xs); align-content: start; max-width: none;
+    padding: calc(var(--space-xl) + 0.25rem) var(--space-l) var(--space-l);
+    background: var(--tone); color: var(--on-tone);
+    border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-wonky);
+    box-shadow: var(--shadow-pop); rotate: var(--p-rot);
+  }
+  .project :global(.project__icon) { position: absolute; top: -2.2rem; left: 1rem; }
+  .project__name { font-size: var(--step-2); }
+  .project__price { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; }
+  .project__when { font-weight: 700; }
+  .project__when .hand { font-size: var(--step-1); font-weight: 400; }
+  .project__details { font-size: var(--step--1); }
+
+  /* Events */
+  .events { display: grid; gap: var(--space-2xl) var(--space-l); padding-top: var(--space-l); }
+  @media (min-width: 760px) { .events { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .event {
+    position: relative; display: grid; gap: var(--space-xs); align-content: start;
+    padding: calc(var(--space-xl) + 0.25rem) var(--space-l) var(--space-l);
+    background: var(--surface); color: var(--text);
+    border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-folder);
+    box-shadow: var(--shadow-pop);
+  }
+  .event :global(.event__icon) { position: absolute; top: -2.2rem; right: 1.2rem; }
+  .event__name { font-size: var(--step-3); }
+  .event__price { font-family: var(--font-display); font-size: var(--step-4); line-height: 1; color: var(--accent-text); }
+  .event__tagline { font-size: var(--step-1); line-height: 1.15; }
+  .event__more { border-top: 2px dashed currentColor; padding-top: var(--space-xs); }
+  .event__more summary { display: flex; justify-content: space-between; align-items: center; gap: var(--space-s); min-height: var(--tap-min); font-weight: 800; cursor: pointer; list-style: none; }
+  .event__more summary::-webkit-details-marker { display: none; }
+  .event__more summary :global(svg) { transition: rotate var(--dur-spring) var(--ease-spring); }
+  .event__more[open] summary :global(svg) { rotate: 135deg; }
+  .event-fine { display: grid; gap: var(--space-l); margin-top: var(--space-2xl); }
+  @media (min-width: 900px) { .event-fine { grid-template-columns: 1.2fr 0.8fr; align-items: start; } }
+  .event-fine__card {
+    position: relative; padding: var(--space-l); background: var(--c-mustard); color: var(--c-ink);
+    border-radius: 2px 2px 20px 2px; box-shadow: 0 14px 20px -12px rgb(var(--shadow-color) / 0.45); rotate: -1deg;
+  }
+  .event-fine__card--note { background: var(--c-paper); rotate: 1.4deg; }
+  .event-fine__card h3 { font-size: var(--step-2); margin-bottom: var(--space-s); }
+  .nope { list-style: none; padding: 0; display: grid; gap: 0.45rem; }
+  .nope li { display: grid; grid-template-columns: 1.2em 1fr; gap: 0.5rem; }
+  .nope li::before { content: ""; width: 0.95em; height: 0.95em; margin-top: 0.3em; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 6.2c4 3.9 8 7.8 12 11.7M18 6c-3.9 4-7.9 8-11.9 12' stroke='black' stroke-width='3.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 6.2c4 3.9 8 7.8 12 11.7M18 6c-3.9 4-7.9 8-11.9 12' stroke='black' stroke-width='3.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E") center / contain no-repeat; }
+
+  /* Matcher */
+  .matcher { display: grid; gap: var(--space-m); }
+  .matcher__row { display: grid; gap: var(--space-xs); align-items: center; max-width: none; }
+  @media (min-width: 760px) { .matcher__row { grid-template-columns: minmax(0, 1.6fr) auto minmax(0, 1fr); gap: var(--space-m); } }
+  .matcher__says {
+    position: relative; padding: var(--space-m) var(--space-l); background: var(--tone); color: var(--on-tone);
+    font-size: var(--step-1); font-weight: 600; line-height: 1.35;
+    border: var(--border-thin) solid var(--c-ink); border-radius: var(--radius-l) var(--radius-l) var(--radius-l) 4px;
+    box-shadow: 4px 4px 0 var(--c-ink); max-width: none;
+  }
+  .matcher__arrow { display: none; }
+  @media (min-width: 760px) { .matcher__arrow { display: grid; } .matcher__arrow :global(svg) { width: 2rem; height: 2rem; } }
+  .matcher__to { font-family: var(--font-display); font-size: var(--step-2); color: var(--accent-text); line-height: 1.1; }
 </style>
