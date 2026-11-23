@@ -424,6 +424,25 @@ content:
           - { name: color, label: Folder color, type: select, required: true, options: { values: [mint, blush, mustard, peri, tangerine, cream] } }
           - { name: cta, label: Button text, type: string, required: true }
           - { name: placeholder, label: Still a placeholder?, type: boolean }
+      - name: compare
+        label: "'Compare all packages' pop-up"
+        type: object
+        fields:
+          - { name: button, label: Button text, type: string, required: true }
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - { name: close, label: Close button (screen readers), type: string, required: true }
+          - { name: featureLabel, label: First column heading, type: string, required: true }
+          - { name: yesLabel, label: "Meaning of 'yes' (screen readers)", type: string, required: true }
+          - { name: noLabel, label: "Meaning of 'no' (screen readers)", type: string, required: true }
+          - name: rows
+            label: Rows
+            description: "One value per package, in package order. Type yes or no to show a tick or a dash."
+            type: object
+            list: { min: 1 }
+            fields:
+              - { name: label, label: Row label, type: string, required: true }
+              - { name: values, label: Values (one per package), type: string, list: { min: 1, max: 4 } }
       - { name: extrasHeading, label: Home page extras heading, type: string, required: true }
       - name: extras
         label: Home page extras (price tags)
@@ -521,11 +540,33 @@ content:
     fields:
       - { name: heading, label: Fine print heading, type: string, required: true }
       - { name: intro, label: Fine print intro, type: text, required: true }
+      - name: twoWays
+        label: Two ways to pay
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+          - name: flex
+            label: 12-Month Flex card
+            type: object
+            fields:
+              - { name: title, label: Title, type: string, required: true }
+              - { name: badge, label: Badge, type: string }
+              - { name: points, label: Points, type: string, list: { min: 1 } }
+          - name: monthly
+            label: Month-to-month card
+            type: object
+            fields:
+              - { name: title, label: Title, type: string, required: true }
+              - { name: badge, label: Badge, type: string }
+              - { name: points, label: Points, type: string, list: { min: 1 } }
+      - { name: factsHeading, label: "'Good to know' heading", type: string, required: true }
       - name: flex
         label: 12-Month Flex Partnership
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: tagline, label: Tagline, type: string, required: true }
           - { name: rulesHeading, label: Rules heading, type: string, required: true }
           - { name: rules, label: Rules, type: string, list: { min: 1 } }
@@ -536,6 +577,7 @@ content:
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: tagline, label: Tagline, type: string, required: true }
           - { name: badge, label: Badge text, description: "Short, e.g. 10%", type: string, required: true, options: { maxlength: 6 } }
           - { name: body, label: Text, type: text, required: true }
@@ -545,12 +587,14 @@ content:
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: body, label: Text, type: text, required: true }
       - name: notIncluded
         label: Not included in monthly packages
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: intro, label: Intro, type: text }
           - { name: items, label: Items, type: string, list: { min: 1 } }
       - name: rush
@@ -558,6 +602,7 @@ content:
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: intro, label: Intro, type: text }
           - { name: whenLabel, label: First column label, type: string, required: true }
           - { name: feeLabel, label: Second column label, type: string, required: true }
@@ -574,6 +619,7 @@ content:
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: intro, label: Intro, type: text }
           - { name: whenLabel, label: First column label, type: string, required: true }
           - { name: feeLabel, label: Second column label, type: string, required: true }
@@ -590,6 +636,7 @@ content:
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: body, label: Text, type: text, required: true }
           - { name: options, label: Options, type: string, list: { min: 1 } }
       - name: travel
@@ -597,6 +644,7 @@ content:
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: local, label: Local area (no travel fee), type: text, required: true }
           - { name: outside, label: Outside the local area, type: text, required: true }
           - { name: expenses, label: Travel expenses, type: text, required: true }
@@ -605,6 +653,7 @@ content:
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: body, label: Text, type: text, required: true }
           - { name: items, label: Promises, type: string, list: { min: 1 } }
           - { name: kicker, label: Closing line, type: string, required: true }
@@ -613,12 +662,14 @@ content:
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: body, label: Text, type: text, required: true }
       - name: revisions
         label: Revisions
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: body, label: Text, type: text, required: true }
       - name: payments
         label: Payment terms
@@ -626,6 +677,7 @@ content:
         type: object
         fields:
           - { name: heading, label: Heading, type: string, required: true }
+          - { name: summary, label: One-line summary (shown before expanding), type: string }
           - { name: intro, label: Intro, type: text }
           - { name: monthly, label: Monthly payment terms, type: string, list: { min: 1 } }
           - { name: projectsHeading, label: Project schedules heading, type: string, required: true }

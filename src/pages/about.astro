@@ -39,7 +39,7 @@ const tones = ['peri', 'mustard', 'mint', 'tangerine'];
           <h2 id="team-title">{d.teamHeading}</h2>
           {d.teamIntro && <p>{d.teamIntro}</p>}
         </div>
-        <div class="team-grid">{team.map((m, i) => <TeamCard member={m} index={i} />)}</div>
+        <div class:list={['team-grid', { 'team-grid--solo': team.length === 1 }]}>{team.map((m, i) => <TeamCard member={m} index={i} solo={team.length === 1} />)}</div>
       </div>
     </section>
   )}
@@ -77,6 +77,6 @@ const tones = ['peri', 'mustard', 'mint', 'tangerine'];
   .page-note__title { font-size: var(--step-3); }
   .page-note :global(.page-note__st) { position: absolute; right: -0.6rem; top: -2rem; }
   .team-grid { display: grid; gap: var(--space-2xl) var(--space-xl); }
-  @media (min-width: 760px) { .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 1100px) { .team-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 760px) { .team-grid:not(.team-grid--solo) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .team-grid:not(.team-grid--solo) { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 </style>

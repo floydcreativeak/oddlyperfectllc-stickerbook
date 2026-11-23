@@ -145,33 +145,73 @@ function pageMoveTo(el: HTMLElement, left: number, top: number) {
   el.style.top = `${Math.min(Math.max(top, 0), Math.max(0, maxY))}px`;
 }
 
-const foldPx = (el: HTMLElement) => getComputedStyle(el).getPropertyValue('--fold').trim() || '0px';
+/* ---------- The fold ----------
+   Driven by a small JS tween (inline --fold) rather than CSS transitions, so it
+   eases the same in every browser and isn't reset when the sticker changes
+   parents on pickup/drop (DOM moves restart CSS transitions and drop :hover). */
+type Ease = (t: number) => number;
+const easeOut: Ease = (t) => 1 - Math.pow(1 - t, 3);
+const easeIn: Ease = (t) => t * t * t;
+const easeBack: Ease = (t) => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const folds = new WeakMap<HTMLElement, { v: number; raf: number }>();
 
-function peel(el: HTMLElement, fromFold: string) {
+function foldTargets(el: HTMLElement) {
+  const fs = parseFloat(getComputedStyle(el).fontSize) || 16;
+  if (el.classList.contains('sticker--label')) return { hover: fs * 0.75, held: fs * 1.5 };
+  const w = (el.querySelector('.sticker__face') as HTMLElement | null)?.offsetWidth || el.offsetWidth;
+  return { hover: w * 0.13, held: w * 0.25 };
+}
+
+function tweenFold(el: HTMLElement, to: number, ms: number, ease: Ease = easeOut): Promise<void> {
+  const st = folds.get(el) ?? { v: 0, raf: 0 };
+  folds.set(el, st);
+  cancelAnimationFrame(st.raf);
+  const from = st.v;
+  const set = (v: number) => {
+    v = Math.max(0, v);
+    st.v = v;
+    el.style.setProperty('--fold', `${v.toFixed(2)}px`);
+    el.classList.toggle('is-folded', v > 0.4);
+  };
+  if (reduce() || ms <= 0 || Math.abs(to - from) < 0.2) { set(to); return Promise.resolve(); }
+  const t0 = performance.now();
+  return new Promise((resolve) => {
+    const tick = (now: number) => {
+      // rAF timestamps can be slightly earlier than t0; clamp so the curve never dips.
+      const t = Math.min(1, Math.max(0, (now - t0) / ms));
+      set(from + (to - from) * ease(t));
+      if (t < 1) st.raf = requestAnimationFrame(tick);
+      else resolve();
+    };
+    st.raf = requestAnimationFrame(tick);
+  });
+}
+
+function peel(el: HTMLElement) {
   el.classList.remove('is-sticking');
   el.classList.add('is-held');
   document.documentElement.classList.add('is-moving-sticker');
-  if (reduce()) return;
-  // Animated with WAAPI because moving the sticker in the DOM resets CSS transitions.
-  el.animate([{ transform: 'none', '--fold': fromFold } as Keyframe, { transform: HELD, '--fold': foldPx(el) } as Keyframe],
-    { duration: 240, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1.2)' });
+  tweenFold(el, foldTargets(el).held, 280, easeBack);
+  if (!reduce()) el.animate([{ transform: 'none' }, { transform: HELD }], { duration: 280, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1.25)' });
 }
 
-function stick(el: HTMLElement, fromFold: string) {
+function stick(el: HTMLElement) {
   el.classList.remove('is-held');
   document.documentElement.classList.remove('is-moving-sticker');
-  if (reduce()) return;
   el.classList.add('is-sticking');
-  const anim = el.animate(
-    [
-      { transform: HELD, '--fold': fromFold } as Keyframe,
-      { transform: 'perspective(520px) scale(0.95)', '--fold': '0px', offset: 0.55 } as Keyframe,
-      { transform: 'none', '--fold': '0px' } as Keyframe,
-    ],
-    { duration: 360, easing: 'cubic-bezier(0.3, 0.7, 0.4, 1)' },
-  );
-  const done = () => el.classList.remove('is-sticking');
-  anim.finished.then(done).catch(done);
+  const done = () => {
+    el.classList.remove('is-sticking');
+    // Still under the pointer? Settle into the gentle hover fold.
+    if (el.matches(':hover') && window.matchMedia('(hover: hover)').matches) tweenFold(el, foldTargets(el).hover, 220);
+  };
+  // Flatten the corner as it presses down, then a small squish.
+  tweenFold(el, 0, 240, easeIn).then(done);
+  if (!reduce()) {
+    el.animate(
+      [{ transform: HELD }, { transform: 'perspective(520px) scale(0.95)', offset: 0.6 }, { transform: 'none' }],
+      { duration: 380, easing: 'cubic-bezier(0.3, 0.7, 0.4, 1)' },
+    );
+  }
 }
 
 /** Put every moved sticker back in its original spot. */
@@ -180,6 +220,8 @@ export function tidyStickers() {
     if (h.placeholder?.isConnected) h.placeholder.replaceWith(el);
     else h.parent.insertBefore(el, h.next && h.next.parentNode === h.parent ? h.next : null);
     el.setAttribute('style', h.style);
+    folds.delete(el);
+    el.classList.remove('is-folded');
     delete el.dataset.vrot;
     el.classList.remove('is-held', 'is-sticking');
     if (!reduce()) el.animate([{ opacity: 0, transform: 'scale(1.3)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: 'cubic-bezier(0.3, 1.4, 0.5, 1)' });
@@ -201,13 +243,12 @@ function bind(el: HTMLElement) {
   const follow = () => pageMoveTo(el, lastX + window.scrollX - grabX, lastY + window.scrollY - grabY);
 
   const startHold = () => {
-    const before = foldPx(el);
     lift(el);
     grabX = lastX + window.scrollX - parseFloat(el.style.left);
     grabY = lastY + window.scrollY - parseFloat(el.style.top);
     held = true;
     try { el.setPointerCapture(pointerId); } catch { /* pointer already gone */ }
-    peel(el, before);
+    peel(el);
     edgeScroll();
   };
 
@@ -225,6 +266,12 @@ function bind(el: HTMLElement) {
     };
     scrollRaf = requestAnimationFrame(tick);
   };
+
+  // Gentle corner fold on hover (mouse/pen) and keyboard focus.
+  el.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch' && !held && !el.classList.contains('is-sticking')) tweenFold(el, foldTargets(el).hover, 260); });
+  el.addEventListener('pointerleave', () => { if (!held && !el.classList.contains('is-sticking')) tweenFold(el, 0, 300); });
+  el.addEventListener('focus', () => { if (!held && el.matches(':focus-visible')) tweenFold(el, foldTargets(el).hover, 260); });
+  el.addEventListener('blur', () => { if (!held) tweenFold(el, 0, 300); });
 
   el.addEventListener('pointerdown', (e) => {
     if (e.button !== 0) return;
@@ -266,9 +313,8 @@ function bind(el: HTMLElement) {
     if (el.hasPointerCapture(pointerId)) el.releasePointerCapture(pointerId);
     if (held) {
       held = false;
-      const before = foldPx(el);
       attach(el);
-      stick(el, before);
+      stick(el);
     }
     pointerId = -1;
   };

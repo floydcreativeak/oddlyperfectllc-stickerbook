@@ -1,0 +1,151 @@
+---
+/**
+ * Print source for the one-page brochure PDF (US Letter). Not linked anywhere
+ * and hidden from search; `npm run brochure` renders it to
+ * public/downloads/oddly-perfect-services.pdf. Every word and price comes from
+ * /content, so re-run the script after changing prices or contact details.
+ */
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import StickerSprite from '../components/StickerSprite.astro';
+import Sticker from '../components/Sticker.astro';
+import CheckIcon from '../components/CheckIcon.astro';
+import { getSite, getHome, getPricing, getPolicies, getPage, getStickers } from '../lib/content';
+
+const site = await getSite();
+const home = await getHome();
+const pricing = await getPricing();
+const pol = await getPolicies();
+const services = (await getPage('services')).data;
+const [star, blindDate, noKick, local] = await getStickers(['star', 'blind-date', 'no-kickbacks', 'local']);
+const [first, ...rest] = site.logo.text.split(' ');
+const host = new URL(site.url).host;
+const blind = pricing.addons[0];
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{site.name}: {services.monthlyHeading}</title>
+    <style is:global>
+      @page { size: Letter; margin: 0; }
+      html, body { background: var(--c-cream); }
+      body { padding: 0 !important; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <StickerSprite />
+    <div class="sheet">
+      <header class="top">
+        <div class="top__brand">
+          <span class="badge"><span class="badge__first">{first}</span> <span class="badge__rest">{rest.join(' ')}</span></span>
+          <p class="top__tag">{site.tagline}</p>
+        </div>
+        <h1 class="top__title">{home.hero.headline}</h1>
+        <p class="top__sub">{home.hero.sub}</p>
+        <Sticker sticker={star} size="64px" class="st st--star" />
+        <Sticker sticker={local} size="90px" class="st st--local" />
+      </header>
+
+      <section class="block-p">
+        <h2 class="h">{services.monthlyHeading}</h2>
+        <div class="tiers">
+          {pricing.tiers.map((t) => (
+            <article class:list={['tier', `tone-${t.color}`, { 'tier--featured': t.featured }]}>
+              <p class="tier__tab">{t.tab}</p>
+              <h3 class="tier__name">{t.name}</h3>
+              <p class="tier__price">{t.price} <span>{t.cadence}</span></p>
+              <p class="tier__plan">{pricing.priceLabels.flex}{t.altPrice && <> &middot; {pricing.priceLabels.or} {t.altPrice} {pricing.priceLabels.monthly.toLowerCase()}</>}</p>
+              <p class="tier__pitch">{t.pitch}</p>
+              <ul>{t.features.slice(0, 4).map((f) => <li><CheckIcon /><span>{f}</span></li>)}</ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="block-p lists">
+        {[
+          { h: pricing.projectsHeading, rows: pricing.projects },
+          { h: pricing.eventsHeading, rows: pricing.events },
+        ].map((g) => (
+          <div class="list">
+            <h2 class="h h--sm">{g.h}</h2>
+            <dl>{g.rows.map((r) => <div class="list__row"><dt>{r.name}</dt><dd>{r.price}</dd></div>)}</dl>
+          </div>
+        ))}
+      </section>
+
+      <section class="block-p promises">
+        <div class="promise tone-blush"><b>{blind.price}</b><span>{blind.name}</span></div>
+        <div class="promise tone-mint"><b>{pol.community.badge}</b><span>{pol.community.heading}: {pol.community.tagline}</span></div>
+        <div class="promise tone-peri"><b>{pol.twoWays.flex.title}</b><span>{pol.flex.tagline}</span></div>
+        <div class="promise tone-mustard"><span class="promise__long">{pol.noKickbacks.kicker}</span></div>
+      </section>
+
+      <footer class="bottom">
+        <div>
+          <h2 class="bottom__title">{home.contact.heading}</h2>
+          <p class="bottom__sub">{home.contact.intro}</p>
+        </div>
+        <div class="bottom__contact">
+          <p class="bottom__phone">{site.phone.display}</p>
+          <p>{site.email.address}</p>
+          <p>{host}</p>
+        </div>
+        <Sticker sticker={blindDate} size="96px" class="st st--date" />
+        <Sticker sticker={noKick} size="90px" class="st st--kick" />
+      </footer>
+    </div>
+  </body>
+</html>
+
+<style>
+  .sheet { position: relative; width: 8.5in; height: 11in; overflow: hidden; display: grid; grid-template-rows: auto auto auto auto minmax(0, 1fr); color: var(--c-ink); background: var(--c-cream); font-size: 11px; line-height: 1.4; }
+  .top { position: relative; padding: 28px 40px 26px; background: var(--c-tangerine); border-bottom: 3px solid var(--c-ink); }
+  .top__brand { display: flex; align-items: center; gap: 14px; }
+  .badge { display: inline-flex; align-items: baseline; gap: 5px; padding: 5px 11px 6px; background: var(--c-paper); border: 2px solid var(--c-ink); border-radius: 12px 8px 12px 8px; outline: 3px solid var(--c-cream); rotate: -3deg; font-size: 17px; }
+  .badge__first { font-family: var(--font-hand); font-size: 1.12em; }
+  .badge__rest { font-family: var(--font-display); }
+  .top__tag { font-weight: 700; font-size: 11px; max-width: 46ch; }
+  .top__title { font-family: var(--font-display); font-size: 42px; line-height: 0.95; margin-top: 14px; max-width: 13ch; letter-spacing: -0.01em; }
+  .top__sub { font-size: 13px; font-weight: 600; margin-top: 10px; max-width: 54ch; }
+  .sheet :global(.st) { position: absolute; z-index: 2; }
+  .top :global(.st--star) { right: 150px; top: 26px; }
+  .top :global(.st--local) { right: 40px; top: 70px; }
+  .block-p { padding: 18px 40px 0; }
+  .h { font-family: var(--font-display); font-size: 21px; line-height: 1; margin-bottom: 12px; }
+  .h--sm { font-size: 17px; margin-bottom: 8px; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .tier { position: relative; padding: 12px 13px; background: var(--tone); color: var(--on-tone); border: 2.5px solid var(--c-ink); border-radius: 6px 16px 16px 16px; box-shadow: 4px 4px 0 var(--c-ink); }
+  .tier--featured { box-shadow: 6px 6px 0 var(--c-ink); }
+  .tier__tab { font-family: var(--font-hand); font-size: 14px; line-height: 1; }
+  .tier__name { font-family: var(--font-display); font-size: 15px; line-height: 1.1; margin-top: 4px; }
+  .tier__price { font-family: var(--font-display); font-size: 26px; line-height: 1; margin-top: 8px; }
+  .tier__price span { font-family: var(--font-body); font-size: 10px; font-weight: 700; }
+  .tier__plan { font-size: 9.5px; font-weight: 700; margin-top: 3px; }
+  .tier__pitch { font-weight: 700; margin: 7px 0 6px; }
+  .tier ul { list-style: none; padding: 0; display: grid; gap: 3px; font-size: 10px; }
+  .tier li { display: grid; grid-template-columns: 13px 1fr; gap: 4px; }
+  .tier li :global(svg) { width: 12px; height: 12px; margin-top: 1px; }
+  .lists { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .list { padding: 12px 14px; background: var(--c-paper); border: 2px solid var(--c-ink); border-radius: 10px; }
+  .list__row { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-top: 1.5px dashed rgb(46 34 56 / 0.5); }
+  .list__row dt { font-weight: 700; }
+  .list__row dd { margin: 0; font-family: var(--font-display); white-space: nowrap; }
+  .promises { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .promise { display: grid; align-content: center; gap: 2px; padding: 10px 12px; min-height: 64px; background: var(--tone); color: var(--on-tone); border: 2px solid var(--c-ink); border-radius: 14px 8px 14px 8px; outline: 3px solid var(--c-cream); }
+  .promise:nth-child(odd) { rotate: -1.5deg; }
+  .promise:nth-child(even) { rotate: 1.2deg; }
+  .promise b { font-family: var(--font-display); font-weight: 400; font-size: 20px; line-height: 1; }
+  .promise span { font-weight: 700; font-size: 10px; }
+  .promise__long { font-family: var(--font-hand); font-weight: 400 !important; font-size: 14px !important; line-height: 1.15; }
+  .bottom { position: relative; align-self: stretch; align-content: center; display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: center; margin-top: 40px; padding: 30px 40px 30px; background: var(--c-ink); color: var(--c-cream); }
+  .bottom__title { font-family: var(--font-display); font-size: 24px; line-height: 1; max-width: 16ch; }
+  .bottom__sub { margin-top: 8px; font-size: 11px; max-width: 46ch; }
+  .bottom__contact { display: grid; gap: 2px; font-weight: 700; font-size: 12px; }
+  .bottom__phone { font-family: var(--font-display); font-weight: 400; font-size: 26px; color: var(--c-mustard); }
+  .bottom :global(.st--date) { right: 170px; top: -34px; }
+  .bottom :global(.st--kick) { right: 36px; top: -28px; }
+</style>

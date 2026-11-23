@@ -7,8 +7,31 @@
 heading: The Fine Print, In Big Print.
 intro: The ground rules that keep prices predictable and keep small requests from quietly turning into unlimited work. Written down, so nobody has to guess.
 
+twoWays:
+  heading: Two Ways To Pay
+  intro: Same work, same people. You choose how you'd like to commit.
+  flex:
+    title: 12-Month Flex
+    badge: Best value
+    points:
+      - The lower monthly price
+      - Switch packages as your year changes
+      - No $750 onboarding fee
+      - Prices locked for the year
+  monthly:
+    title: Month-to-month
+    badge: Most flexible
+    points:
+      - Slightly higher monthly price
+      - $750 onboarding fee
+      - 3-month minimum
+      - Then cancel with 30 days' written notice
+
+factsHeading: Good To Know
+
 flex:
   heading: 12-Month Flex Partnership
+  summary: Commit to a year, switch packages monthly, enjoy the perks.
   tagline: Commit to us. Not to one package.
   rulesHeading: How it works
   rules:
@@ -30,6 +53,7 @@ flex:
 
 community:
   heading: Community Rate
+  summary: Qualified nonprofits automatically save 10%.
   tagline: Nonprofits save 10%.
   badge: 10%
   body: Qualified nonprofit organizations automatically receive 10% off professional service fees. No special ask, no private negotiation and no different discount depending on who you are.
@@ -40,10 +64,12 @@ community:
 
 noSurprises:
   heading: No Surprise Hourly Bills
+  summary: Normal emails, calls and meetings aren't on the clock.
   body: Normal emails, regular calls, scheduled meetings and the ordinary communication it takes to deliver your package are not tracked with a stopwatch. If a request would cross from included work into $225/hour out-of-scope work or a separately priced project, we tell you first.
 
 notIncluded:
   heading: What's Never Hidden Inside A Monthly Package
+  summary: Ad spend, printing and outside vendors are always separate.
   intro: These cost real money from other people, so they're always separate and always visible.
   items:
     - Paid advertising spend
@@ -62,6 +88,7 @@ notIncluded:
 
 rush:
   heading: Need It Fast?
+  summary: From +25% for two business days to +50% same day. Event rush from +15%.
   intro: Rush service for marketing and project work.
   whenLabel: Turnaround
   feeLabel: Rush fee
@@ -92,6 +119,7 @@ eventRush:
 
 delays:
   heading: When Things Arrive Late
+  summary: Move the deadline or approve a rush fee. Your call.
   body: If approvals, information, photos or logos arrive late and squeeze the original timeline, you get two choices whenever practical.
   options:
     - Move the deadline.
@@ -99,6 +127,7 @@ delays:
 
 travel:
   heading: Where We Work
+  summary: No travel fee in five local communities. Remote everywhere else.
   local: No travel fee in Soldotna, Kenai, Nikiski, Sterling and Kasilof.
   outside: Outside those communities, meetings are remote by default. If in-person travel is requested and accepted, travel time is $125/hour in 30-minute increments, plus the current IRS standard business mileage rate.
   expenses: Airfare, lodging, rental vehicles and other necessary travel costs are paid at actual cost with no markup. Whenever practical, you can book and pay for major travel directly.
@@ -117,14 +146,17 @@ noKickbacks:
 
 relationships:
   heading: Our Relationships Are Not For Sale
+  summary: We don't sell contacts, introductions or sponsor asks.
   body: We'll help you spot the partners, organizations and opportunities worth pursuing, and help you plan how to approach them. We don't sell contact lists, promise personal introductions, solicit sponsors for you or trade on private professional relationships just because you hired us.
 
 revisions:
   heading: Revisions
+  summary: Two reasonable rounds included. Never billed for our mistakes.
   body: Fixed-price projects include two reasonable rounds of revisions unless the scope says otherwise. A completely new direction after approval is new work. Extra revisions are $225/hour with your approval first. We never bill you to fix our own mistake.
 
 payments:
   heading: How Payment Works
+  summary: Monthly fees in advance. Projects in two or three parts.
   intro: The short version. Your written agreement has the full details.
   monthly:
     - Monthly fees are paid in advance

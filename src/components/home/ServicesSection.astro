@@ -16,7 +16,7 @@ const stickers = await getStickers(copy.stickers);
         {stickers.map((s, i) => <Sticker sticker={s} size={i ? '4.5rem' : '7rem'} class={`svc-st svc-st--${i}`} />)}
       </div>
     </div>
-    <div class="services__grid">
+    <div class="services__grid" data-sync-row>
       {services.map((s, i) => <ServiceCard service={s} detailsLabel={copy.detailsLabel} index={i} />)}
     </div>
     {copy.cta && (

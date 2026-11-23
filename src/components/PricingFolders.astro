@@ -10,8 +10,9 @@ import { getPricing, getSite, getStickers } from '../lib/content';
 import { withBase } from '../lib/url';
 import Sticker from './Sticker.astro';
 import CheckIcon from './CheckIcon.astro';
-interface Props { compact?: boolean; headingLevel?: 'h2' | 'h3' }
-const { compact = false, headingLevel = 'h3' } = Astro.props;
+import CompareDialog from './CompareDialog.astro';
+interface Props { compact?: boolean; showBestFor?: boolean; showExtras?: boolean; headingLevel?: 'h2' | 'h3'; anchor?: string }
+const { compact = false, showBestFor = !compact, showExtras = compact, headingLevel = 'h3', anchor } = Astro.props;
 const H = headingLevel;
 const pricing = await getPricing();
 const site = await getSite();
@@ -20,7 +21,7 @@ const stickerList = await getStickers(stickerIds);
 const stickerFor = (id?: string) => stickerList.find((s) => s.id === id);
 const SHOW = 5;
 ---
-<div class="folders" id={compact ? undefined : 'tiers'}>
+<div class="folders" id={anchor}>
   {pricing.tiers.map((t, i) => {
     const st = stickerFor(t.sticker);
     const shown = compact ? t.features.slice(0, SHOW) : t.features;
@@ -42,7 +43,7 @@ const SHOW = 5;
             )}
           </div>
           <p class="folder__pitch">{t.pitch}</p>
-          {!compact && (
+          {showBestFor && (
             <p class="folder__best"><span class="folder__label">{pricing.bestForLabel}:</span> {t.bestFor}</p>
           )}
           <p class="folder__inc">{pricing.includesLabel}</p>
@@ -50,7 +51,7 @@ const SHOW = 5;
             {shown.map((f) => <li><CheckIcon /><span>{f}</span></li>)}
           </ul>
           {more > 0 && (
-            <a class="folder__more" href={withBase('/pricing/#tiers')}>{pricing.moreLabel.replace('{n}', String(more))}</a>
+            <button type="button" class="folder__more" data-compare-open aria-haspopup="dialog" aria-controls="compare-dialog">{pricing.moreLabel.replace('{n}', String(more))}</button>
           )}
           {!compact && t.example && (
             <p class="folder__example"><span class="folder__label">{pricing.exampleLabel}:</span> {t.example}</p>
@@ -65,7 +66,9 @@ const SHOW = 5;
   })}
 </div>
 
-{compact && pricing.extras.length > 0 && (
+<CompareDialog />
+
+{showExtras && pricing.extras.length > 0 && (
   <div class="addons">
     <H class="addons__title">{pricing.extrasHeading}</H>
     <ul class="addons__list" role="list">
@@ -126,7 +129,7 @@ const SHOW = 5;
   .folder__best, .folder__example { font-size: var(--step--1); }
   .folder__label { font-weight: 800; }
   .folder__inc { font-family: var(--font-hand); font-size: var(--step-1); line-height: 1; padding-top: var(--space-2xs); border-top: 2px dashed currentColor; }
-  .folder__more { font-weight: 800; color: inherit; justify-self: start; min-height: var(--tap-min); display: inline-flex; align-items: center; }
+  .folder__more { font-weight: 800; color: inherit; justify-self: start; min-height: var(--tap-min); display: inline-flex; align-items: center; text-decoration: underline; text-decoration-thickness: 0.09em; text-underline-offset: 0.18em; }
   .folder__notes { list-style: none; padding: var(--space-s); display: grid; gap: var(--space-2xs); font-size: var(--step--1); border: 2px dashed currentColor; border-radius: var(--radius-s); }
   .folder__cta { justify-self: start; margin-top: var(--space-xs); }
   .folder :global(.folder__sticker) { position: absolute; top: -3rem; right: -0.8rem; z-index: 3; }

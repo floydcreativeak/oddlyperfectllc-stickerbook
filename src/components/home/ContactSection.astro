@@ -15,12 +15,21 @@ const brochure = site.brochure && existsSync(`public${site.brochure.file}`) ? si
   <div class="wrap">
     <SectionHead id="contact-title" eyebrow={c.eyebrow} heading={c.heading} intro={c.intro} />
     <div class="contact__grid">
+      <div class="contact__main">
       <a class="dial" href={`tel:${site.phone.tel}`} data-track="call-contact" data-rise data-tilt data-surface>
         <span class="dial__ring" aria-hidden="true"><Icon name="phone" /></span>
         <span class="dial__label">{c.callHeading}</span>
         <span class="dial__number">{site.phone.display}</span>
         {stickers[0] && <Sticker sticker={stickers[0]} size="6.5rem" class="dial__arrow" />}
       </a>
+          {brochure && (
+          <a class="index-card index-card--dl" href={withBase(brochure.file)} download data-rise style="--rise-i:3">
+            <span class="index-card__title">{c.brochureHeading}</span>
+            <span>{brochure.label}</span>
+            <Icon name="download" />
+          </a>
+        )}
+      </div>
 
       <div class="contact__side">
         <div class="index-card" data-rise data-surface style="--rise-i:1">
@@ -38,13 +47,6 @@ const brochure = site.brochure && existsSync(`public${site.brochure.file}`) ? si
           {stickers[1] && <Sticker sticker={stickers[1]} size="5rem" class="timecard__sticker" />}
         </div>
 
-        {brochure && (
-          <a class="index-card index-card--dl" href={withBase(brochure.file)} download data-rise style="--rise-i:3">
-            <span class="index-card__title">{c.brochureHeading}</span>
-            <span>{brochure.label}</span>
-            <Icon name="download" />
-          </a>
-        )}
       </div>
     </div>
   </div>
@@ -89,7 +91,8 @@ const brochure = site.brochure && existsSync(`public${site.brochure.file}`) ? si
   .dial :global(.dial__arrow) { position: absolute; right: 3rem; top: -3.5rem; }
   @media (min-width: 960px) { .dial :global(.dial__arrow) { right: -0.5rem; } }
 
-  .contact__side { display: grid; gap: var(--space-xl); }
+  .contact__side, .contact__main { display: grid; gap: var(--space-xl); align-content: start; }
+  .contact__main .index-card--dl { rotate: -1deg; max-width: 30rem; }
   .index-card {
     position: relative;
     display: grid;

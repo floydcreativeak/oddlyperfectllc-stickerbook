@@ -4,25 +4,34 @@ import { render, type CollectionEntry } from 'astro:content';
 import Polaroid from './Polaroid.astro';
 import { getStickers } from '../lib/content';
 import Sticker from './Sticker.astro';
-interface Props { member: CollectionEntry<'team'>; index: number }
-const { member, index } = Astro.props;
+interface Props { member: CollectionEntry<'team'>; index: number; solo?: boolean }
+const { member, index, solo = false } = Astro.props;
 const d = member.data;
 const { Content } = await render(member);
 const [st] = d.sticker ? await getStickers([d.sticker]) : [];
 ---
-<article class="team-card" style={`--rise-i:${index}`} data-rise>
+<article class:list={['team-card', { 'team-card--solo': solo }]} style={`--rise-i:${index}`} data-rise>
   <div class="team-card__photo">
     <Polaroid photo={d.photo} rot={index % 2 ? 3 : -3} sizes="(min-width: 900px) 24rem, 80vw" />
     {st && <Sticker sticker={st} size="5rem" class="team-card__st" />}
   </div>
+  <div class="team-card__text">
   <h3 class="team-card__name">{d.name}</h3>
   <p class="team-card__title">{d.title}</p>
   <p class:list={['team-card__fact', index % 2 ? 'tone-mint' : 'tone-mustard']} data-surface>{d.funFact}</p>
   <div class="prose team-card__bio"><Content /></div>
+  </div>
 </article>
 
 <style>
   .team-card { display: grid; gap: var(--space-s); align-content: start; }
+  .team-card__text { display: grid; gap: var(--space-s); align-content: start; }
+  /* One person: photo beside the story instead of a lonely column */
+  @media (min-width: 760px) {
+    .team-card--solo { grid-template-columns: minmax(16rem, 0.8fr) 1.2fr; gap: var(--space-2xl); align-items: center; }
+    .team-card--solo .team-card__name { font-size: var(--step-4); }
+    .team-card--solo .team-card__bio { font-size: var(--step-1); }
+  }
   .team-card__photo { position: relative; margin-bottom: var(--space-s); }
   .team-card__photo :global(.team-card__st) { position: absolute; right: -0.5rem; top: -1.5rem; z-index: 3; }
   .team-card__name { font-size: var(--step-3); }

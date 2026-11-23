@@ -136,25 +136,8 @@ html { overflow-x: clip; }
 .block--faq { --block-color: var(--block-faq); }
 .block--plain { --block-color: var(--bg); color: var(--text); }
 
-/* Scalloped top edge: a row of solid circles in the block's own colour
-   (an SVG mask, not a gradient), overlapping the block above. */
-.block--scallop::before {
-  content: "";
-  position: absolute;
-  inset: calc(var(--scallop-size) * -0.5 + 1px) 0 auto 0;
-  height: calc(var(--scallop-size) * 0.5);
-  background: var(--block-color);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='11' viewBox='0 0 22 11'%3E%3Cpath d='M0 11A11 11 0 0 1 22 11Z'/%3E%3C/svg%3E") repeat-x left bottom / var(--scallop-size) calc(var(--scallop-size) * 0.5);
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='11' viewBox='0 0 22 11'%3E%3Cpath d='M0 11A11 11 0 0 1 22 11Z'/%3E%3C/svg%3E") repeat-x left bottom / var(--scallop-size) calc(var(--scallop-size) * 0.5);
-  z-index: 1;
-  pointer-events: none;
-}
-/* Overlap variant: block tucks up under the previous one like a stacked page */
-.block--overlap {
-  margin-top: calc(var(--radius-xl) * -1);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  box-shadow: 0 -2px 0 rgb(var(--shadow-color) / 0.12);
-}
+/* The footer's rounded top overlaps the last section: give it room. */
+main > .block:last-child { padding-bottom: calc(var(--space-section) + var(--radius-xl)); }
 
 .section-head { display: grid; gap: var(--space-s); margin-bottom: var(--space-xl); }
 .section-head p { font-size: var(--step-1); line-height: 1.45; font-weight: 500; }
@@ -197,6 +180,11 @@ html { overflow-x: clip; }
 .btn--ghost:hover { box-shadow: none; }
 .btn--lg { font-size: var(--step-1); padding: 0.85em 1.6em; }
 :root[data-theme="dark"] .btn { border-color: var(--c-ink); }
+/* Dark mode: ink buttons would vanish into dark backgrounds, so they flip to cream. */
+:root[data-theme="dark"] .btn--ink { --btn-bg: var(--dark-text); --btn-fg: var(--c-ink); box-shadow: 4px 4px 0 rgb(10 6 14); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn--ink { --btn-bg: var(--dark-text); --btn-fg: var(--c-ink); box-shadow: 4px 4px 0 rgb(10 6 14); }
+}
 
 /* The giant sticker-style Call button: die-cut cream outline + phone number */
 .btn--call {
@@ -238,6 +226,7 @@ html { overflow-x: clip; }
   rotate: var(--rot);
   filter: drop-shadow(0 5px 8px rgb(var(--shadow-color) / 0.22));
   transition: --fold var(--dur-base) var(--ease-out), filter var(--dur-base) var(--ease-out);
+  /* With JS running, the fold is tweened by src/scripts/stickers.ts instead. */
   z-index: var(--z-sticker);
   cursor: grab;
   user-select: none;
@@ -272,7 +261,9 @@ html { overflow-x: clip; }
   filter: brightness(0) invert(0.91) sepia(0.12);
 }
 .sticker__flap .sticker__face { clip-path: none; }
-.sticker:is(.is-held, .is-sticking) .sticker__flap { visibility: visible; transition-delay: 0s; }
+.sticker:is(.is-held, .is-sticking, .is-folded) .sticker__flap { visibility: visible; transition-delay: 0s; }
+.js .sticker { transition: filter var(--dur-base) var(--ease-out); }
+.js .sticker:not(.is-folded):not(.is-held):not(.is-sticking) .sticker__flap { visibility: hidden; transition: none; }
 @media (hover: hover) {
   .sticker:hover { --fold: var(--fold-hover); }
   .sticker:hover .sticker__flap { visibility: visible; transition-delay: 0s; }
@@ -289,8 +280,10 @@ html { overflow-x: clip; }
   transition: --fold 240ms cubic-bezier(0.2, 0.9, 0.3, 1.15), filter 240ms var(--ease-out);
   z-index: 1;
 }
+.js .sticker.is-held { transition: filter 240ms var(--ease-out); }
 /* Stuck back down: the fold flattens quickly as it presses on */
 .sticker.is-sticking { transition: --fold 200ms cubic-bezier(0.5, 0, 0.75, 0), filter 260ms var(--ease-out); }
+.js .sticker.is-sticking { transition: filter 260ms var(--ease-out); }
 html.is-moving-sticker, html.is-moving-sticker * { cursor: grabbing !important; }
 
 /* Page-wide layer that peeled stickers live in, so they can go anywhere */
@@ -399,18 +392,18 @@ html.is-moving-sticker, html.is-moving-sticker * { cursor: grabbing !important; 
   z-index: 1;
 }
 .edge--scallop::before {
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='26'%3E%3Cpath d='M0 26A22 22 0 0 1 44 26Z'/%3E%3C/svg%3E") repeat-x left bottom / 44px 26px;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='26'%3E%3Cpath d='M0 26A22 22 0 0 1 44 26Z'/%3E%3C/svg%3E") repeat-x left bottom / 44px 26px;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='26'%3E%3Cpath d='M0 26A22 22 0 0 1 44 26Z'/%3E%3C/svg%3E") round no-repeat left bottom / 44px 26px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='26'%3E%3Cpath d='M0 26A22 22 0 0 1 44 26Z'/%3E%3C/svg%3E") round no-repeat left bottom / 44px 26px;
 }
 .edge--zigzag { --edge-h: 18px; }
 .edge--zigzag::before {
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='18'%3E%3Cpath d='M0 18 12 0l12 18Z'/%3E%3C/svg%3E") repeat-x left bottom / 24px 18px;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='18'%3E%3Cpath d='M0 18 12 0l12 18Z'/%3E%3C/svg%3E") repeat-x left bottom / 24px 18px;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='18'%3E%3Cpath d='M0 18 12 0l12 18Z'/%3E%3C/svg%3E") round no-repeat left bottom / 24px 18px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='18'%3E%3Cpath d='M0 18 12 0l12 18Z'/%3E%3C/svg%3E") round no-repeat left bottom / 24px 18px;
 }
 .edge--wave { --edge-h: 40px; }
 .edge--wave::before {
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='40' preserveAspectRatio='none'%3E%3Cpath d='M0 40V22C40 4 80 4 120 20s80 16 120-2v22Z'/%3E%3C/svg%3E") repeat-x left bottom / 240px 40px;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='40' preserveAspectRatio='none'%3E%3Cpath d='M0 40V22C40 4 80 4 120 20s80 16 120-2v22Z'/%3E%3C/svg%3E") repeat-x left bottom / 240px 40px;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='40' preserveAspectRatio='none'%3E%3Cpath d='M0 40V20C40 4 80 4 120 20S200 36 240 20V40Z'/%3E%3C/svg%3E") round no-repeat left bottom / 240px 40px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='40' preserveAspectRatio='none'%3E%3Cpath d='M0 40V20C40 4 80 4 120 20S200 36 240 20V40Z'/%3E%3C/svg%3E") round no-repeat left bottom / 240px 40px;
 }
 .edge--tilt { --edge-h: clamp(28px, 5vw, 72px); }
 .edge--tilt::before { clip-path: polygon(0 100%, 100% 0, 100% 100%); }

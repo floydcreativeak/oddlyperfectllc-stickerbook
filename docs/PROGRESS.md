@@ -191,6 +191,37 @@ Source: `Oddly Perfect Planning Packet` (working draft, September 2026).
   reviews the payment, late-fee and cancellation wording (the packet asks for this).
 - No invented popularity claims: the featured tier's sticker says "Hands-On".
 
+## Client feedback round 4 (Nov 2026)
+
+- **Sticker fold** is now a JS tween on inline `--fold` (stickers.ts:
+  `tweenFold`). The old approach animated a registered custom property via
+  WAAPI, which Safari/Firefox don't reliably support, so pickup showed
+  "flat, then snap". Bonus bug: rAF timestamps can precede `performance.now()`,
+  giving negative progress and a dip; progress is clamped. Drop flattens to 0,
+  then eases to the hover fold if the cursor is still over the sticker.
+- **Expandables** (`src/scripts/accordion.ts`): every `<details>` animates
+  height + fades its body; exclusive groups (`name`) are taken over so the
+  closing one animates too; `[data-sync-row]` grids open/close row-mates
+  together. Heights use `offsetHeight` (rotated cards inflate bounding boxes).
+- **Dark mode**: `.btn--ink` flips to cream (ink failed 3:1 on dark blocks).
+- **Dividers**: the wave tile started at y=22 and ended at y=18 (a step every
+  240px); redrawn symmetric with matching slopes. All edge masks use
+  `round no-repeat` so tiles fit the width exactly. `npm run test:edges`
+  makes contact sheets of every divider.
+- **Compare modal** (`CompareDialog.astro`, content `pricing.compare`): native
+  dialog, table on desktop, per-row mini cards on phones, ARIA table roles.
+- **Pricing page** rebuilt for scanning: compact folders + compare, two ways to
+  pay, "good to know" number stickers, projects/events at a glance, a trimmed
+  no-kickbacks banner, and the fine print as a two-column accordion with
+  one-line summaries (`summary` fields in policies.yml).
+- **Brochure**: `src/pages/brochure-print.astro` (Letter, from content) ->
+  `npm run brochure` -> `public/downloads/oddly-perfect-services.pdf` and
+  `docs/brochure-preview.png`. Excluded from the sitemap; noindex.
+- **UX audit** (`npm run test:ux`): overflow, tap targets, links/anchors,
+  heading order, image dimensions, console errors at 320-1440px. Fixed:
+  matcher links < 44px, broken `#tiers` anchor, lightbox img dimensions.
+  Visual fixes: solo team spread, balanced contact columns, shorter story gaps.
+
 ## Checks
 
 - `npm run test:a11y` (axe, 9 pages x light/dark x 375/1280): 0 serious/critical.

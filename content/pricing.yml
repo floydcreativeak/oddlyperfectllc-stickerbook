@@ -20,7 +20,7 @@ priceLabels:
 includesLabel: What's in the folder
 bestForLabel: Best for
 exampleLabel: For example
-moreLabel: "+ {n} more. See the full list"
+moreLabel: "+ {n} more. Compare all packages"
 
 tiers:
   - name: I Need a Plan
@@ -114,6 +114,49 @@ tiers:
     color: blush
     cta: Take it off my plate
     placeholder: false
+
+# The "Compare all packages" pop-up. Values "yes" and "no" show as icons.
+compare:
+  button: Compare all three packages
+  heading: The Packages, Side By Side
+  intro: Same honest prices, same plain English. Here's what changes as you move up.
+  close: Close comparison
+  featureLabel: What you get
+  yesLabel: Included
+  noLabel: Not included
+  rows:
+    - label: 12-Month Flex price
+      values: ["$1,500/mo", "$2,750/mo", "$4,250/mo"]
+    - label: Month-to-month price
+      values: ["$1,750/mo", "$3,150/mo", "$4,850/mo"]
+    - label: Main marketing goals at a time
+      values: ["1", "2", 3 to 4]
+    - label: Meetings
+      values: [One 60-minute planning meeting a month, Two working meetings a month, More frequent strategy and working meetings]
+    - label: Planning
+      values: [Rolling 90-day plan and calendar, Plan and calendar management, Annual and quarterly planning]
+    - label: Finished marketing items
+      values: [Feedback on up to 4 you create, Up to 8 routine items a month, Up to 12 routine items + 2 larger pieces]
+    - label: Copywriting and social content
+      values: ["no", "yes", "yes"]
+    - label: Email and newsletter content
+      values: ["no", "yes", "yes"]
+    - label: Advertising and media
+      values: [Guidance, Copy and coordination, Coordination across channels]
+    - label: Press releases and PR
+      values: ["no", When appropriate, Public relations and business communications]
+    - label: Sponsorship
+      values: [Strategy guidance, Strategy, Strategy]
+    - label: Community partnerships
+      values: [Ideas, Ideas, Development]
+    - label: Vendors
+      values: [Specialist recommendations, Coordination with your vendors, Vendor oversight]
+    - label: Reporting
+      values: [Help evaluating what works, Simple monthly reporting, Detailed reporting and recommendations]
+    - label: Marketing budget guidance
+      values: ["no", "no", "yes"]
+    - label: Leadership meetings
+      values: ["no", "no", "yes"]
 
 # Shown under the monthly folders on the home page
 extrasHeading: Also On The Menu

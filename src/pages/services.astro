@@ -108,7 +108,7 @@ const TIER_ICON = ['target', 'bolt', 'crown'] as const;
         <h2 id="events-title">{pricing.eventsHeading}</h2>
         <p>{pricing.eventsIntro}</p>
       </header>
-      <div class="events">
+      <div class="events" data-sync-row>
         {pricing.events.map((e, i) => (
           <article class="event" style={`--rise-i:${i % 2}`} data-rise data-surface>
             <Sticker sticker={iconSticker(`event-icon-${i}`, e.name, e.icon, i + 2)} size="4.6rem" class="event__icon" />
@@ -268,5 +268,5 @@ const TIER_ICON = ['target', 'bolt', 'crown'] as const;
   }
   .matcher__arrow { display: none; }
   @media (min-width: 760px) { .matcher__arrow { display: grid; } .matcher__arrow :global(svg) { width: 2rem; height: 2rem; } }
-  .matcher__to { font-family: var(--font-display); font-size: var(--step-2); color: var(--accent-text); line-height: 1.1; }
+  .matcher__to { display: inline-flex; align-items: center; min-height: var(--tap-min); font-family: var(--font-display); font-size: var(--step-2); color: var(--accent-text); line-height: 1.1; }
 </style>

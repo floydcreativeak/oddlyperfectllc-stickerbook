@@ -14,7 +14,10 @@
     "lint:cms": "node scripts/check-cms-config.mjs",
     "placeholders": "node scripts/make-placeholders.mjs",
     "test:a11y": "node scripts/a11y.mjs",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "node scripts/screenshots.mjs",
+    "brochure": "node scripts/make-brochure.mjs",
+    "test:ux": "node scripts/ux-audit.mjs",
+    "test:edges": "node scripts/edge-audit.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.9",

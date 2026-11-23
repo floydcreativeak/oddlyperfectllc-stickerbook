@@ -32,7 +32,7 @@ accident. Tick them off as they arrive.
 
 ## Accounts and decisions
 - [ ] **Google Analytics (GA4) measurement ID** (looks like `G-XXXXXXX`). Until then analytics is off.
-- [ ] **Brochure PDF.** Send yours, or approve us generating a branded one-pager from the packet.
+- [x] **Brochure PDF.** Approved and generated from the site content (`public/downloads/oddly-perfect-services.pdf`). It prints the current phone and email, so it stays flagged until the real ones are in; then run `npm run brochure` to refresh it.
 - [ ] **Domain DNS.** Point `oddlyperfectllc.com` at GitHub Pages, then add it under Settings → Pages → Custom domain.
 
 ## Kept off the website on purpose

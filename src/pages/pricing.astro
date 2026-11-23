@@ -1,8 +1,12 @@
 ---
 /**
- * Pricing: every price and the policies around it.
+ * Pricing: decision info first, fine print folded away.
+ *   packages (compact + compare) -> two ways to pay -> good-to-know numbers
+ *   -> projects & events at a glance -> no kickbacks -> fine print accordion
+ *   -> money FAQ -> call band.
  * Prices: content/pricing.yml. Policies: content/policies.yml.
  */
+import { existsSync } from 'node:fs';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import PricingFolders from '../components/PricingFolders.astro';
@@ -10,131 +14,117 @@ import FaqList from '../components/FaqList.astro';
 import CallBand from '../components/CallBand.astro';
 import CheckIcon from '../components/CheckIcon.astro';
 import Icon from '../components/Icon.astro';
-import { getPricing, getPolicies } from '../lib/content';
+import { getPricing, getPolicies, getSite, getHome } from '../lib/content';
 import { withBase } from '../lib/url';
 const p = await getPricing();
 const pol = await getPolicies();
+const site = await getSite();
+const { services: servicesCopy } = await getHome();
+const brochure = site.brochure && existsSync(`public${site.brochure.file}`) ? site.brochure : undefined;
+
+// Fine print, split into two independent columns (expanding one never stretches another).
+const fine = [
+  { key: 'flex', h: pol.flex.heading, s: pol.flex.summary },
+  { key: 'rush', h: pol.rush.heading, s: pol.rush.summary },
+  { key: 'notIncluded', h: pol.notIncluded.heading, s: pol.notIncluded.summary },
+  { key: 'travel', h: pol.travel.heading, s: pol.travel.summary },
+  { key: 'payments', h: pol.payments.heading, s: pol.payments.summary },
+  { key: 'community', h: pol.community.heading, s: pol.community.summary },
+  { key: 'noSurprises', h: pol.noSurprises.heading, s: pol.noSurprises.summary },
+  { key: 'delays', h: pol.delays.heading, s: pol.delays.summary },
+  { key: 'relationships', h: pol.relationships.heading, s: pol.relationships.summary },
+  { key: 'revisions', h: pol.revisions.heading, s: pol.revisions.summary },
+];
+const half = Math.ceil(fine.length / 2);
+const columns = [fine.slice(0, half), fine.slice(half)];
+const tones = ['mint', 'blush', 'peri', 'mustard', 'cream'];
+const FACT_TONE = ['blush', 'mint', 'peri', 'mustard', 'tangerine', 'cream'];
 ---
 <BaseLayout title={p.seo.title} description={p.seo.description}>
-  <PageHeader eyebrow={p.eyebrow} heading={p.heading} intro={p.intro} color="mustard" stickers={p.stickers} />
+  <PageHeader eyebrow={p.eyebrow} heading={p.heading} intro={p.intro} color="mustard" stickers={p.stickers}>
+    {brochure && (
+      <a class="btn btn--ink header-dl" href={withBase(brochure.file)} download>
+        <Icon name="download" /> <span>{brochure.label}</span>
+      </a>
+    )}
+  </PageHeader>
 
-  <!-- Monthly packages -->
+  <!-- 1. Packages -->
   <section class="block block--plain edge edge--zigzag" aria-label={p.heading}>
     <div class="wrap">
-      <PricingFolders headingLevel="h2" />
+      <PricingFolders compact showBestFor showExtras={false} headingLevel="h2" anchor="tiers" />
       {p.footnote && <p class="pricing-footnote">{p.footnote}</p>}
     </div>
   </section>
 
-  <!-- Flex + Community Rate -->
-  <section class="block block--contact edge edge--wave" aria-labelledby="flex-title">
-    <div class="wrap flex-grid">
-      <article class="flex-card" data-surface>
-        <p class="flex-card__tagline hand">{pol.flex.tagline}</p>
-        <h2 id="flex-title" class="flex-card__title">{pol.flex.heading}</h2>
-        <h3 class="flex-card__sub">{pol.flex.rulesHeading}</h3>
-        <ul class="checklist" role="list">{pol.flex.rules.map((r) => <li><CheckIcon /><span>{r}</span></li>)}</ul>
-        <div class="flex-card__perks tone-mustard" data-surface>
-          <h3 class="flex-card__sub">{pol.flex.benefitsHeading}</h3>
-          <ul class="checklist" role="list">{pol.flex.benefits.map((b) => <li><CheckIcon /><span>{b}</span></li>)}</ul>
-        </div>
-      </article>
-      <article class="community" data-surface>
-        <p class="community__badge" aria-hidden="true">{pol.community.badge}</p>
-        <h2 class="community__title">{pol.community.heading}</h2>
-        <p class="community__tagline hand">{pol.community.tagline}</p>
-        <p>{pol.community.body}</p>
-        <ul class="checklist" role="list">{pol.community.points.map((x) => <li><CheckIcon /><span>{x}</span></li>)}</ul>
-      </article>
-    </div>
-  </section>
-
-  <!-- Published fees -->
-  <section class="block block--plain edge edge--scallop" id="fees" aria-labelledby="fees-title">
+  <!-- 2. Two ways to pay -->
+  <section class="block block--contact edge edge--wave" aria-labelledby="ways-title">
     <div class="wrap">
-      <header class="section-head"><h2 id="fees-title">{p.addonsHeading}</h2></header>
-      <ul class="fees" role="list">
-        {p.addons.map((a, i) => (
-          <li class="tag" style={`--tag-rot:${[-2.5, 2, -1.5, 2.5, -2][i % 5]}deg;--rise-i:${i % 3}`} data-rise data-surface>
-            <span class="tag__shape"><span class="tag__face">
-              <span class="tag__hole" aria-hidden="true"></span>
-              <span class="tag__name">{a.name}</span>
-              <span class="tag__price">{a.price}</span>
-              {a.note && <span class="tag__note">{a.note}</span>}
-            </span></span>
-          </li>
+      <header class="section-head">
+        <h2 id="ways-title">{pol.twoWays.heading}</h2>
+        {pol.twoWays.intro && <p>{pol.twoWays.intro}</p>}
+      </header>
+      <div class="ways">
+        {[pol.twoWays.flex, pol.twoWays.monthly].map((w, i) => (
+          <article class:list={['way', i ? 'tone-cream' : 'tone-mustard', { 'way--best': !i }]} data-surface>
+            {w.badge && <p class="way__badge hand">{w.badge}</p>}
+            <h3 class="way__title">{w.title}</h3>
+            <ul class="checklist" role="list">{w.points.map((x) => <li><CheckIcon /><span>{x}</span></li>)}</ul>
+          </article>
         ))}
-      </ul>
-      <div class="callout tone-mint" data-surface>
-        <h3>{pol.noSurprises.heading}</h3>
-        <p>{pol.noSurprises.body}</p>
       </div>
     </div>
   </section>
 
-  <!-- Projects & events at a glance -->
+  <!-- 3. Good to know: the numbers, as big stickers -->
+  <section class="block block--plain edge edge--scallop" id="fees" aria-labelledby="facts-title">
+    <div class="wrap">
+      <header class="section-head"><h2 id="facts-title">{pol.factsHeading}</h2></header>
+      <ul class="facts" role="list">
+        {p.addons.map((a, i) => (
+          <li class:list={['fact', `tone-${FACT_TONE[i % FACT_TONE.length]}`]} style={`--f-rot:${[-2.5, 1.8, -1.2, 2.4, -1.8, 1.2][i % 6]}deg;--rise-i:${i % 3}`} data-rise data-surface>
+            <span class="fact__value">{a.price}</span>
+            <span class="fact__label">{a.name}</span>
+            {a.note && <span class="fact__note">{a.note}</span>}
+          </li>
+        ))}
+        <li class="fact tone-mint" style="--f-rot:-1.5deg;--rise-i:2" data-rise data-surface>
+          <span class="fact__value">{pol.community.badge}</span>
+          <span class="fact__label">{pol.community.heading}</span>
+          <span class="fact__note">{pol.community.tagline}</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4. Projects & events at a glance -->
   <section class="block block--services edge edge--tilt" aria-labelledby="glance-projects">
     <div class="wrap glance">
       {[
-        { id: 'glance-projects', heading: p.projectsHeading, intro: p.projectsIntro, rows: p.projects.map((x) => ({ name: x.name, price: x.price, note: x.when })), href: '/services/#projects' },
-        { id: 'glance-events', heading: p.eventsHeading, intro: p.eventsIntro, rows: p.events.map((x) => ({ name: x.name, price: x.price, note: x.tagline })), href: '/services/#events' },
+        { id: 'glance-projects', heading: p.projectsHeading, rows: p.projects.map((x) => ({ name: x.name, price: x.price })), href: '/services/#projects' },
+        { id: 'glance-events', heading: p.eventsHeading, rows: p.events.map((x) => ({ name: x.name, price: x.price })), href: '/services/#events' },
       ].map((g) => (
         <article class="menu" data-surface>
-          <h2 id={g.id} class="menu__title"><a href={withBase(g.href)}>{g.heading}</a></h2>
-          <p class="menu__intro">{g.intro}</p>
+          <h2 id={g.id} class="menu__title">{g.heading}</h2>
           <dl class="menu__rows">
-            {g.rows.map((r) => (
-              <div class="menu__row">
-                <dt>{r.name}</dt>
-                <dd class="menu__price">{r.price}</dd>
-                <dd class="menu__note">{r.note}</dd>
-              </div>
-            ))}
+            {g.rows.map((r) => <div class="menu__row"><dt>{r.name}</dt><dd>{r.price}</dd></div>)}
           </dl>
+          <a class="menu__more" href={withBase(g.href)}>{servicesCopy.detailsLabel} <Icon name="arrow-right" /></a>
         </article>
       ))}
     </div>
   </section>
 
-  <!-- Rush + delays -->
-  <section class="block block--plain edge edge--zigzag" aria-labelledby="rush-title">
-    <div class="wrap rush-grid">
-      {[pol.rush, pol.eventRush].map((t, i) => (
-        <article class:list={['rush', i ? 'tone-blush' : 'tone-peri']} data-surface>
-          <h2 id={i ? 'event-rush-title' : 'rush-title'} class="rush__title">{t.heading}</h2>
-          {t.intro && <p>{t.intro}</p>}
-          <table class="rush__table">
-            <thead><tr><th scope="col">{t.whenLabel}</th><th scope="col">{t.feeLabel}</th></tr></thead>
-            <tbody>{t.rows.map((r) => <tr><td>{r.when}</td><td class="rush__fee">{r.fee}</td></tr>)}</tbody>
-          </table>
-          {t.note && <p class="rush__note">{t.note}</p>}
-        </article>
-      ))}
-      <article class="callout tone-mustard" data-surface>
-        <h2 class="rush__title">{pol.delays.heading}</h2>
-        <p>{pol.delays.body}</p>
-        <ol class="delays">{pol.delays.options.map((o) => <li>{o}</li>)}</ol>
-      </article>
-    </div>
-  </section>
-
-  <!-- No kickbacks (the big promise) -->
+  <!-- 5. The big promise -->
   <section class="block block--reviews edge edge--scallop" aria-labelledby="kick-title">
     <div class="wrap kick">
-      <div class="kick__main">
-        <h2 id="kick-title" class="kick__title">{pol.noKickbacks.heading}</h2>
-        <p class="lede">{pol.noKickbacks.body}</p>
-        <ul class="kick__list" role="list">{pol.noKickbacks.items.map((x, i) => <li class={`tone-${['mint', 'blush', 'mustard', 'peri', 'tangerine', 'mint'][i % 6]}`} data-surface>{x}</li>)}</ul>
-        <p class="kick__kicker hand">{pol.noKickbacks.kicker}</p>
-      </div>
-      <article class="callout tone-cream kick__side" data-surface>
-        <h3>{pol.relationships.heading}</h3>
-        <p>{pol.relationships.body}</p>
-      </article>
+      <h2 id="kick-title" class="kick__title">{pol.noKickbacks.heading}</h2>
+      <ul class="kick__list" role="list">{pol.noKickbacks.items.map((x, i) => <li class={`tone-${['mint', 'blush', 'mustard', 'peri', 'tangerine', 'mint'][i % 6]}`} data-surface>{x}</li>)}</ul>
+      <p class="kick__kicker hand">{pol.noKickbacks.kicker}</p>
     </div>
   </section>
 
-  <!-- The fine print, in big print -->
+  <!-- 6. The fine print, folded away -->
   <section class="block block--plain edge edge--wave" aria-labelledby="fine-title">
     <div class="wrap">
       <header class="section-head">
@@ -142,31 +132,70 @@ const pol = await getPolicies();
         <p>{pol.intro}</p>
       </header>
       <div class="fine">
-        <article class="fine__card tone-cream" data-surface>
-          <h3>{pol.notIncluded.heading}</h3>
-          {pol.notIncluded.intro && <p>{pol.notIncluded.intro}</p>}
-          <ul class="chips" role="list">{pol.notIncluded.items.map((x) => <li>{x}</li>)}</ul>
-        </article>
-        <article class="fine__card tone-mint" data-surface>
-          <h3>{pol.travel.heading}</h3>
-          <p><strong>{pol.travel.local}</strong></p>
-          <p>{pol.travel.outside}</p>
-          <p>{pol.travel.expenses}</p>
-        </article>
-        <article class="fine__card tone-peri" data-surface>
-          <h3>{pol.revisions.heading}</h3>
-          <p>{pol.revisions.body}</p>
-        </article>
-        <article class="fine__card tone-blush fine__card--wide" data-surface>
-          <h3>{pol.payments.heading}</h3>
-          {pol.payments.intro && <p>{pol.payments.intro}</p>}
-          <ul class="checklist" role="list">{pol.payments.monthly.map((x) => <li><CheckIcon /><span>{x}</span></li>)}</ul>
-          <h4 class="fine__sub">{pol.payments.projectsHeading}</h4>
-          <table class="rush__table">
-            <thead><tr><th scope="col">{pol.payments.projectLabel}</th><th scope="col">{pol.payments.scheduleLabel}</th></tr></thead>
-            <tbody>{pol.payments.projects.map((r) => <tr><td>{r.project}</td><td>{r.schedule}</td></tr>)}</tbody>
-          </table>
-        </article>
+        {columns.map((col, ci) => (
+          <div class="fine__col">
+            {col.map((f, i) => (
+              <details class:list={['policy', `tone-${tones[(ci * half + i) % tones.length]}`]} data-surface>
+                <summary class="policy__q">
+                  <span class="policy__text">
+                    <span class="policy__title">{f.h}</span>
+                    {f.s && <span class="policy__summary">{f.s}</span>}
+                  </span>
+                  <span class="policy__icon" aria-hidden="true"><Icon name="plus" /></span>
+                </summary>
+                <div class="policy__body">
+                  {f.key === 'flex' && <>
+                    <p class="hand policy__tag">{pol.flex.tagline}</p>
+                    <h3 class="policy__sub">{pol.flex.rulesHeading}</h3>
+                    <ul class="checklist" role="list">{pol.flex.rules.map((r) => <li><CheckIcon /><span>{r}</span></li>)}</ul>
+                    <h3 class="policy__sub">{pol.flex.benefitsHeading}</h3>
+                    <ul class="checklist" role="list">{pol.flex.benefits.map((r) => <li><CheckIcon /><span>{r}</span></li>)}</ul>
+                  </>}
+                  {f.key === 'community' && <>
+                    <p>{pol.community.body}</p>
+                    <ul class="checklist" role="list">{pol.community.points.map((r) => <li><CheckIcon /><span>{r}</span></li>)}</ul>
+                  </>}
+                  {f.key === 'noSurprises' && <p>{pol.noSurprises.body}</p>}
+                  {f.key === 'notIncluded' && <>
+                    {pol.notIncluded.intro && <p>{pol.notIncluded.intro}</p>}
+                    <ul class="chips" role="list">{pol.notIncluded.items.map((x) => <li>{x}</li>)}</ul>
+                  </>}
+                  {f.key === 'rush' && [pol.rush, pol.eventRush].map((t) => (
+                    <div class="policy__table">
+                      <h3 class="policy__sub">{t.heading}</h3>
+                      {t.intro && <p>{t.intro}</p>}
+                      <table class="rate">
+                        <thead><tr><th scope="col">{t.whenLabel}</th><th scope="col">{t.feeLabel}</th></tr></thead>
+                        <tbody>{t.rows.map((r) => <tr><td>{r.when}</td><td class="rate__fee">{r.fee}</td></tr>)}</tbody>
+                      </table>
+                      {t.note && <p class="policy__note">{t.note}</p>}
+                    </div>
+                  ))}
+                  {f.key === 'delays' && <>
+                    <p>{pol.delays.body}</p>
+                    <ol class="policy__ol">{pol.delays.options.map((o) => <li>{o}</li>)}</ol>
+                  </>}
+                  {f.key === 'travel' && <>
+                    <p><strong>{pol.travel.local}</strong></p>
+                    <p>{pol.travel.outside}</p>
+                    <p>{pol.travel.expenses}</p>
+                  </>}
+                  {f.key === 'relationships' && <p>{pol.relationships.body}</p>}
+                  {f.key === 'revisions' && <p>{pol.revisions.body}</p>}
+                  {f.key === 'payments' && <>
+                    {pol.payments.intro && <p>{pol.payments.intro}</p>}
+                    <ul class="checklist" role="list">{pol.payments.monthly.map((x) => <li><CheckIcon /><span>{x}</span></li>)}</ul>
+                    <h3 class="policy__sub">{pol.payments.projectsHeading}</h3>
+                    <table class="rate">
+                      <thead><tr><th scope="col">{pol.payments.projectLabel}</th><th scope="col">{pol.payments.scheduleLabel}</th></tr></thead>
+                      <tbody>{pol.payments.projects.map((r) => <tr><td>{r.project}</td><td>{r.schedule}</td></tr>)}</tbody>
+                    </table>
+                  </>}
+                </div>
+              </details>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -183,97 +212,89 @@ const pol = await getPolicies();
 </BaseLayout>
 
 <style>
+  .header-dl { justify-self: start; margin-top: var(--space-s); }
   .pricing-footnote { margin-top: var(--space-2xl); font-weight: 600; max-width: 62ch; padding-left: var(--space-s); border-left: 4px solid var(--accent); }
 
-  /* Flex + community */
-  .flex-grid { display: grid; gap: var(--space-2xl) var(--space-xl); align-items: start; }
-  @media (min-width: 960px) { .flex-grid { grid-template-columns: 1.35fr 0.85fr; } }
-  .flex-card {
-    position: relative; display: grid; gap: var(--space-s); padding: var(--space-xl) var(--space-l);
-    background: var(--surface); color: var(--text);
-    border: var(--border-chunky) solid var(--c-ink); border-left: 10px double var(--accent-text);
-    border-radius: var(--radius-m); box-shadow: var(--shadow-pop); rotate: -0.6deg;
-  }
-  .flex-card__tagline { font-size: var(--step-2); line-height: 1; }
-  .flex-card__title { font-size: var(--step-4); max-width: 13ch; }
-  .flex-card__sub { font-family: var(--font-body); font-size: var(--step-1); font-weight: 800; margin-top: var(--space-xs); }
-  .flex-card__perks { position: relative; padding: var(--space-m) var(--space-l); margin-top: var(--space-s); background: var(--tone); color: var(--on-tone); border-radius: 2px 2px 18px 2px; box-shadow: 0 12px 18px -12px rgb(var(--shadow-color) / 0.5); rotate: 1.2deg; }
-  .community {
+  /* Two ways to pay */
+  .ways { display: grid; gap: var(--space-xl); }
+  @media (min-width: 760px) { .ways { grid-template-columns: 1fr 1fr; align-items: start; } }
+  .way {
     position: relative; display: grid; gap: var(--space-s); padding: var(--space-xl) var(--space-l) var(--space-l);
-    background: var(--c-mint); color: var(--c-ink);
-    border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-wonky); box-shadow: var(--shadow-pop); rotate: 1.2deg;
+    background: var(--tone); color: var(--on-tone);
+    border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-wonky); box-shadow: var(--shadow-pop);
   }
-  .community__badge {
-    position: absolute; top: -2.2rem; right: 1rem; display: grid; place-items: center; width: 5.5rem; aspect-ratio: 1;
-    font-family: var(--font-display); font-size: var(--step-2); background: var(--c-tangerine); color: var(--c-ink);
-    border: var(--border-chunky) solid var(--c-ink); border-radius: 50%; outline: 5px solid var(--sticker-outline); rotate: 10deg;
+  .way--best { rotate: -1deg; }
+  .way:not(.way--best) { rotate: 1deg; }
+  .way__badge {
+    position: absolute; top: -1.1rem; right: 1.2rem; padding: 0.25rem 0.8rem; font-size: var(--step-1); line-height: 1;
+    background: var(--c-paper); color: var(--c-ink); border: 2px solid var(--c-ink); border-radius: var(--radius-s);
+    outline: 4px solid var(--sticker-outline); rotate: 4deg; max-width: none;
   }
-  .community__title { font-size: var(--step-3); }
-  .community__tagline { font-size: var(--step-2); line-height: 1; }
+  .way__title { font-size: var(--step-3); }
 
-  /* Fees */
-  .fees { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: var(--space-l); }
-  .tag { rotate: var(--tag-rot); filter: drop-shadow(3px 4px 0 var(--c-ink)); max-width: none; }
-  .tag__shape { display: block; height: 100%; padding: 2.5px; background: var(--c-ink); clip-path: polygon(1.6rem 0, 100% 0, 100% 100%, 1.6rem 100%, 0 50%); border-radius: 0 14px 14px 0; }
-  .tag__face { position: relative; display: grid; gap: 0.2rem; height: 100%; padding: var(--space-m) var(--space-m) var(--space-m) 3.2rem; background: var(--surface); color: var(--text); clip-path: polygon(calc(1.6rem - 1px) 0, 100% 0, 100% 100%, calc(1.6rem - 1px) 100%, 1px 50%); border-radius: 0 12px 12px 0; }
-  .tag__hole { position: absolute; left: 1.3rem; top: 50%; width: 0.8rem; height: 0.8rem; margin-top: -0.4rem; border-radius: 50%; border: 2px solid var(--c-ink); background: var(--bg); }
-  .tag__name { font-weight: 800; }
-  .tag__price { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.05; }
-  .tag__note { font-size: var(--step--1); }
-
-  .callout { position: relative; margin-top: var(--space-2xl); padding: var(--space-l); background: var(--tone); color: var(--on-tone); border-radius: 2px 2px 20px 2px; box-shadow: 0 14px 20px -12px rgb(var(--shadow-color) / 0.45); rotate: -0.8deg; max-width: 48rem; }
-  .callout h3 { font-size: var(--step-2); margin-bottom: var(--space-xs); }
+  /* Good to know: big numbers as stickers */
+  .facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-xl) var(--space-l); }
+  .fact {
+    position: relative; display: grid; gap: 0.25rem; align-content: start; max-width: none;
+    padding: var(--space-l); background: var(--tone); color: var(--on-tone);
+    border: var(--border-thin) solid var(--c-ink); border-radius: var(--radius-m) var(--radius-s) var(--radius-m) var(--radius-s);
+    outline: 5px solid var(--sticker-outline); box-shadow: var(--shadow-sticker); rotate: var(--f-rot);
+  }
+  .fact__value { font-family: var(--font-display); font-size: clamp(1.9rem, 1.4rem + 1.3vw, 2.6rem); line-height: 1; white-space: nowrap; }
+  .fact__label { font-weight: 800; }
+  .fact__note { font-size: var(--step--1); }
 
   /* At a glance */
   .glance { display: grid; gap: var(--space-xl); align-items: start; }
   @media (min-width: 960px) { .glance { grid-template-columns: 1fr 1fr; } }
-  .menu { position: relative; padding: var(--space-xl) var(--space-l); background: var(--surface); color: var(--text); border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-m); box-shadow: var(--shadow-pop); }
-  .menu:nth-child(2) { rotate: 0.8deg; }
+  .menu { position: relative; display: grid; gap: var(--space-s); padding: var(--space-xl) var(--space-l); background: var(--surface); color: var(--text); border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-m); box-shadow: var(--shadow-pop); }
   .menu:nth-child(1) { rotate: -0.6deg; }
+  .menu:nth-child(2) { rotate: 0.8deg; }
   .menu__title { font-size: var(--step-3); }
-  .menu__title a { color: inherit; text-decoration-thickness: 0.06em; }
-  .menu__intro { margin: var(--space-xs) 0 var(--space-m); font-size: var(--step--1); }
   .menu__rows { display: grid; }
-  .menu__row { display: grid; grid-template-columns: 1fr auto; gap: 0.1rem var(--space-s); padding: var(--space-s) 0; border-top: 2px dashed currentColor; }
+  .menu__row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-s); padding: 0.65rem 0; border-top: 2px dashed currentColor; }
   .menu__row dt { font-weight: 800; }
-  .menu__price { margin: 0; font-family: var(--font-display); font-size: var(--step-1); white-space: nowrap; }
-  .menu__note { margin: 0; grid-column: 1 / -1; font-size: var(--step--1); }
+  .menu__row dd { margin: 0; font-family: var(--font-display); font-size: var(--step-1); white-space: nowrap; }
+  .menu__more { display: inline-flex; align-items: center; gap: 0.4em; min-height: var(--tap-min); font-weight: 800; color: var(--accent-text); justify-self: start; }
 
-  /* Rush */
-  .rush-grid { display: grid; gap: var(--space-xl); align-items: start; }
-  @media (min-width: 900px) { .rush-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rush-grid .callout { margin-top: 0; grid-column: 1 / -1; } }
-  .rush { position: relative; display: grid; gap: var(--space-s); padding: var(--space-l); background: var(--tone); color: var(--on-tone); border: var(--border-chunky) solid var(--c-ink); border-radius: var(--radius-folder); box-shadow: var(--shadow-pop); }
-  .rush:nth-child(2) { rotate: 1deg; }
-  .rush__title { font-size: var(--step-2); }
-  .rush__table { width: 100%; border-collapse: collapse; font-size: var(--step--1); }
-  .rush__table th { text-align: left; font-weight: 800; padding: 0.4rem 0.5rem 0.4rem 0; border-bottom: 3px solid currentColor; }
-  .rush__table td { padding: 0.5rem 0.5rem 0.5rem 0; border-bottom: 2px dashed currentColor; vertical-align: top; }
-  .rush__fee { font-family: var(--font-display); font-size: var(--step-1); white-space: nowrap; }
-  .rush__note { font-size: var(--step--1); font-weight: 600; }
-  .delays { padding-left: 1.3em; display: grid; gap: var(--space-2xs); font-weight: 700; }
-
-  /* Kickbacks */
-  .kick { display: grid; gap: var(--space-2xl); align-items: start; }
-  @media (min-width: 960px) { .kick { grid-template-columns: 1.4fr 0.8fr; } }
-  .kick__main { display: grid; gap: var(--space-m); }
-  .kick__title { font-size: var(--step-4); max-width: 14ch; }
+  /* The promise */
+  .kick { display: grid; gap: var(--space-l); justify-items: start; }
+  .kick__title { font-size: var(--step-4); max-width: 16ch; }
   .kick__list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-s); }
   .kick__list li { position: relative; padding: 0.55rem 1rem; background: var(--tone); color: var(--on-tone); font-weight: 800; border: 2px solid var(--c-ink); border-radius: var(--radius-pill); outline: 4px solid var(--sticker-outline); max-width: none; }
   .kick__list li:nth-child(odd) { rotate: -2deg; }
   .kick__list li:nth-child(even) { rotate: 1.5deg; }
-  .kick__kicker { font-size: var(--step-2); line-height: 1.15; color: var(--c-mustard); max-width: 28ch; }
-  .kick__side { margin-top: 0; rotate: 1.4deg; }
+  .kick__kicker { font-size: var(--step-2); line-height: 1.15; color: var(--c-mustard); max-width: 30ch; }
 
-  /* Fine print */
-  .fine { display: grid; gap: var(--space-xl) var(--space-l); align-items: start; }
-  @media (min-width: 900px) { .fine { grid-template-columns: repeat(3, minmax(0, 1fr)); } .fine__card--wide { grid-column: 1 / -1; } }
-  .fine__card { position: relative; display: grid; gap: var(--space-s); padding: var(--space-l); background: var(--tone); color: var(--on-tone); border: var(--border-thin) solid var(--c-ink); border-radius: var(--radius-wonky); box-shadow: 5px 5px 0 var(--c-ink); }
-  .fine__card:nth-child(1) { rotate: -1deg; }
-  .fine__card:nth-child(3) { rotate: 1deg; }
-  .fine__card h3 { font-size: var(--step-2); }
-  .fine__sub { margin-top: var(--space-s); }
+  /* Fine print accordion */
+  .fine { display: grid; gap: var(--space-s); align-items: start; }
+  @media (min-width: 900px) { .fine { grid-template-columns: 1fr 1fr; gap: var(--space-l); } }
+  .fine__col { display: grid; gap: var(--space-s); }
+  .policy {
+    position: relative; background: var(--tone); color: var(--on-tone);
+    border: var(--border-thin) solid var(--c-ink); border-radius: var(--radius-m) var(--radius-s) var(--radius-m) var(--radius-s);
+    box-shadow: 4px 4px 0 var(--c-ink); transition: translate var(--dur-spring) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out);
+  }
+  .policy[open] { translate: -2px -3px; box-shadow: 7px 7px 0 var(--c-ink); }
+  .policy__q { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); padding: var(--space-s) var(--space-m); min-height: 4rem; cursor: pointer; list-style: none; }
+  .policy__q::-webkit-details-marker { display: none; }
+  .policy__text { display: grid; gap: 0.15rem; }
+  .policy__title { font-weight: 800; font-size: var(--step-1); line-height: 1.2; }
+  .policy__summary { font-size: var(--step--1); }
+  .policy__icon { flex: none; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--c-paper); color: var(--c-ink); border: 2px solid var(--c-ink); transition: rotate var(--dur-spring) var(--ease-spring); }
+  .policy[open] .policy__icon { rotate: 135deg; }
+  .policy__body { display: grid; gap: var(--space-s); padding: 0 var(--space-m) var(--space-m); font-size: var(--step--1); }
+  .policy__sub { font-family: var(--font-body); font-size: var(--step-0); font-weight: 800; margin-top: var(--space-2xs); }
+  .policy__tag { font-size: var(--step-1); }
+  .policy__note { font-weight: 600; }
+  .policy__ol { padding-left: 1.3em; display: grid; gap: var(--space-3xs); font-weight: 700; }
+  .policy__table { display: grid; gap: var(--space-2xs); }
   .chips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
-  .chips li { padding: 0.3rem 0.75rem; border: 2px solid currentColor; border-radius: var(--radius-pill); font-size: var(--step--1); font-weight: 700; max-width: none; }
+  .chips li { padding: 0.3rem 0.75rem; border: 2px solid currentColor; border-radius: var(--radius-pill); font-weight: 700; max-width: none; }
+  .rate { width: 100%; border-collapse: collapse; }
+  .rate th { text-align: left; font-weight: 800; padding: 0.4rem 0.5rem 0.4rem 0; border-bottom: 3px solid currentColor; }
+  .rate td { padding: 0.45rem 0.5rem 0.45rem 0; border-bottom: 2px dashed currentColor; vertical-align: top; }
+  .rate__fee { font-family: var(--font-display); white-space: nowrap; }
 
   .money { display: grid; gap: var(--space-xl); }
   .money__title { font-size: var(--step-4); max-width: 12ch; }

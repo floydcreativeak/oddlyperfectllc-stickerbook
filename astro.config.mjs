@@ -15,7 +15,7 @@ export default defineConfig({
   base,
   output: 'static',
   trailingSlash: 'ignore',
-  integrations: [react(), sitemap()],
+  integrations: [react(), sitemap({ filter: (page) => !page.includes('/brochure-print') })],
   prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
   build: { inlineStylesheets: 'auto', format: 'directory' },
   image: {
