@@ -412,7 +412,9 @@ html.is-moving-sticker, html.is-moving-sticker * { cursor: grabbing !important; 
 [data-tilt] {
   transform: perspective(900px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg)) translateY(var(--ly, 0px));
   transition: transform var(--dur-spring) var(--ease-spring), box-shadow var(--dur-base) var(--ease-out);
-  transform-style: preserve-3d;
+  /* flat, not preserve-3d: children (stuck-on stickers) render ON the card's surface.
+     preserve-3d let a sticker's own 3D peel intersect the card plane and slice it diagonally. */
+  transform-style: flat;
 }
 [data-tilt].is-tilting { transition: transform 90ms linear, box-shadow var(--dur-base) var(--ease-out); --ly: var(--lift); }
 @media (hover: hover) {

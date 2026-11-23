@@ -17,7 +17,8 @@
     "screenshots": "node scripts/screenshots.mjs",
     "brochure": "node scripts/make-brochure.mjs",
     "test:ux": "node scripts/ux-audit.mjs",
-    "test:edges": "node scripts/edge-audit.mjs"
+    "test:edges": "node scripts/edge-audit.mjs",
+    "test:stickers": "node scripts/sticker-overlap.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.9",

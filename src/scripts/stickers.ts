@@ -159,7 +159,7 @@ function foldTargets(el: HTMLElement) {
   const fs = parseFloat(getComputedStyle(el).fontSize) || 16;
   if (el.classList.contains('sticker--label')) return { hover: fs * 0.75, held: fs * 1.5 };
   const w = (el.querySelector('.sticker__face') as HTMLElement | null)?.offsetWidth || el.offsetWidth;
-  return { hover: w * 0.13, held: w * 0.25 };
+  return { hover: w * 0.13, held: w * 0.2 };
 }
 
 function tweenFold(el: HTMLElement, to: number, ms: number, ease: Ease = easeOut): Promise<void> {
@@ -204,8 +204,9 @@ function stick(el: HTMLElement) {
     // Still under the pointer? Settle into the gentle hover fold.
     if (el.matches(':hover') && window.matchMedia('(hover: hover)').matches) tweenFold(el, foldTargets(el).hover, 220);
   };
-  // Flatten the corner as it presses down, then a small squish.
-  tweenFold(el, 0, 240, easeIn).then(done);
+  // Slap the corner down fast (fast-start curve) so the folded band doesn't linger
+  // and read as a diagonal slash across narrow stickers, then a small squish.
+  tweenFold(el, 0, 130, easeOut).then(done);
   if (!reduce()) {
     el.animate(
       [{ transform: HELD }, { transform: 'perspective(520px) scale(0.95)', offset: 0.6 }, { transform: 'none' }],

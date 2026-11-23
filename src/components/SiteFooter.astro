@@ -20,7 +20,6 @@ const tileTilt = [-4, 3, -2, 5, -3, 2, -5, 4];
   <div class="wrap">
     <div class="signoff">
       <h2 class="signoff__title display-xl">{f.signoff}</h2>
-      <Sticker sticker={heart} size="clamp(3.5rem, 8vw, 6rem)" class="signoff__sticker" />
       <p class="signoff__sub lede">{f.signoffSub}</p>
       <div class="signoff__actions">
         <a class="btn btn--call btn--lg" href={`tel:${site.phone.tel}`} data-track="call-footer">
@@ -30,6 +29,7 @@ const tileTilt = [-4, 3, -2, 5, -3, 2, -5, 4];
         <a class="footer-email" href={`mailto:${site.email.address}`}>
           <Icon name="mail" /> <span>{site.email.address}</span>
         </a>
+        <Sticker sticker={heart} size="clamp(3.5rem, 8vw, 6rem)" class="signoff__sticker" />
       </div>
     </div>
 
@@ -112,8 +112,8 @@ const tileTilt = [-4, 3, -2, 5, -3, 2, -5, 4];
   .signoff { position: relative; display: grid; gap: var(--space-m); padding-top: var(--space-l); }
   .signoff__title { max-width: 14ch; color: var(--on-footer); }
   .signoff__sub { max-width: 40ch; color: var(--on-footer); }
-  :global(.signoff__sticker) { position: absolute; top: 36%; right: 3%; }
-  @media (max-width: 759.98px) { :global(.signoff__sticker) { top: 0; right: 0; } }
+  /* Lives at the end of the call row, where there's always empty space: never over text. */
+  .signoff__actions :global(.signoff__sticker) { margin-left: auto; }
   .signoff__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-l); margin-top: var(--space-s); }
   .footer-email {
     display: inline-flex;

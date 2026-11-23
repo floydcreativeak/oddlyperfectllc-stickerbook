@@ -222,6 +222,22 @@ Source: `Oddly Perfect Planning Packet` (working draft, September 2026).
   matcher links < 44px, broken `#tiers` anchor, lightbox img dimensions.
   Visual fixes: solo team spread, balanced contact columns, shorter story gaps.
 
+## Client feedback round 5
+
+- **Stickers over text**: `npm run test:stickers` measures every resting sticker's
+  visible core against every rendered text line on every page at 16:9
+  (1920x1080, 1280x720), 9:16 (360x640, 412x732) and 4:3 (1024x768, 800x600).
+  Found: the footer heart over the sign-off line (every page, all desktop sizes)
+  and the FAQ bubble over its heading at 1024x768. Heart now lives at the end of
+  the call row; the bubble sits in the section's top padding. Now 0 overlaps.
+- **Diagonal "cut" on drop**: captured frame-by-frame after release. It was the
+  folded corner band lingering while the fold flattened (the fold line always
+  runs bottom-left to top-right, and on narrow diagonal drawings like the bolt
+  the paper-back band reads as a slash). Drop now slaps the corner flat in
+  ~130ms with a fast-start curve; held fold reduced to 20% for drawings.
+  Also: tilt cards use `transform-style: flat` (was preserve-3d), so a sticker's
+  own 3D peel can never intersect a card's plane.
+
 ## Checks
 
 - `npm run test:a11y` (axe, 9 pages x light/dark x 375/1280): 0 serious/critical.
